@@ -4,7 +4,200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batlhabani Surveys - Home</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Reset and General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #FFFFFF;
+            background: #000000; /* Black as primary color */
+        }
+
+        /* Navigation */
+        nav {
+            background: #000000; /* Black navbar */
+            color: #FFFFFF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #D4A017; /* Dark yellow logo */
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav ul li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        nav ul li a:hover, .active {
+            color: #D4A017; /* Dark yellow for hover and active */
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 60vh;
+            overflow: hidden;
+        }
+
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7; /* Slight opacity for overlay effect */
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Black overlay for readability */
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #D4A017; /* Dark yellow for heading */
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-button {
+            background: #D4A017; /* Dark yellow button */
+            color: #000000;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .cta-button:hover {
+            background: #B38813; /* Slightly darker yellow for hover */
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background: #1A1A1A; /* Dark gray for content background */
+            border-radius: 10px;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #D4A017; /* Dark yellow for headings */
+        }
+
+        p, ul {
+            color: #E0E0E0; /* Light gray for text */
+        }
+
+        /* Contact Form (for contact.html) */
+        .contact-form form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .contact-form label {
+            font-weight: bold;
+            color: #D4A017; /* Dark yellow for labels */
+        }
+
+        .contact-form input, .contact-form textarea {
+            padding: 0.5rem;
+            border: 1px solid #D4A017; /* Dark yellow border */
+            border-radius: 5px;
+            background: #333333; /* Darker background for inputs */
+            color: #FFFFFF;
+        }
+
+        .contact-form textarea {
+            height: 150px;
+        }
+
+        .contact-form button {
+            background: #D4A017; /* Dark yellow button */
+            color: #000000;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .contact-form button:hover {
+            background: #B38813; /* Darker yellow for hover */
+        }
+
+        /* Footer */
+        footer {
+            background: #000000; /* Black footer */
+            color: #E0E0E0; /* Light gray text */
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+            .hero-text p {
+                font-size: 1rem;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -46,9 +239,24 @@
         </section>
     </main>
     <footer>
-        <p>&copy; 2025 Batlhabani Surveys (Pty) Ltd. All rights reserved.</p>
+        <p>© 2025 Batlhabani Surveys (Pty) Ltd. All rights reserved.</p>
         <p>Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601 | +27790938688 | info@batlhabani-surveys.co.za</p>
     </footer>
-    <script src="js/scripts.js"></script>
+    <script>
+        // Handle form submission (used in contact.html)
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('contactForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const message = document.getElementById('message').value;
+                    alert(`Thank you, ${name}! Your message has been sent.`);
+                    form.reset();
+                });
+            }
+        });
+    </script>
 </body>
 </html>
