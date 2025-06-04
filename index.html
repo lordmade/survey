@@ -1,202 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Batlhabani Surveys</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root {
-      --primary-black: #000000;
-      --secondary-yellow: #B8860B;
-      --bg-gray: #F3F4F6;
-      --text-gray: #4B5563;
-      --white: #FFFFFF;
-    }
-    body {
-      overflow-x: hidden;
-    }
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background-color: var(--primary-black);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .mobile-menu {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100vh;
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.95);
-      transform: translateX(100%);
-      transition: transform 0.3s ease-in-out;
-      z-index: 60;
-    }
-    .mobile-menu.open {
-      transform: translateX(0);
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in {
-      animation: fadeIn 0.6s ease-out forwards;
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-10px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-    .animate-slide-in {
-      opacity: 0;
-      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-    }
-    .animate-slide-in.visible {
-      opacity: 1;
-      transform: translateX(0);
-      animation: slideIn 0.4s ease-out forwards;
-    }
-    @media (hover: none) {
-      .hover\:text-[var(--secondary-yellow)]:hover, .hover\:text-white:hover {
-        color: inherit;
-      }
-      .hover\:bg-[var(--secondary-yellow)]:hover {
-        background-color: var(--primary-black);
-      }
-    }
-    .hero-section {
-      position: relative;
-      height: 40vh;
-      min-height: 200px;
-      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
-    }
-    .hero-section img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    @media (max-width: 640px) {
-      .hero-section {
-        height: 20vh;
-        min-height: 120px;
-      }
-      .hero-section h1 {
-        font-size: 1rem;
-      }
-      .hero-section p {
-        font-size: 0.625rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batlhabani Surveys - Home</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="font-sans" style="background-color: var(--bg-gray);">
-  <!-- Navigation -->
-  <nav class="text-white p-4">
-    <div class="container mx-auto flex justify-between items-center">
-      <a href="index.html" class="text-lg md:text-xl font-bold">Batlhabani Surveys</a>
-      <div class="hidden md:flex space-x-2">
-        <a href="index.html" class="text-sm hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-2 px-2">Home</a>
-        <a href="services.html" class="text-sm hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-2 px-2">Services</a>
-        <a href="about.html" class="text-sm hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-2 px-2">About</a>
-        <a href="contact.html" class="text-sm hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-2 px-2">Contact</a>
-      </div>
-      <button id="mobile-menu-btn" class="md:hidden fixed top-4 right-4 z-60 focus:outline-none">
-        <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-        </svg>
-        <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
-    <div id="mobile-menu" class="mobile-menu md:hidden flex flex-col items-center justify-center space-y-6 text-white">
-      <button id="mobile-menu-close" class="absolute top-4 right-4 focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-      <a href="index.html" class="text-lg hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-4 w-full text-center">Home</a>
-      <a href="services.html" class="text-lg hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-4 w-full text-center">Services</a>
-      <a href="about.html" class="text-lg hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-4 w-full text-center">About</a>
-      <a href="contact.html" class="text-lg hover:text-[var(--secondary-yellow)] transition-colors duration-300 py-4 w-full text-center">Contact</a>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero-section animate-fade-in pt-16 md:pt-0">
-    <img src="https://t3.ftcdn.net/jpg/06/81/20/38/240_F_681203888_A6lAnfwJa6VZ07mOFlOcUliBGRDOzv2z.jpg" sizes="(max-width: 640px) 600px, 1200px" alt="Construction site with surveying equipment" loading="lazy">
-    <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
-      <h1 class="text-lg md:text-3xl font-bold mb-2">Welcome to Batlhabani Surveys</h1>
-      <p class="text-xs md:text-base leading-relaxed max-w-sm">Professional land surveying services across South Africa.</p>
-    </div>
-  </section>
-
-  <!-- Home Page Content -->
-  <section id="home" class="container mx-auto py-8 px-4">
-    <div class="space-y-4">
-      <div class="p-3 rounded-lg border border-gray-100 animate-slide-in" style="background-color: var(--white);">
-        <h2 class="text-lg md:text-xl font-semibold mb-2" style="color: var(--primary-black); border-bottom: 2px solid var(--secondary-yellow);">Our Vision</h2>
-        <p style="color: var(--text-gray); font-size: 0.875rem; leading-relaxed;">To contribute towards the development of South Africa’s infrastructural hub while providing professional services to our clients, business partners, and the general public.</p>
-      </div>
-      <div class="p-3 rounded-lg border border-gray-100 animate-slide-in" style="background-color: var(--white);">
-        <h2 class="text-lg md:text-xl font-semibold mb-2" style="color: var(--primary-black); border-bottom: 2px solid var(--secondary-yellow);">Our Mission</h2>
-        <p style="color: var(--text-gray); font-size: 0.875rem; leading-relaxed;">To satisfy the spatial needs of the country through the professional application of knowledge in surveying.</p>
-      </div>
-    </div>
-    <div class="text-center mt-6">
-      <a href="contact.html" class="text-white px-5 py-2.5 rounded-lg hover:bg-[var(--secondary-yellow)] transition-transform duration-300 hover:scale-105 text-sm md:text-base" style="background-color: var(--primary-black);">Get in Touch</a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="text-white p-4" style="background-color: var(--primary-black);">
-    <div class="container mx-auto text-center text-xs md:text-sm">
-      <p>Batlhabani Surveys (Pty) Ltd - Reg. No. 2014/022172/07</p>
-      <p>Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601</p>
-      <p>P.O. Box 1502, Mahwelereng, Limpopo, 0626</p>
-      <p>Phone: +27 79 093 8688 | Email: info@batlhabani-surveys.co.za</p>
-      <p><a href="http://www.batlhabani-surveys.co.za" class="underline hover:text-[var(--secondary-yellow)] transition-colors duration-300">www.batlhabani-surveys.co.za</a></p>
-     
-    </div>
-  </footer>
-
-  <script>
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenuClose = document.getElementById('mobile-menu-close');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    const closeIcon = document.getElementById('close-icon');
-    const toggleMenu = () => {
-      mobileMenu.classList.toggle('open');
-      menuIcon.classList.toggle('hidden');
-      closeIcon.classList.toggle('hidden');
-    };
-    mobileMenuBtn.addEventListener('click', toggleMenu);
-    mobileMenuClose.addEventListener('click', toggleMenu);
-
-    const animateElements = document.querySelectorAll('.animate-slide-in');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-    animateElements.forEach(el => observer.observe(el));
-
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const pages = ['index.html', 'services.html', 'about.html', 'contact.html'];
-        if (pages.includes(e.target.getAttribute('href'))) {
-          window.location.href = e.target.getAttribute('href');
-          mobileMenu.classList.remove('open');
-          menuIcon.classList.remove('hidden');
-          closeIcon.classList.add('hidden');
-        }
-      });
-    });
-  </script>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Batlhabani Surveys</div>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="hero">
+            <img src="img/hero-image.jpg" alt="Land Surveying">
+            <div class="hero-text">
+                <h1>Professional Land Surveying Solutions</h1>
+                <p>Delivering precision and expertise for South Africa's infrastructure development.</p>
+                <a href="contact.html" class="cta-button">Get in Touch</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="overview">
+            <h2>Company Overview</h2>
+            <p>Batlhabani Surveys is an emerging, PDI-owned company specializing in professional land surveying. With over 20 years of experience, we adhere to TMH11 standards, delivering high-quality services to meet the spatial needs of South Africa.</p>
+        </section>
+        <section class="vision-mission">
+            <h2>Our Vision & Mission</h2>
+            <p><strong>Vision:</strong> To contribute to South Africa’s infrastructural hub while providing professional services to clients, partners, and the public.</p>
+            <p><strong>Mission:</strong> To satisfy the country’s spatial needs through professional application of surveying knowledge.</p>
+        </section>
+        <section class="values">
+            <h2>Values & Ethics</h2>
+            <ul>
+                <li>Professionalism</li>
+                <li>Acting with diligence and competence</li>
+                <li>We double check</li>
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Batlhabani Surveys (Pty) Ltd. All rights reserved.</p>
+        <p>Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601 | +27790938688 | info@batlhabani-surveys.co.za</p>
+    </footer>
+    <script src="js/scripts.js"></script>
 </body>
 </html>
