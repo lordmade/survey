@@ -164,7 +164,7 @@
             color: #E0E0E0;
         }
 
-        .contact-info {
+        .contact-info, .contact-form {
             background: #2A2A2A;
             border: 1px solid #D4A017;
             border-radius: 8px;
@@ -173,7 +173,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .contact-info:hover {
+        .contact-info:hover, .contact-form:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
         }
@@ -318,16 +318,18 @@
             </div>
         </section>
         <section class="contact-form" id="contact-form">
-            <h2>Send Us a Message</h2>
-            <form id="contactForm">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-                <label for="message">Message</label>
-                <textarea id="message" name="message" required></textarea>
-                <button type="submit">Send Message</button>
-            </form>
+            <div class="content-card">
+                <h2>Send Us a Message</h2>
+                <form id="contactForm">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
         </section>
     </main>
     <footer>
@@ -358,7 +360,23 @@
                     const name = document.getElementById('name').value;
                     const email = document.getElementById('email').value;
                     const message = document.getElementById('message').value;
-                    alert(`Thank you, ${name}! Your message has been sent.`);
+
+                    // Validate email format
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        alert('Please enter a valid email address.');
+                        return;
+                    }
+
+                    // Construct mailto link
+                    const subject = encodeURIComponent('Contact Form Submission from ' + name);
+                    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nMessage: ${message}`);
+                    const mailtoLink = `mailto:info@batlhabani-surveys.co.za?subject=${subject}&body=${body}`;
+
+                    // Open email client
+                    window.location.href = mailtoLink;
+
+                    // Reset form
                     form.reset();
                 });
             }
