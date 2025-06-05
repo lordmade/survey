@@ -147,10 +147,13 @@
             background: #1A1A1A;
             border-radius: 10px;
             padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
         }
 
         section {
-            margin-bottom: 2rem;
+            margin-bottom: 0; /* Remove bottom margin since grid handles spacing */
         }
 
         h2 {
@@ -168,8 +171,11 @@
             border: 1px solid #D4A017;
             border-radius: 8px;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 200px; /* Ensure consistent height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .content-card:hover {
@@ -179,6 +185,7 @@
 
         .content-card h2 {
             margin-bottom: 0.5rem;
+            text-align: center;
         }
 
         .contact-form form {
@@ -260,6 +267,14 @@
 
             .hero-text p {
                 font-size: 1rem;
+            }
+
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .content-card {
+                min-height: auto; /* Allow natural height on mobile */
             }
         }
     </style>
