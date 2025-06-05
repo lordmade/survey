@@ -163,6 +163,24 @@
             color: #E0E0E0;
         }
 
+        .content-card {
+            background: #2A2A2A;
+            border: 1px solid #D4A017;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+        }
+
+        .content-card h2 {
+            margin-bottom: 0.5rem;
+        }
+
         .contact-form form {
             display: flex;
             flex-direction: column;
@@ -273,12 +291,16 @@
     </header>
     <main>
         <section class="about">
-            <h2>About Us</h2>
-            <p>Batlhabani Surveys is an emerging, PDI-owned company with over 20 years of experience in land surveying. We specialize in cadastral, engineering, and topographic surveying, adhering to TMH11 standards. Our skilled team is dedicated to delivering innovative solutions that enhance productivity and reduce costs.</p>
+            <div class="content-card">
+                <h2>About Us</h2>
+                <p>Batlhabani Surveys is an emerging, PDI-owned company with over 20 years of experience in land surveying. We specialize in cadastral, engineering, and topographic surveying, adhering to TMH11 standards. Our skilled team is dedicated to delivering innovative solutions that enhance productivity and reduce costs.</p>
+            </div>
         </section>
         <section class="director">
-            <h2>Director's Profile</h2>
-            <p>Malose Cedrik Maboya has been in the Geomatics industry since 1998, with expertise in cadastral, engineering, and topographic surveying. Registered with the South African Geomantic Council (GTC ES 2429), he brings innovative solutions to small and medium-sized companies, improving productivity and customer satisfaction.</p>
+            <div class="content-card">
+                <h2>Director's Profile</h2>
+                <p>Malose Cedrik Maboya has been in the Geomatics industry since 1998, with expertise in cadastral, engineering, and topographic surveying. Registered with the South African Geomantic Council (GTC ES 2429), he brings innovative solutions to small and medium-sized companies, improving productivity and customer satisfaction.</p>
+            </div>
         </section>
     </main>
     <footer>
