@@ -163,13 +163,24 @@
             color: #E0E0E0;
         }
 
-        .service-item {
+        .service-card {
+            background: #2A2A2A;
+            border: 1px solid #D4A017;
+            border-radius: 8px;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .service-item h3 {
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+        }
+
+        .service-card h3 {
             font-size: 1.5rem;
             color: #D4A017;
+            margin-bottom: 0.5rem;
         }
 
         .contact-form form {
@@ -283,23 +294,23 @@
     <main>
         <section class="services">
             <h2>Our Services</h2>
-            <div class="service-item">
+            <div class="service-card">
                 <h3>Cadastral Surveying</h3>
                 <p>Includes sourcing cadastral data, datum transformation, setting out boundaries, subdivisions, consolidations, beacon relocation, and sectional title surveying.</p>
             </div>
-            <div class="service-item">
+            <div class="service-card">
                 <h3>Construction Surveying</h3>
                 <p>Quality control, spatial measurements, monitoring ground stability, and survey project management for construction sites.</p>
             </div>
-            <div class="service-item">
+            <div class="service-card">
                 <h3>Deformation Surveying</h3>
                 <p>Monitoring structural changes or movement, including hydrographic and land deformation surveys for dams and other structures.</p>
             </div>
-            <div class="service-item">
+            <div class="service-card">
                 <h3>Topographic Surveying</h3>
                 <p>Detail and contour surveys, Digital Terrain Models (DTM), and strip surveys for pipelines and roads.</p>
             </div>
-            <div class="service-item">
+            <div class="service-card">
                 <h3>Engineering Surveying</h3>
                 <p>Precision surveys, setting out works, volume calculations, control surveys, and geodetic computations for engineering projects.</p>
             </div>
