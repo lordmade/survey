@@ -168,6 +168,24 @@
             color: #E0E0E0; /* Light gray for text */
         }
 
+        .content-card {
+            background: #2A2A2A;
+            border: 1px solid #D4A017;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+        }
+
+        .content-card h2 {
+            margin-bottom: 0.5rem;
+        }
+
         /* Contact Form (for contact.html) */
         .contact-form form {
             display: flex;
@@ -281,21 +299,27 @@
     </header>
     <main>
         <section class="overview">
-            <h2>Company Overview</h2>
-            <p>Batlhabani Surveys is an emerging, PDI-owned company specializing in professional land surveying. With over 20 years of experience, we adhere to TMH11 standards, delivering high-quality services to meet the spatial needs of South Africa.</p>
+            <div class="content-card">
+                <h2>Company Overview</h2>
+                <p>Batlhabani Surveys is an emerging, PDI-owned company specializing in professional land surveying. With over 20 years of experience, we adhere to TMH11 standards, delivering high-quality services to meet the spatial needs of South Africa.</p>
+            </div>
         </section>
         <section class="vision-mission">
-            <h2>Our Vision & Mission</h2>
-            <p><strong>Vision:</strong> To contribute to South Africa’s infrastructural hub while providing professional services to clients, partners, and the public.</p>
-            <p><strong>Mission:</strong> To satisfy the country’s spatial needs through professional application of surveying knowledge.</p>
+            <div class="content-card">
+                <h2>Our Vision & Mission</h2>
+                <p><strong>Vision:</strong> To contribute to South Africa’s infrastructural hub while providing professional services to clients, partners, and the public.</p>
+                <p><strong>Mission:</strong> To satisfy the country’s spatial needs through professional application of surveying knowledge.</p>
+            </div>
         </section>
         <section class="values">
-            <h2>Values & Ethics</h2>
-            <ul>
-                <li>Professionalism</li>
-                <li>Acting with diligence and competence</li>
-                <li>We double check</li>
-            </ul>
+            <div class="content-card">
+                <h2>Values & Ethics</h2>
+                <ul>
+                    <li>Professionalism</li>
+                    <li>Acting with diligence and competence</li>
+                    <li>We double check</li>
+                </ul>
+            </div>
         </section>
     </main>
     <footer>
