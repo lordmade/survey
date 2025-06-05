@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batlhabani Surveys - Contact</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         * {
             margin: 0;
@@ -163,6 +164,41 @@
             color: #E0E0E0;
         }
 
+        .contact-info {
+            background: #2A2A2A;
+            border: 1px solid #D4A017;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-info i {
+            color: #D4A017;
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-info a {
+            color: #E0E0E0;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            color: #D4A017;
+        }
+
         .contact-form form {
             display: flex;
             flex-direction: column;
@@ -273,13 +309,26 @@
     </header>
     <main>
         <section class="contact">
-            <h2>Contact Information</h2>
-            <p><strong>Address:</strong> Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601</p>
-            <p><strong>Phone:</strong> +27790938688</p>
-            <p><strong>Email:</strong> info@batlhabani-surveys.co.za</p>
-            <p><strong>Website:</strong> <a href="http://www.batlhabani-surveys.co.za">www.batlhabani-surveys.co.za</a></p>
+            <div class="contact-info">
+                <h2>Contact Information</h2>
+                <p><i class="fas fa-map-marker-alt"></i> Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601</p>
+                <p><i class="fas fa-phone"></i> +27790938688</p>
+                <p><i class="fas fa-envelope"></i> info@batlhabani-surveys.co.za</p>
+                <p><i class="fas fa-globe"></i> <a href="http://www.batlhabani-surveys.co.za">www.batlhabani-surveys.co.za</a></p>
+            </div>
         </section>
-       
+        <section class="contact-form" id="contact-form">
+            <h2>Send Us a Message</h2>
+            <form id="contactForm">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </section>
     </main>
     <footer>
         <p>© 2025 Batlhabani Surveys (Pty) Ltd. All rights reserved.</p>
