@@ -163,12 +163,17 @@
             color: #E0E0E0;
         }
 
+        .services {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
         .service-card {
             background: #2A2A2A;
             border: 1px solid #D4A017;
             border-radius: 8px;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -262,6 +267,10 @@
 
             .hero-text p {
                 font-size: 1rem;
+            }
+
+            .services {
+                grid-template-columns: 1fr;
             }
         }
     </style>
