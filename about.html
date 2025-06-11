@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batlhabani Surveys - About</title>
-    <style>
+  <style>
+        /* Reset and General Styles */
         * {
             margin: 0;
             padding: 0;
@@ -15,11 +16,12 @@
         body {
             line-height: 1.6;
             color: #FFFFFF;
-            background: #000000;
+            background: #000000; /* Black as primary color */
         }
 
+        /* Navigation */
         nav {
-            background: #000000;
+            background: #000000; /* Black navbar */
             color: #FFFFFF;
             display: flex;
             justify-content: space-between;
@@ -33,7 +35,7 @@
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #D4A017;
+            color: #D4A017; /* Dark yellow logo */
         }
 
         .nav-links {
@@ -49,9 +51,10 @@
         }
 
         .nav-links li a:hover, .active {
-            color: #D4A017;
+            color: #D4A017; /* Dark yellow for hover and active */
         }
 
+        /* Hamburger Menu */
         .hamburger {
             display: none;
             flex-direction: column;
@@ -63,7 +66,7 @@
         .hamburger span {
             width: 25px;
             height: 3px;
-            background: #D4A017;
+            background: #D4A017; /* Dark yellow hamburger lines */
             transition: all 0.3s ease;
         }
 
@@ -83,6 +86,7 @@
             transform: translateX(0);
         }
 
+        /* Hero Section */
         .hero {
             position: relative;
             height: 60vh;
@@ -93,7 +97,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.7;
+            opacity: 0.7; /* Slight opacity for overlay effect */
         }
 
         .hero::before {
@@ -103,7 +107,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5); /* Black overlay for readability */
         }
 
         .hero-text {
@@ -119,7 +123,7 @@
         .hero-text h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            color: #D4A017;
+            color: #D4A017; /* Dark yellow for heading */
         }
 
         .hero-text p {
@@ -128,7 +132,7 @@
         }
 
         .cta-button {
-            background: #D4A017;
+            background: #D4A017; /* Dark yellow button */
             color: #000000;
             padding: 0.75rem 1.5rem;
             text-decoration: none;
@@ -137,14 +141,15 @@
         }
 
         .cta-button:hover {
-            background: #B38813;
+            background: #B38813; /* Slightly darker yellow for hover */
         }
 
+        /* Main Content */
         main {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
-            background: #1A1A1A;
+            background: #1A1A1A; /* Dark gray for content background */
             border-radius: 10px;
             padding: 2rem;
             display: grid;
@@ -159,11 +164,11 @@
         h2 {
             font-size: 2rem;
             margin-bottom: 1rem;
-            color: #D4A017;
+            color: #D4A017; /* Dark yellow for headings */
         }
 
         p, ul {
-            color: #E0E0E0;
+            color: #E0E0E0; /* Light gray for text */
         }
 
         .content-card {
@@ -188,6 +193,7 @@
             text-align: center;
         }
 
+        /* Contact Form (for contact.html) */
         .contact-form form {
             display: flex;
             flex-direction: column;
@@ -198,14 +204,14 @@
 
         .contact-form label {
             font-weight: bold;
-            color: #D4A017;
+            color: #D4A017; /* Dark yellow for labels */
         }
 
         .contact-form input, .contact-form textarea {
             padding: 0.5rem;
-            border: 1px solid #D4A017;
+            border: 1px solid #D4A017; /* Dark yellow border */
             border-radius: 5px;
-            background: #333333;
+            background: #333333; /* Darker background for inputs */
             color: #FFFFFF;
         }
 
@@ -214,7 +220,7 @@
         }
 
         .contact-form button {
-            background: #D4A017;
+            background: #D4A017; /* Dark yellow button */
             color: #000000;
             padding: 0.75rem;
             border: none;
@@ -223,17 +229,40 @@
         }
 
         .contact-form button:hover {
-            background: #B38813;
+            background: #B38813; /* Darker yellow for hover */
         }
 
+        /* Footer */
         footer {
-            background: #000000;
-            color: #E0E0E0;
+            background: #000000; /* Black footer */
+            color: #E0E0E0; /* Light gray text */
             text-align: center;
             padding: 1rem;
             margin-top: 2rem;
         }
 
+        /* Logo Container */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem; /* Space between logos */
+            margin-top: 1.5rem;
+            flex-wrap: wrap; /* Allow logos to wrap on smaller screens */
+        }
+
+        .partner-logo {
+            width: 100px; /* Adjust size as needed */
+            height: auto;
+            transition: transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .partner-logo:hover {
+            transform: scale(1.1); /* Scale up on hover */
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3); /* Subtle shadow on hover */
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .hamburger {
                 display: flex;
@@ -245,7 +274,7 @@
                 right: 0;
                 height: 100vh;
                 width: 100%;
-                background: #000000;
+                background: #000000; /* Black mobile menu */
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
@@ -276,16 +305,11 @@
             .content-card {
                 min-height: auto; /* Allow natural height on mobile */
             }
-        }
-.content-card img {
-            max-width: 150px; /* Smaller image size */
-            height: auto;
-            display: block;
-            margin: 0 auto 1rem; /* Center image with spacing */
-        }
 
-
-        
+            .partner-logo {
+                width: 80px; /* Smaller size for mobile */
+            }
+        }
     </style>
 </head>
 <body>
@@ -323,7 +347,6 @@
         <section class="director">
             <div class="content-card">
                 <h2>Director's Profile</h2>
-                 <img src="https://sagc.org.za/wp-content/uploads/2024/03/SAGC_Logo.svg" alt="Land Surveying">
                 <p>Malose Cedrik Maboya has been in the Geomatics industry since 1998, with expertise in cadastral, engineering, and topographic surveying. Registered with the South African Geomantic Council (GTC ES 2429), he brings innovative solutions to small and medium-sized companies, improving productivity and customer satisfaction.</p>
             </div>
         </section>
