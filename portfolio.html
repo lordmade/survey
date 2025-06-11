@@ -33,9 +33,17 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #D4A017; /* Dark yellow logo */
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            width: 50px; /* Logo size */
+            height: 50px;
+            border-radius: 50%; /* Circular shape */
+            background: #D4A017; /* Dark yellow background */
+            padding: 5px; /* Space between logo and background */
+            object-fit: contain; /* Ensure logo fits within circle */
         }
 
         .nav-links {
@@ -218,13 +226,13 @@
             gap: 1.5rem;
             padding: 1rem;
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-            scrollbar-width: thin; /* Firefox */
-            scrollbar-color: #D4A017 #2A2A2A; /* Firefox */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #D4A017 #2A2A2A;
         }
 
         .gallery-container::-webkit-scrollbar {
-            height: 8px; /* Chrome, Safari */
+            height: 8px;
         }
 
         .gallery-container::-webkit-scrollbar-track {
@@ -243,15 +251,14 @@
             border-radius: 8px;
             cursor: pointer;
             transition: transform 0.3s ease;
-            flex: 0 0 auto; /* Prevent shrinking */
-            position: relative; /* For hover preview positioning */
+            flex: 0 0 auto;
+            position: relative;
         }
 
         .gallery-image:hover {
             transform: scale(1.05);
         }
 
-        /* Hover Preview */
         .gallery-image:hover .preview-image {
             display: block;
         }
@@ -259,10 +266,10 @@
         .preview-image {
             display: none;
             position: absolute;
-            top: -220px; /* Above the thumbnail */
+            top: -220px;
             left: 50%;
             transform: translateX(-50%);
-            width: 300px; /* Larger preview */
+            width: 300px;
             height: auto;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
@@ -377,16 +384,22 @@
 
             .gallery-image {
                 width: 150px;
-                height: 112px; /* Maintain aspect ratio */
+                height: 112px;
             }
 
             .preview-image {
-                width: 200px; /* Smaller preview on mobile */
+                width: 200px;
                 top: -170px;
             }
 
             .partner-logo {
                 width: 80px;
+            }
+
+            .logo-img {
+                width: 40px; /* Smaller logo on mobile */
+                height: 40px;
+                padding: 4px;
             }
         }
     </style>
@@ -394,7 +407,9 @@
 <body>
     <header>
         <nav>
-            <div class="logo">Batlhabani Surveys</div>
+            <div class="logo">
+                <img src="batlhabani-logo.png" alt="Batlhabani Surveys Logo" class="logo-img">
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="services.html">Services</a></li>
@@ -466,11 +481,10 @@
                 <img src="project4.jpg" alt="Rural Land Survey" class="gallery-image">
                 <img src="project4.jpg" alt="Rural Land Survey" class="preview-image">
             </div>
-            <!-- Add more gallery items as needed -->
         </div>
     </section>
     <div id="imageModal" class="modal">
-        <span class="close">&times;</span>
+        <span class="close">×</span>
         <img class="modal-content" id="modalImage">
     </div>
     <footer>
