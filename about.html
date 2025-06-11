@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batlhabani Surveys - About</title>
-  <style>
+    <style>
         /* Reset and General Styles */
         * {
             margin: 0;
@@ -33,9 +33,17 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #D4A017; /* Dark yellow logo */
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            width: 50px; /* Logo size */
+            height: 50px;
+            border-radius: 50%; /* Circular shape */
+            background: #D4A017; /* Dark yellow background */
+            padding: 5px; /* Space between logo and background */
+            object-fit: contain; /* Ensure logo fits within circle */
         }
 
         .nav-links {
@@ -309,18 +317,27 @@
             .partner-logo {
                 width: 80px; /* Smaller size for mobile */
             }
+
+            .logo-img {
+                width: 40px; /* Smaller logo on mobile */
+                height: 40px;
+                padding: 4px;
+            }
         }
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">Batlhabani Surveys</div>
+            <div class="logo">
+                <img src="batlhabani-logo.png" alt="Batlhabani Surveys Logo" class="logo-img">
+            </div>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="services.html">Services</a></li>
                 <li><a href="about.html" class="active">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -354,11 +371,10 @@
     <footer>
         <p>© 2025 Batlhabani Surveys (Pty) Ltd. All rights reserved.</p>
         <p>Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601 | +27790938688 | info@batlhabani-surveys.co.za</p>
-         <div class="logo-container">
+        <div class="logo-container">
             <img src="logo1.png" alt="Logo 1" class="partner-logo">
             <img src="logo2.png" alt="Logo 2" class="partner-logo">
             <img src="logo3.png" alt="Logo 3" class="partner-logo">
-            <!-- Add more logos as needed -->
         </div>
     </footer>
     <script>
