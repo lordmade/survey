@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batlhabani Surveys - Portfolio</title>
+    <style>
+        /* Reset and General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #FFFFFF;
+            background: #000000; /* Black as primary color */
+        }
+
+        /* Navigation */
+        nav {
+            background: #000000; /* Black navbar */
+            color: #FFFFFF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #D4A017; /* Dark yellow logo */
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .nav-links li a:hover, .active {
+            color: #D4A017; /* Dark yellow for hover and active */
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            z-index: 101;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #D4A017; /* Dark yellow hamburger lines */
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .nav-links.active {
+            transform: translateX(0);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 60vh;
+            overflow: hidden;
+        }
+
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #D4A017;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-button {
+            background: #D4A017;
+            color: #000000;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .cta-button:hover {
+            background: #B38813;
+        }
+
+        /* Projects Section */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background: #1A1A1A;
+            border-radius: 10px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        section {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #D4A017;
+        }
+
+        p, ul {
+            color: #E0E0E0;
+        }
+
+        .project-card {
+            background: #2A2A2A;
+            border: 1px solid #D4A017;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+        }
+
+        .project-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #D4A017;
+            text-align: center;
+        }
+
+        .project-card p {
+            margin-bottom: 0.5rem;
+        }
+
+        .project-cost {
+            font-weight: bold;
+            color: #E0E0E0;
+            text-align: right;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            margin: 2rem auto;
+            max-width: 1200px;
+            padding: 0 1rem;
+        }
+
+        .gallery-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 1.5rem;
+            padding: 1rem;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #D4A017 #2A2A2A; /* Firefox */
+        }
+
+        .gallery-container::-webkit-scrollbar {
+            height: 8px; /* Chrome, Safari */
+        }
+
+        .gallery-container::-webkit-scrollbar-track {
+            background: #2A2A2A;
+        }
+
+        .gallery-container::-webkit-scrollbar-thumb {
+            background: #D4A017;
+            border-radius: 4px;
+        }
+
+        .gallery-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            flex: 0 0 auto; /* Prevent shrinking */
+            position: relative; /* For hover preview positioning */
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hover Preview */
+        .gallery-image:hover .preview-image {
+            display: block;
+        }
+
+        .preview-image {
+            display: none;
+            position: absolute;
+            top: -220px; /* Above the thumbnail */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px; /* Larger preview */
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+            z-index: 10;
+            background: #000000;
+            padding: 5px;
+        }
+
+        /* Modal for Click */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #D4A017;
+            font-size: 2rem;
+            cursor: pointer;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: #000000;
+            color: #E0E0E0;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .partner-logo {
+            width: 100px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .partner-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 100%;
+                background: #000000;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .nav-links li {
+                margin: 1rem 0;
+            }
+
+            .nav-links li a {
+                font-size: 1.5rem;
+            }
+
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-text p {
+                font-size: 1rem;
+            }
+
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card {
+                min-height: auto;
+            }
+
+            .gallery-image {
+                width: 150px;
+                height: 112px; /* Maintain aspect ratio */
+            }
+
+            .preview-image {
+                width: 200px; /* Smaller preview on mobile */
+                top: -170px;
+            }
+
+            .partner-logo {
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Batlhabani Surveys</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="portfolio.html" class="active">Portfolio</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+        <div class="hero">
+            <img src="cover.jpg" alt="Land Surveying">
+            <div class="hero-text">
+                <h1>Our Completed Projects</h1>
+                <p>Explore our portfolio of professional land surveying projects across South Africa.</p>
+                <a href="contact.html" class="cta-button">Contact Us</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="project">
+            <div class="project-card">
+                <h3>Mokopane Housing Development</h3>
+                <p>Comprehensive topographic survey for a 50-hectare residential development, ensuring precise land measurements for infrastructure planning.</p>
+                <p class="project-cost">Cost: R 1,200,000</p>
+            </div>
+        </section>
+        <section class="project">
+            <div class="project-card">
+                <h3>Limpopo Road Expansion</h3>
+                <p>Surveyed 25 km of roadway for expansion, providing detailed alignment and elevation data adhering to TMH11 standards.</p>
+                <p class="project-cost">Cost: R 850,000</p>
+            </div>
+        </section>
+        <section class="project">
+            <div class="project-card">
+                <h3>Polokwane Commercial Complex</h3>
+                <p>Boundary and cadastral survey for a new commercial complex, ensuring accurate land division for legal documentation.</p>
+                <p class="project-cost">Cost: R 600,000</p>
+            </div>
+        </section>
+        <section class="project">
+            <div class="project-card">
+                <h3>Rural Land Subdivision</h3>
+                <p>Subdivision survey for 100 rural plots, supporting community development with precise boundary demarcations.</p>
+                <p class="project-cost">Cost: R 450,000</p>
+            </div>
+        </section>
+    </main>
+    <section class="gallery-section">
+        <h2>Project Gallery</h2>
+        <div class="gallery-container">
+            <div class="gallery-item">
+                <img src="project1.jpg" alt="Mokopane Housing Survey" class="gallery-image">
+                <img src="project1.jpg" alt="Mokopane Housing Survey" class="preview-image">
+            </div>
+            <div class="gallery-item">
+                <img src="project2.jpg" alt="Limpopo Road Survey" class="gallery-image">
+                <img src="project2.jpg" alt="Limpopo Road Survey" class="preview-image">
+            </div>
+            <div class="gallery-item">
+                <img src="project3.jpg" alt="Polokwane Commercial Survey" class="gallery-image">
+                <img src="project3.jpg" alt="Polokwane Commercial Survey" class="preview-image">
+            </div>
+            <div class="gallery-item">
+                <img src="project4.jpg" alt="Rural Land Survey" class="gallery-image">
+                <img src="project4.jpg" alt="Rural Land Survey" class="preview-image">
+            </div>
+            <!-- Add more gallery items as needed -->
+        </div>
+    </section>
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    <footer>
+        <p>© 2025 Batlhabani Surveys (Pty) Ltd. All rights reserved.</p>
+        <p>Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601 | +27790938688 | info@batlhabani-surveys.co.za</p>
+        <div class="logo-container">
+            <img src="logo1.png" alt="Logo 1" class="partner-logo">
+            <img src="logo2.png" alt="Logo 2" class="partner-logo">
+            <img src="logo3.png" alt="Logo 3" class="partner-logo">
+        </div>
+    </footer>
+    <script>
+        // Hamburger Menu Toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
+            });
+
+            // Modal Functionality
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const closeBtn = document.querySelector('.close');
+            const galleryImages = document.querySelectorAll('.gallery-image');
+
+            galleryImages.forEach(image => {
+                image.addEventListener('click', () => {
+                    modal.style.display = 'flex';
+                    modalImage.src = image.src;
+                });
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
