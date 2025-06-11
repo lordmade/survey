@@ -241,6 +241,27 @@
             margin-top: 2rem;
         }
 
+        /* Logo Container */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem; /* Space between logos */
+            margin-top: 1.5rem;
+            flex-wrap: wrap; /* Allow logos to wrap on smaller screens */
+        }
+
+        .partner-logo {
+            width: 100px; /* Adjust size as needed */
+            height: auto;
+            transition: transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .partner-logo:hover {
+            transform: scale(1.1); /* Scale up on hover */
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.3); /* Subtle shadow on hover */
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .hamburger {
@@ -283,6 +304,10 @@
 
             .content-card {
                 min-height: auto; /* Allow natural height on mobile */
+            }
+
+            .partner-logo {
+                width: 80px; /* Smaller size for mobile */
             }
         }
     </style>
@@ -340,6 +365,12 @@
     <footer>
         <p>© 2025 Batlhabani Surveys (Pty) Ltd. All rights reserved.</p>
         <p>Stand No. 304, Masehlaneng Village, Mokopane, Limpopo, 0601 | +27790938688 | info@batlhabani-surveys.co.za</p>
+        <div class="logo-container">
+            <img src="logo1.png" alt="Logo 1" class="partner-logo">
+            <img src="logo2.png" alt="Logo 2" class="partner-logo">
+            <img src="logo3.png" alt="Logo 3" class="partner-logo">
+            <!-- Add more logos as needed -->
+        </div>
     </footer>
     <script>
         // Hamburger Menu Toggle
