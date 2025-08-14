@@ -50,7 +50,7 @@
 
     .header {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       padding: 1rem;
       background: var(--white);
@@ -81,21 +81,67 @@
       transform: scale(1.1);
     }
 
-    .search-bar {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto; /* Center the search bar */
+    .cart-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem;
+      background: var(--grade-green);
+      color: var(--white);
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .search-bar svg {
+    .cart-btn:hover {
+      background: #008C3F;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+    }
+
+    .search-section {
+      display: none;
+      margin: 1rem 0;
+    }
+
+    .search-section.active {
+      display: block;
+    }
+
+    .search-section input {
+      padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      background: var(--white);
+      transition: all 0.3s ease;
+    }
+
+    .search-section svg {
       position: absolute;
       left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      width: 20px;
-      height: 20px;
-      color: var(--text-light);
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-light);
+    }
+
+    .search-section-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     .category-tabs {
@@ -254,7 +300,8 @@
       width: 24px;
       height: 24px;
       margin-bottom: 0.3rem;
-      fill: currentColor;
+      fill: none;
+      stroke: currentColor;
     }
 
     .nav-item span {
@@ -384,14 +431,23 @@
         height: 20px;
       }
 
-      .search-bar input {
-        padding: 0.5rem 0.5rem 0.5rem 2.5rem;
-        font-size: 0.9rem;
+      .cart-btn {
+        padding: 0.5rem;
       }
 
-      .search-bar svg {
-        width: 16px;
-        height: 16px;
+      .cart-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .search-section input {
+        padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+        font-size: 0.85rem;
+      }
+
+      .search-section svg {
+        width: 14px;
+        height: 14px;
       }
 
       .category-tab {
@@ -454,12 +510,19 @@
         </svg>
         Grade Food
       </a>
+      <button class="cart-btn" id="cart-open-btn" aria-label="Open cart">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </button>
     </div>
-    <div class="search-bar">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0a7.5 7.5 0 111.5-1.5 7.5 7.5 0 01-1.5 1.5z" />
-      </svg>
-      <input type="text" id="search-input" placeholder="Search restaurants or dishes..." class="p-2.5 pl-10 rounded-full border border-gray-300 text-black w-full focus:ring-2 focus:ring-grade-green focus:border-transparent transition-all duration-300" aria-label="Search restaurants or dishes">
+    <div class="search-section" id="search-section">
+      <div class="search-section-container">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0a7.5 7.5 0 111.5-1.5 7.5 7.5 0 01-1.5 1.5z" />
+        </svg>
+        <input type="text" id="search-input" placeholder="Search restaurants or dishes..." class="focus:ring-2 focus:ring-grade-green focus:border-transparent transition-all duration-300" aria-label="Search restaurants or dishes">
+      </div>
     </div>
     <div class="bg-white rounded-lg shadow-lg p-4 mt-4 mb-4">
       <h2 class="text-xl font-bold mb-3 text-text-dark">The Food You Love, Delivered Fast</h2>
@@ -648,6 +711,7 @@
 
     const menuGrid = document.getElementById("menu-grid");
     const categoryTabs = document.getElementById("category-tabs");
+    const searchSection = document.getElementById("search-section");
     const searchInput = document.getElementById("search-input");
     const loginModal = document.getElementById("login-modal");
     const cartModal = document.getElementById("cart-modal");
@@ -663,6 +727,7 @@
     const confirmationCloseBtn = document.getElementById("confirmation-close-btn");
     const profileCloseBtn = document.getElementById("profile-close-btn");
     const loginSubmitBtn = document.getElementById("login-submit-btn");
+    const cartOpenBtn = document.getElementById("cart-open-btn");
     const cartItemsDiv = document.getElementById("cart-items");
     const cartTotalSpan = document.getElementById("cart-total");
     const placeOrderBtn = document.getElementById("place-order-btn");
@@ -989,6 +1054,13 @@
         }
       });
 
+      cartOpenBtn.addEventListener('click', () => {
+        cartModal.classList.add('active');
+        modalOverlay.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        navOrders.classList.add('active');
+      });
+
       placeOrderBtn.addEventListener('click', submitOrder);
 
       addCustomizedBtn.addEventListener('click', () => {
@@ -1071,6 +1143,7 @@
       navHome.addEventListener('click', () => {
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         navHome.classList.add('active');
+        searchSection.classList.remove('active');
         menuGrid.style.display = 'grid';
         categoryTabs.style.display = 'flex';
         promotionsDiv.parentElement.style.display = 'block';
@@ -1081,12 +1154,17 @@
       navSearch.addEventListener('click', () => {
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         navSearch.classList.add('active');
+        searchSection.classList.add('active');
+        menuGrid.style.display = 'grid';
+        categoryTabs.style.display = 'flex';
+        promotionsDiv.parentElement.style.display = 'block';
         searchInput.focus();
       });
 
       navOrders.addEventListener('click', () => {
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         navOrders.classList.add('active');
+        searchSection.classList.remove('active');
         statusModal.classList.add('active');
         modalOverlay.classList.add('active');
         statusOrderNumber.value = '';
@@ -1096,6 +1174,7 @@
       navProfile.addEventListener('click', () => {
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         navProfile.classList.add('active');
+        searchSection.classList.remove('active');
         profileModal.classList.add('active');
         modalOverlay.classList.add('active');
         if (currentUser) {
