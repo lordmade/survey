@@ -418,7 +418,7 @@
       border: 1px solid var(--border);
       border-radius: 24px;
       padding: 40px;
-      max-width: 600px;
+      max-width: 800px;
       margin: 0 auto;
       box-shadow: var(--shadow-sm);
     }
@@ -452,7 +452,8 @@
       color: var(--text-primary);
     }
     .form-group input,
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       width: 100%;
       padding: 12px 16px;
       border: 1px solid var(--border);
@@ -463,7 +464,8 @@
       transition: border-color 0.3s ease;
     }
     .form-group input:focus,
-    .form-group textarea:focus {
+    .form-group textarea:focus,
+    .form-group select:focus {
       outline: none;
       border-color: var(--accent);
     }
@@ -535,6 +537,45 @@
     }
     #dashboard {
       display: block;
+    }
+    .lessons-container {
+      margin-top: 24px;
+    }
+    .lesson-item {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .lesson-title {
+      font-weight: 600;
+    }
+    .delete-lesson {
+      background: #e53e3e;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .add-lesson-btn {
+      background: var(--accent-secondary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
     }
     /* Custom Dialog Styles */
     .dialog-backdrop {
@@ -686,6 +727,7 @@
   <aside class="sidebar" id="sidebar">
     <ul>
       <li><a href="#" class="active" data-target="dashboard">Dashboard</a></li>
+      <li><a href="#create-course" data-target="create-course">Create Course</a></li>
       <li><a href="#courses" data-target="courses">My Courses</a></li>
       <li><a href="#students" data-target="students">Student Progress</a></li>
       <li><a href="#submissions" data-target="submissions">Submissions</a></li>
@@ -723,17 +765,56 @@
       </div>
     </section>
 
+    <section id="create-course" class="courses-section">
+      <h2 class="section-title">Create New Course</h2>
+      <div class="profile-card">
+        <form id="course-form">
+          <div class="form-group">
+            <label for="course-title">Course Title</label>
+            <input type="text" id="course-title" placeholder="Enter course title" required>
+          </div>
+          <div class="form-group">
+            <label for="course-description">Description</label>
+            <textarea id="course-description" placeholder="Describe the course content and objectives..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="course-level">Level</label>
+            <select id="course-level">
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="course-thumbnail">Thumbnail Image</label>
+            <input type="file" id="course-thumbnail" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label for="course-duration">Estimated Duration (weeks)</label>
+            <input type="number" id="course-duration" placeholder="e.g., 4" min="1" max="52" required>
+          </div>
+
+          <div class="lessons-container">
+            <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Lessons</h3>
+            <div id="lessons-list"></div>
+            <button type="button" class="add-lesson-btn" onclick="addLesson()">Add Lesson</button>
+          </div>
+
+          <button type="submit" class="save-btn">Create Course</button>
+        </form>
+      </div>
+    </section>
+
     <section id="courses" class="courses-section">
       <h2 class="section-title">My Courses</h2>
       <div class="cards-grid" id="courses-grid">
         <!-- Courses will be populated here -->
       </div>
-      <button class="action-btn" style="margin-top: 24px;" onclick="window.location.href='create-course.html'">Create New Course</button>
     </section>
 
     <section id="students" class="courses-section">
       <h2 class="section-title">Student Progress</h2>
-      <div class="section-title" style="font-size: 24px; margin-bottom: 16px;" id="selected-course-title"></h2>
+      <div class="section-title" style="font-size: 24px; margin-bottom: 16px;" id="selected-course-title"></div>
       <div class="students-grid" id="students-grid">
         <!-- Students will be populated here -->
       </div>
@@ -813,6 +894,7 @@
   <nav class="bottom-nav">
     <ul>
       <li><a href="#" data-target="dashboard" class="active"><span class="material-icons">dashboard</span></a></li>
+      <li><a href="#create-course" data-target="create-course"><span class="material-icons">add</span></a></li>
       <li><a href="#courses" data-target="courses"><span class="material-icons">school</span></a></li>
       <li><a href="#students" data-target="students"><span class="material-icons">people</span></a></li>
       <li><a href="#submissions" data-target="submissions"><span class="material-icons">assignment</span></a></li>
@@ -835,7 +917,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-    import { getDatabase, ref, onValue, set, update } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
+    import { getDatabase, ref, onValue, set, update, push } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
     const firebaseConfig = {
       apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
@@ -862,6 +944,7 @@
     let teacherCourses = [];
     let isInitialLoad = true;
     let currentSelectedCourseId = null;
+    let lessonCounter = 0;
 
     const loader = document.getElementById('loader-overlay');
 
@@ -918,6 +1001,125 @@
       }
     }
 
+    // Add a new lesson
+    window.addLesson = () => {
+      const lessonsList = document.getElementById('lessons-list');
+      const lessonId = `lesson-${lessonCounter++}`;
+      const lessonDiv = document.createElement('div');
+      lessonDiv.className = 'lesson-item';
+      lessonDiv.id = lessonId;
+      lessonDiv.innerHTML = `
+        <div class="lesson-header">
+          <h4 class="lesson-title">Lesson ${lessonCounter}</h4>
+          <button type="button" class="delete-lesson" onclick="removeLesson('${lessonId}')">Delete</button>
+        </div>
+        <div class="form-group">
+          <label>Lesson Title</label>
+          <input type="text" class="lesson-title-input" placeholder="Enter lesson title" required>
+        </div>
+        <div class="form-group">
+          <label>Lesson Content</label>
+          <textarea class="lesson-content-input" placeholder="Enter lesson content..." required></textarea>
+        </div>
+      `;
+      lessonsList.appendChild(lessonDiv);
+    };
+
+    // Remove a lesson
+    window.removeLesson = (lessonId) => {
+      const lessonDiv = document.getElementById(lessonId);
+      if (lessonDiv) {
+        lessonDiv.remove();
+      }
+    };
+
+    // Handle course form submission
+    document.getElementById('course-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showLoader();
+
+      const title = document.getElementById('course-title').value.trim();
+      const description = document.getElementById('course-description').value.trim();
+      const level = document.getElementById('course-level').value;
+      const durationInput = document.getElementById('course-duration').value;
+      const duration = parseInt(durationInput);
+      const thumbnailFile = document.getElementById('course-thumbnail').files[0];
+
+      if (!title) {
+        hideLoader();
+        showDialog('Please enter a course title.', 'error');
+        return;
+      }
+
+      if (!durationInput || duration < 1 || duration > 52) {
+        hideLoader();
+        showDialog('Please enter a valid duration between 1 and 52 weeks.', 'error');
+        return;
+      }
+
+      let thumbnailUrl = '';
+      if (thumbnailFile) {
+        thumbnailUrl = await uploadToCloudinary(thumbnailFile);
+        if (!thumbnailUrl) {
+          hideLoader();
+          return;
+        }
+      }
+
+      // Collect lessons
+      const lessons = [];
+      const lessonItems = document.querySelectorAll('.lesson-item');
+      lessonItems.forEach((item) => {
+        const titleInput = item.querySelector('.lesson-title-input');
+        const contentInput = item.querySelector('.lesson-content-input');
+        if (titleInput.value.trim() && contentInput.value.trim()) {
+          lessons.push({
+            title: titleInput.value.trim(),
+            content: contentInput.value.trim(),
+            completed: false // Default for new lessons
+          });
+        }
+      });
+
+      if (lessons.length === 0) {
+        hideLoader();
+        showDialog('Please add at least one lesson.', 'error');
+        return;
+      }
+
+      const newCourse = {
+        title,
+        description,
+        level,
+        duration,
+        thumbnail: thumbnailUrl,
+        lessons,
+        enrolled: 0,
+        teacherId: currentUser.uid,
+        createdAt: Date.now()
+      };
+
+      try {
+        const coursesRef = ref(db, 'courses');
+        const newCourseRef = push(coursesRef);
+        await set(newCourseRef, newCourse);
+        hideLoader();
+        showDialog(`Course "${title}" created successfully!`, 'success');
+        // Clear form
+        e.target.reset();
+        document.getElementById('lessons-list').innerHTML = '';
+        lessonCounter = 0;
+        // Switch to courses tab and refresh
+        setTimeout(() => {
+          showTab('courses');
+          populateCourses();
+        }, 1500);
+      } catch (error) {
+        hideLoader();
+        showDialog(`Error creating course: ${error.message}`, 'error');
+      }
+    });
+
     // Function to calculate course progress
     function calculateCourseProgress(course) {
       const lessons = course.lessons || [];
@@ -935,6 +1137,13 @@
       const targetSection = document.getElementById(targetId);
       if (targetSection) {
         targetSection.style.display = 'block';
+      }
+      if (targetId === 'create-course') {
+        // Reset form and add first lesson
+        document.getElementById('course-form').reset();
+        document.getElementById('lessons-list').innerHTML = '';
+        lessonCounter = 0;
+        addLesson();
       }
       if (targetId === 'students' && teacherCourses.length > 0 && !currentSelectedCourseId) {
         currentSelectedCourseId = teacherCourses[0].id; // Default to first course
