@@ -6,11 +6,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-touch-fullscreen" content="yes">
-  <title>Vynix - Create Course</title>
+  <title>Vynix - Teacher Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -144,7 +141,45 @@
     .logout-btn:hover {
       color: var(--accent);
     }
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 80px;
+      bottom: 0;
+      width: 280px;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      overflow-y: auto;
+      z-index: 900;
+      transition: transform 0.3s ease;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar li {
+      margin: 0;
+    }
+    .sidebar a {
+      display: block;
+      padding: 16px 40px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    .sidebar a:hover,
+    .sidebar a.active {
+      color: var(--accent);
+      background: rgba(66, 153, 225, 0.1);
+      border-left-color: var(--accent);
+    }
     .main-content {
+      margin-left: 280px;
       margin-top: 80px;
       padding: 40px;
       min-height: calc(100vh - 80px);
@@ -169,102 +204,167 @@
       max-width: 600px;
       margin: 0 auto;
     }
-    .profile-card {
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .stat-card {
       background: var(--card-bg);
       backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 40px;
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 32px;
+      text-align: center;
+      transition: all 0.3s ease;
       box-shadow: var(--shadow-sm);
     }
-    .form-group {
-      margin-bottom: 20px;
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
     }
-    .form-group label {
-      display: block;
+    .stat-number {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 16px;
+      color: var(--text-secondary);
       font-weight: 600;
+    }
+    .courses-section {
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .course-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      position: relative;
+    }
+    .course-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient);
+      border-radius: 24px 24px 0 0;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      z-index: 1;
+    }
+    .course-card:hover::before {
+      transform: scaleX(1);
+    }
+    .course-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.1);
+    }
+    .course-thumbnail {
+      height: 160px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .course-card:hover .course-thumbnail {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    .course-content {
+      padding: 24px;
+    }
+    .course-title {
+      font-size: 20px;
+      font-weight: 700;
       margin-bottom: 8px;
       color: var(--text-primary);
     }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--card-bg);
-      color: var(--text-primary);
-      font-size: 16px;
-      transition: border-color 0.3s ease;
-    }
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-    .lessons-container {
-      margin-top: 24px;
-    }
-    .lesson-item {
-      background: var(--glass);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
-      position: relative;
-    }
-    .lesson-header {
+    .course-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
     }
-    .lesson-title {
-      font-weight: 600;
-    }
-    .delete-lesson {
-      background: #e53e3e;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .add-lesson-btn {
-      background: var(--accent-secondary);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 16px;
-    }
-    .save-btn {
+    .action-btn {
       background: var(--gradient);
       color: white;
       border: none;
-      padding: 12px 32px;
-      border-radius: 12px;
+      padding: 8px 16px;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 12px;
       transition: all 0.3s ease;
-      width: 100%;
-      margin-top: 24px;
     }
-    .save-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+    .action-btn:hover {
+      transform: translateY(-1px);
+    }
+    .students-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+    }
+    .student-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .student-avatar {
+      width: 60px;
+      height: 60px;
+      background: var(--gradient);
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+    .submission-item {
+      background: var(--glass);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .submission-item h4 {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .grade-input {
+      width: 60px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-align: center;
     }
     .dark-toggle {
       background: none;
@@ -277,6 +377,164 @@
     }
     .dark-toggle:hover {
       color: var(--accent);
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+      display: none;
+    }
+    .bottom-nav ul {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    .bottom-nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: color 0.3s ease;
+    }
+    .bottom-nav a:hover,
+    .bottom-nav a.active {
+      color: var(--accent);
+    }
+    .bottom-nav .material-icons {
+      font-size: 24px;
+    }
+    .profile-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .profile-avatar-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: white;
+      background: var(--gradient);
+      position: relative;
+      overflow: hidden;
+    }
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .save-btn {
+      background: var(--gradient);
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .setting-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      background: var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .toggle-switch.active {
+      background: var(--accent);
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+    .toggle-switch.active::after {
+      transform: translateX(26px);
+    }
+    section {
+      display: none;
+    }
+    #dashboard {
+      display: block;
     }
     /* Custom Dialog Styles */
     .dialog-backdrop {
@@ -385,10 +643,24 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+    }
     @media (max-width: 768px) {
+      .navbar { padding: 16px 20px; }
       .main-content { padding: 20px; margin-top: 70px; }
       .welcome-title { font-size: 36px; }
-      .profile-card { padding: 24px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .bottom-nav { display: block; }
+      .dialog { padding: 24px; }
     }
   </style>
 </head>
@@ -399,61 +671,157 @@
   </div>
 
   <nav class="navbar" id="navbar">
-    <a class="logo" onclick="window.history.back()">
+    <a class="logo" id="logo-link">
       <div class="logo-icon">V</div>
       Vynix
     </a>
     <div class="user-menu">
-      <span id="user-name">Create Course</span>
+      <span id="user-name">Teacher Dashboard</span>
       <div class="user-avatar" id="user-avatar">T</div>
       <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </nav>
 
+  <aside class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="#" class="active" data-target="dashboard">Dashboard</a></li>
+      <li><a href="#courses" data-target="courses">My Courses</a></li>
+      <li><a href="#students" data-target="students">Student Progress</a></li>
+      <li><a href="#submissions" data-target="submissions">Submissions</a></li>
+      <li><a href="#quizzes" data-target="quizzes">Quizzes</a></li>
+      <li><a href="#messages" data-target="messages">Messages</a></li>
+      <li><a href="#profile" data-target="profile">Profile</a></li>
+      <li><a href="#settings" data-target="settings">Settings</a></li>
+    </ul>
+  </aside>
+
   <main class="main-content">
-    <div class="welcome-section">
-      <h1 class="welcome-title">Create New Course</h1>
-      <p class="welcome-subtitle">Build engaging learning experiences for your students.</p>
-    </div>
+    <section id="dashboard">
+      <div class="welcome-section">
+        <h1 class="welcome-title">Welcome Back, <span id="welcome-user">Teacher!</span></h1>
+        <p class="welcome-subtitle">Manage your courses, track student progress, and engage with your learners.</p>
+      </div>
 
-    <div class="profile-card">
-      <form id="course-form">
-        <div class="form-group">
-          <label for="course-title">Course Title</label>
-          <input type="text" id="course-title" placeholder="Enter course title" required>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="total-courses">0</div>
+          <div class="stat-label">Courses Created</div>
         </div>
-        <div class="form-group">
-          <label for="course-description">Description</label>
-          <textarea id="course-description" placeholder="Describe the course content and objectives..."></textarea>
+        <div class="stat-card">
+          <div class="stat-number" id="total-students">0</div>
+          <div class="stat-label">Total Students</div>
         </div>
-        <div class="form-group">
-          <label for="course-level">Level</label>
-          <select id="course-level">
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
+        <div class="stat-card">
+          <div class="stat-number" id="avg-completion">0%</div>
+          <div class="stat-label">Avg Completion</div>
         </div>
-        <div class="form-group">
-          <label for="course-thumbnail">Thumbnail Image</label>
-          <input type="file" id="course-thumbnail" accept="image/*">
+        <div class="stat-card">
+          <div class="stat-number" id="pending-submissions">0</div>
+          <div class="stat-label">Pending Submissions</div>
         </div>
-        <div class="form-group">
-          <label for="course-duration">Estimated Duration (weeks)</label>
-          <input type="number" id="course-duration" placeholder="e.g., 4" min="1" max="52">
-        </div>
+      </div>
+    </section>
 
-        <div class="lessons-container">
-          <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Lessons</h3>
-          <div id="lessons-list"></div>
-          <button type="button" class="add-lesson-btn" onclick="addLesson()">Add Lesson</button>
-        </div>
+    <section id="courses" class="courses-section">
+      <h2 class="section-title">My Courses</h2>
+      <div class="cards-grid" id="courses-grid">
+        <!-- Courses will be populated here -->
+      </div>
+      <button class="action-btn" style="margin-top: 24px;" onclick="window.location.href='create-course.html'">Create New Course</button>
+    </section>
 
-        <button type="submit" class="save-btn">Create Course</button>
-      </form>
-    </div>
+    <section id="students" class="courses-section">
+      <h2 class="section-title">Student Progress</h2>
+      <div class="section-title" style="font-size: 24px; margin-bottom: 16px;" id="selected-course-title"></h2>
+      <div class="students-grid" id="students-grid">
+        <!-- Students will be populated here -->
+      </div>
+    </section>
+
+    <section id="submissions" class="courses-section">
+      <h2 class="section-title">Student Submissions</h2>
+      <div id="submissions-container">
+        <!-- Submissions will be populated here -->
+      </div>
+    </section>
+
+    <section id="quizzes" class="courses-section">
+      <h2 class="section-title">Manage Quizzes</h2>
+      <p style="color: var(--text-secondary);">Quizzes are managed per course. Select a course to add/edit quizzes.</p>
+      <!-- Placeholder for quizzes management -->
+    </section>
+
+    <section id="messages" class="courses-section">
+      <h2 class="section-title">Messages</h2>
+      <div id="messages-container">
+        <!-- Messages or chat list will be populated here -->
+      </div>
+    </section>
+
+    <section id="profile" class="courses-section">
+      <h2 class="section-title">Edit Profile</h2>
+      <div class="profile-card">
+        <div class="profile-avatar-large" id="profile-avatar-large">T</div>
+        <form id="profile-form">
+          <div class="form-group">
+            <label for="profile-pic">Profile Picture</label>
+            <input type="file" id="profile-pic" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" required>
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
+          </div>
+          <button type="submit" class="save-btn">Save Changes</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="settings" class="courses-section">
+      <h2 class="section-title">Settings</h2>
+      <div class="settings-grid">
+        <div class="setting-card">
+          <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px;">Notifications</h3>
+          <div class="setting-item">
+            <span>Email Notifications</span>
+            <div class="toggle-switch" id="email-toggle"></div>
+          </div>
+          <div class="setting-item">
+            <span>Submission Alerts</span>
+            <div class="toggle-switch" id="submission-toggle"></div>
+          </div>
+        </div>
+        <div class="setting-card">
+          <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px;">Privacy</h3>
+          <div class="setting-item">
+            <span>Public Profile</span>
+            <div class="toggle-switch" id="public-toggle"></div>
+          </div>
+          <div class="setting-item">
+            <span>Share Analytics</span>
+            <div class="toggle-switch" id="analytics-toggle"></div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <nav class="bottom-nav">
+    <ul>
+      <li><a href="#" data-target="dashboard" class="active"><span class="material-icons">dashboard</span></a></li>
+      <li><a href="#courses" data-target="courses"><span class="material-icons">school</span></a></li>
+      <li><a href="#students" data-target="students"><span class="material-icons">people</span></a></li>
+      <li><a href="#submissions" data-target="submissions"><span class="material-icons">assignment</span></a></li>
+      <li><a href="#quizzes" data-target="quizzes"><span class="material-icons">quiz</span></a></li>
+      <li><a href="#messages" data-target="messages"><span class="material-icons">chat_bubble</span></a></li>
+      <li><a href="#profile" data-target="profile"><span class="material-icons">person</span></a></li>
+      <li><a href="#settings" data-target="settings"><span class="material-icons">settings</span></a></li>
+    </ul>
+  </nav>
 
   <!-- Custom Dialog -->
   <div class="dialog-backdrop" id="dialog-backdrop">
@@ -467,7 +835,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-    import { getDatabase, ref, set, push } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
+    import { getDatabase, ref, onValue, set, update } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js';
 
     const firebaseConfig = {
       apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
@@ -484,12 +852,16 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // Cloudinary configuration - Replace with your actual values
-    const CLOUDINARY_CLOUD_NAME = 'dqkujefxj'; // e.g., 'demo'
-    const UPLOAD_PRESET = 'banter_box'; // e.g., 'ml_default'
+    // Cloudinary configuration - Using demo values for testing; replace with your own
+    const CLOUDINARY_CLOUD_NAME = 'demo';
+    const UPLOAD_PRESET = 'ml_default';
 
+    let userData = {};
     let currentUser = null;
-    let lessonCounter = 0;
+    let allUsersData = {};
+    let teacherCourses = [];
+    let isInitialLoad = true;
+    let currentSelectedCourseId = null;
 
     const loader = document.getElementById('loader-overlay');
 
@@ -541,115 +913,34 @@
         return data.secure_url;
       } catch (e) {
         console.error('Upload error:', e);
-        showDialog('Failed to upload image. Please try again.', 'error');
+        showDialog('Failed to upload file. Please try again.', 'error');
         return null;
       }
     }
 
-    // Add a new lesson
-    window.addLesson = () => {
-      const lessonsList = document.getElementById('lessons-list');
-      const lessonId = `lesson-${lessonCounter++}`;
-      const lessonDiv = document.createElement('div');
-      lessonDiv.className = 'lesson-item';
-      lessonDiv.id = lessonId;
-      lessonDiv.innerHTML = `
-        <div class="lesson-header">
-          <h4 class="lesson-title">Lesson ${lessonCounter}</h4>
-          <button type="button" class="delete-lesson" onclick="removeLesson('${lessonId}')">Delete</button>
-        </div>
-        <div class="form-group">
-          <label>Lesson Title</label>
-          <input type="text" class="lesson-title-input" placeholder="Enter lesson title" required>
-        </div>
-        <div class="form-group">
-          <label>Lesson Content</label>
-          <textarea class="lesson-content-input" placeholder="Enter lesson content..." required></textarea>
-        </div>
-      `;
-      lessonsList.appendChild(lessonDiv);
-    };
+    // Function to calculate course progress
+    function calculateCourseProgress(course) {
+      const lessons = course.lessons || [];
+      const totalLessons = lessons.length;
+      if (totalLessons === 0) return 0;
+      const completedLessons = lessons.filter(lesson => lesson.completed).length;
+      return Math.round((completedLessons / totalLessons) * 100);
+    }
 
-    // Remove a lesson
-    window.removeLesson = (lessonId) => {
-      const lessonDiv = document.getElementById(lessonId);
-      if (lessonDiv) {
-        lessonDiv.remove();
-      }
-    };
-
-    // Handle course form submission
-    document.getElementById('course-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      showLoader();
-
-      const title = document.getElementById('course-title').value.trim();
-      const description = document.getElementById('course-description').value.trim();
-      const level = document.getElementById('course-level').value;
-      const duration = parseInt(document.getElementById('course-duration').value) || 0;
-      const thumbnailFile = document.getElementById('course-thumbnail').files[0];
-
-      if (!title) {
-        hideLoader();
-        showDialog('Please enter a course title.', 'error');
-        return;
-      }
-
-      let thumbnailUrl = '';
-      if (thumbnailFile) {
-        thumbnailUrl = await uploadToCloudinary(thumbnailFile);
-        if (!thumbnailUrl) {
-          hideLoader();
-          return;
-        }
-      }
-
-      // Collect lessons
-      const lessons = [];
-      const lessonItems = document.querySelectorAll('.lesson-item');
-      lessonItems.forEach((item) => {
-        const titleInput = item.querySelector('.lesson-title-input');
-        const contentInput = item.querySelector('.lesson-content-input');
-        if (titleInput.value.trim() && contentInput.value.trim()) {
-          lessons.push({
-            title: titleInput.value.trim(),
-            content: contentInput.value.trim(),
-            completed: false // Default for new lessons
-          });
-        }
+    // Tab switching function
+    function showTab(targetId) {
+      document.querySelectorAll('section').forEach(section => {
+        section.style.display = 'none';
       });
-
-      if (lessons.length === 0) {
-        hideLoader();
-        showDialog('Please add at least one lesson.', 'error');
-        return;
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        targetSection.style.display = 'block';
       }
-
-      const newCourse = {
-        title,
-        description,
-        level,
-        duration,
-        thumbnail: thumbnailUrl,
-        lessons,
-        enrolled: 0,
-        teacherId: currentUser.uid,
-        createdAt: Date.now()
-      };
-
-      try {
-        const coursesRef = ref(db, 'courses');
-        const newCourseRef = push(coursesRef);
-        await set(newCourseRef, newCourse);
-        hideLoader();
-        showDialog(`Course "${title}" created successfully!`, 'success');
-        // Optionally redirect back to dashboard
-        setTimeout(() => { window.location.href = 'teacher-dashboard.html'; }, 2000);
-      } catch (error) {
-        hideLoader();
-        showDialog(`Error creating course: ${error.message}`, 'error');
+      if (targetId === 'students' && teacherCourses.length > 0 && !currentSelectedCourseId) {
+        currentSelectedCourseId = teacherCourses[0].id; // Default to first course
+        populateStudentsProgress(currentSelectedCourseId);
       }
-    });
+    }
 
     // Dark mode toggle
     function toggleDarkMode() {
@@ -675,23 +966,303 @@
       }
     });
 
+    // Sidebar toggle for mobile
+    const sidebar = document.getElementById('sidebar');
+    const logoLink = document.getElementById('logo-link');
+    logoLink.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1024) {
+        e.preventDefault();
+        sidebar.classList.toggle('open');
+      }
+    });
+
+    // Navigation handling
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[data-target]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = this.getAttribute('data-target');
+          showTab(target);
+          // Update active classes
+          document.querySelectorAll('a[data-target]').forEach(a => a.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+      // Initialize dashboard
+      showTab('dashboard');
+    });
+
     // Logout
     window.logout = async () => {
       await signOut(auth);
       window.location.href = 'login.html';
     };
 
+    // Update avatar
+    function updateAvatar(url) {
+      const avatar = document.getElementById('user-avatar');
+      const profileAvatar = document.getElementById('profile-avatar-large');
+      if (url) {
+        avatar.innerHTML = `<img src="${url}" alt="Profile">`;
+        profileAvatar.innerHTML = `<img src="${url}" alt="Profile">`;
+        avatar.style.background = 'none';
+        profileAvatar.style.background = 'none';
+      } else {
+        const initial = (userData.username || currentUser.email)[0].toUpperCase();
+        avatar.innerHTML = initial;
+        profileAvatar.innerHTML = initial;
+        avatar.style.background = 'var(--gradient)';
+        profileAvatar.style.background = 'var(--gradient)';
+      }
+    }
+
+    // Populate profile form
+    function populateProfile() {
+      document.getElementById('username').value = userData.username || '';
+      document.getElementById('bio').value = userData.bio || '';
+      updateAvatar(userData.profilePic);
+    }
+
+    // Handle profile save
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      showLoader();
+      const fileInput = document.getElementById('profile-pic');
+      let profilePic = userData.profilePic;
+      if (fileInput.files[0]) {
+        profilePic = await uploadToCloudinary(fileInput.files[0]);
+        if (!profilePic) {
+          hideLoader();
+          return;
+        }
+      }
+      userData.username = document.getElementById('username').value;
+      userData.bio = document.getElementById('bio').value;
+      userData.profilePic = profilePic;
+      await set(ref(db, `users/${currentUser.uid}`), userData);
+      hideLoader();
+      showDialog('Profile updated successfully!', 'success');
+      updateAvatar(profilePic);
+      document.getElementById('user-name').textContent = userData.username || currentUser.email;
+      document.getElementById('welcome-user').textContent = userData.username || 'Teacher!';
+    });
+
+    // Settings toggles
+    function initSettings() {
+      const toggles = ['email-toggle', 'submission-toggle', 'public-toggle', 'analytics-toggle'];
+      toggles.forEach(id => {
+        const toggle = document.getElementById(id);
+        const key = id.replace('-toggle', '');
+        const isActive = userData.settings?.[key] || false;
+        toggle.classList.toggle('active', isActive);
+        toggle.addEventListener('click', () => {
+          showLoader();
+          toggle.classList.toggle('active');
+          userData.settings = userData.settings || {};
+          userData.settings[key] = toggle.classList.contains('active');
+          set(ref(db, `users/${currentUser.uid}`), userData).then(() => {
+            hideLoader();
+          }).catch(() => {
+            hideLoader();
+            showDialog('Failed to update settings.', 'error');
+          });
+        });
+      });
+    }
+
+    // Populate courses grid
+    function populateCourses() {
+      const coursesGrid = document.getElementById('courses-grid');
+      coursesGrid.innerHTML = '';
+      teacherCourses.forEach(course => {
+        const card = document.createElement('div');
+        card.className = 'course-card';
+        card.innerHTML = `
+          <div class="course-thumbnail">${course.thumbnail ? `<img src="${course.thumbnail}" style="width:100%;height:100%;object-fit:cover;">` : '📚'}</div>
+          <div class="course-content">
+            <h3 class="course-title">${course.title}</h3>
+            <div class="course-meta">
+              <span>${course.enrolled || 0} Students • ${course.level}</span>
+              <button class="action-btn" onclick="viewCourseStudents('${course.id}')">View Students</button>
+            </div>
+          </div>
+        `;
+        card.onclick = (e) => {
+          if (e.target.tagName !== 'BUTTON') {
+            window.location.href = `course.html?id=${course.id}`; // Assume edit/view course page
+          }
+        };
+        coursesGrid.appendChild(card);
+      });
+    }
+
+    // Populate students progress for a course
+    function populateStudentsProgress(courseId) {
+      const studentsGrid = document.getElementById('students-grid');
+      const courseTitleEl = document.getElementById('selected-course-title');
+      studentsGrid.innerHTML = '';
+      const course = teacherCourses.find(c => c.id === courseId);
+      if (!course) return;
+      courseTitleEl.textContent = `Students in "${course.title}"`;
+      // Find students enrolled in this course
+      const enrolledStudents = [];
+      Object.entries(allUsersData).forEach(([uid, data]) => {
+        if (data.enrolledCourses && data.enrolledCourses[courseId]) {
+          const studentCourse = data.enrolledCourses[courseId];
+          enrolledStudents.push({ uid, ...data, courseProgress: calculateCourseProgress(studentCourse) });
+        }
+      });
+      enrolledStudents.forEach(student => {
+        const card = document.createElement('div');
+        card.className = 'student-card';
+        const initial = (student.username || student.email)[0].toUpperCase();
+        card.innerHTML = `
+          <div class="student-avatar">${initial}</div>
+          <h4 style="font-weight: 600; margin-bottom: 8px;">${student.username || student.email}</h4>
+          <div style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin: 8px 0;">
+            <div style="height: 100%; background: var(--gradient); width: ${student.courseProgress}%; border-radius: 3px;"></div>
+          </div>
+          <p style="color: var(--text-secondary); font-size: 14px;">${student.courseProgress}% Complete</p>
+          <button class="action-btn" style="font-size: 12px; padding: 6px 12px; margin-top: 8px;" onclick="chatWithStudent('${student.uid}')">Message</button>
+        `;
+        studentsGrid.appendChild(card);
+      });
+    }
+
+    // View course students
+    window.viewCourseStudents = (courseId) => {
+      currentSelectedCourseId = courseId;
+      showTab('students');
+    };
+
+    // Chat with student (placeholder - redirect to chat page or open modal)
+    window.chatWithStudent = (studentUid) => {
+      showDialog(`Opening chat with student ${studentUid}...`, 'info');
+      // Implement: window.location.href = `chat.html?student=${studentUid}`;
+    };
+
+    // Populate submissions
+    function populateSubmissions() {
+      const container = document.getElementById('submissions-container');
+      container.innerHTML = '';
+      let pendingCount = 0;
+      Object.entries(allUsersData).forEach(([uid, data]) => {
+        if (data.submissions) {
+          Object.entries(data.submissions).forEach(([subId, submission]) => {
+            // Assume submissions are tied to teacher's courses; for demo, show all
+            const item = document.createElement('div');
+            item.className = 'submission-item';
+            const graded = submission.grade !== undefined;
+            item.innerHTML = `
+              <h4>${submission.title} by ${data.username || data.email}</h4>
+              <p style="color: var(--text-secondary); margin-bottom: 8px;">${submission.description || 'No description'}</p>
+              <a href="${submission.url}" target="_blank" style="color: var(--accent); text-decoration: none; margin-right: 8px;">View PDF</a>
+              ${!graded ? `<input type="number" class="grade-input" placeholder="Grade" min="0" max="100"> <button class="action-btn" style="font-size: 12px;" onclick="gradeSubmission('${uid}', '${subId}', this.previousElementSibling.value)">Grade</button>` : `<span style="color: var(--accent-secondary);">Grade: ${submission.grade}/100</span>`}
+              <p style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">Submitted: ${new Date(submission.timestamp).toLocaleDateString()}</p>
+            `;
+            container.appendChild(item);
+            if (!graded) pendingCount++;
+          });
+        }
+      });
+      document.getElementById('pending-submissions').textContent = pendingCount;
+    }
+
+    // Grade submission
+    window.gradeSubmission = async (studentUid, subId, grade) => {
+      if (!grade || grade < 0 || grade > 100) {
+        showDialog('Please enter a valid grade (0-100).', 'error');
+        return;
+      }
+      showLoader();
+      await update(ref(db, `users/${studentUid}/submissions/${subId}`), { grade: parseInt(grade) });
+      hideLoader();
+      showDialog('Grade submitted!', 'success');
+      populateSubmissions();
+    };
+
+    // Placeholder for quizzes and messages
+    function populateQuizzes() {
+      // Implement quiz management
+      document.getElementById('quizzes').innerHTML += '<p style="color: var(--text-secondary);">Select a course to manage quizzes.</p>';
+    }
+
+    function populateMessages() {
+      // Implement messages list
+      document.getElementById('messages-container').innerHTML = '<p style="color: var(--text-secondary);">Recent messages from students will appear here.</p>';
+    }
+
+    // Compute teacher stats
+    function computeTeacherStats() {
+      let totalStudents = new Set();
+      let totalProgressSum = 0;
+      let studentCount = 0;
+      teacherCourses.forEach(course => {
+        Object.entries(allUsersData).forEach(([uid, data]) => {
+          if (data.enrolledCourses && data.enrolledCourses[course.id]) {
+            totalStudents.add(uid);
+            totalProgressSum += calculateCourseProgress(data.enrolledCourses[course.id]);
+            studentCount++;
+          }
+        });
+      });
+      const avgCompletion = studentCount > 0 ? Math.round(totalProgressSum / studentCount) : 0;
+      document.getElementById('total-courses').textContent = teacherCourses.length;
+      document.getElementById('total-students').textContent = totalStudents.size;
+      document.getElementById('avg-completion').textContent = avgCompletion + '%';
+    }
+
     // Auth state listener
     onAuthStateChanged(auth, (user) => {
       if (user) {
         currentUser = user;
-        // Optionally fetch teacher data if needed
-        document.getElementById('user-name').textContent = 'Create Course';
-        const initial = (user.email)[0].toUpperCase();
-        document.getElementById('user-avatar').innerHTML = initial;
-        // Add first lesson by default
-        addLesson();
+        showLoader();
+        // Fetch user data
+        const userRef = ref(db, `users/${user.uid}`);
+        onValue(userRef, (snapshot) => {
+          userData = snapshot.val() || {};
+          document.getElementById('welcome-user').textContent = userData.username || 'Teacher!';
+          document.getElementById('user-name').textContent = userData.username || user.email;
+          updateAvatar(userData.profilePic);
+        });
+
+        // Fetch all courses
+        const coursesRef = ref(db, 'courses');
+        onValue(coursesRef, (snapshot) => {
+          const allCourses = snapshot.val() || {};
+          teacherCourses = Object.entries(allCourses)
+            .filter(([id, course]) => course.teacherId === user.uid)
+            .map(([id, course]) => ({ id, ...course }));
+          populateCourses();
+          computeTeacherStats();
+          if (isInitialLoad && currentSelectedCourseId) {
+            populateStudentsProgress(currentSelectedCourseId);
+          }
+        });
+
+        // Fetch all users for students and submissions
+        const allUsersRef = ref(db, 'users');
+        onValue(allUsersRef, (snapshot) => {
+          allUsersData = snapshot.val() || {};
+          populateSubmissions();
+          if (currentSelectedCourseId) {
+            populateStudentsProgress(currentSelectedCourseId);
+          }
+          computeTeacherStats();
+        });
+
+        // Populate other sections
+        populateProfile();
+        initSettings();
+        populateQuizzes();
+        populateMessages();
+
+        if (isInitialLoad) {
+          isInitialLoad = false;
+          hideLoader();
+        }
       } else {
+        hideLoader();
         window.location.href = 'login.html';
       }
     });
