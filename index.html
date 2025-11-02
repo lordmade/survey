@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mshudepro - Capturing Moments, Creating Memories</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: #ffffff; color: #333; line-height: 1.6; }
@@ -41,7 +42,7 @@
         }
         .sidebar nav a:hover { background: #f9f9f9; color: #D4AF37; }
         
-        /* Hamburger Button */
+        /* Hamburger Button - Fixed Floating */
         .hamburger { 
             display: none; 
             flex-direction: column; 
@@ -52,7 +53,6 @@
             border: none; 
             cursor: pointer; 
             padding: 0; 
-            margin-left: auto; 
             z-index: 1001; 
             position: fixed; 
             top: 1rem; 
@@ -156,6 +156,18 @@
         }
         .service-card:hover, .package-card:hover { transform: translateY(-5px); }
         .service-card h3, .package-card h3 { color: #D4AF37; margin-bottom: 1rem; }
+        /* Price Pill Styles */
+        .price-pill { 
+            background: #D4AF37; 
+            color: #fff; 
+            padding: 0.5rem 1.5rem; 
+            border-radius: 50px; 
+            font-weight: 600; 
+            font-size: 1.2rem; 
+            display: inline-block; 
+            margin-bottom: 1rem; 
+            box-shadow: 0 2px 5px rgba(212,175,55,0.3); 
+        }
         .steps { display: flex; flex-direction: column; gap: 2rem; }
         .step { 
             background: #f9f9f9; 
@@ -163,6 +175,7 @@
             border-left: 5px solid #D4AF37; 
             border-radius: 5px; 
         }
+        /* Gallery Styles */
         .gallery { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
@@ -188,25 +201,129 @@
             font-family: inherit; 
         }
         .form-group textarea { height: 120px; }
+        
+        /* Modern Footer Styles */
         footer { 
-            background: #333; 
+            background: linear-gradient(135deg, #333 0%, #1a1a1a 100%); 
             color: #fff; 
-            text-align: center; 
-            padding: 2rem; 
-            margin-left: 250px; /* Match main */
+            padding: 3rem 2rem 1.5rem; 
+            margin-left: 250px; 
             transition: margin-left 0.3s ease; 
+            position: relative; 
+            overflow: hidden; 
         }
         body.mobile-menu-open footer { margin-left: 0; }
-        .social-links { margin: 1rem 0; }
-        .social-links a { color: #D4AF37; margin: 0 1rem; font-size: 1.5rem; text-decoration: none; }
+        footer::before {
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            height: 1px; 
+            background: linear-gradient(90deg, transparent, #D4AF37, transparent); 
+        }
+        .footer-content { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 2rem; 
+        }
+        .footer-section h3 { 
+            color: #D4AF37; 
+            margin-bottom: 1rem; 
+            font-size: 1.2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 0.5rem; 
+        }
+        .footer-section p, .footer-section a { 
+            color: #ccc; 
+            text-decoration: none; 
+            line-height: 1.8; 
+            transition: color 0.3s; 
+        }
+        .footer-section a:hover { color: #D4AF37; }
+        .social-links { 
+            display: flex; 
+            gap: 1rem; 
+            margin-top: 0.5rem; 
+        }
+        .social-links a { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 40px; 
+            height: 40px; 
+            background: rgba(212, 175, 55, 0.1); 
+            border-radius: 50%; 
+            color: #D4AF37; 
+            font-size: 1.2rem; 
+            transition: all 0.3s ease; 
+        }
+        .social-links a:hover { 
+            background: #D4AF37; 
+            color: #fff; 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); 
+        }
+        .footer-bottom { 
+            text-align: center; 
+            padding-top: 1.5rem; 
+            border-top: 1px solid #444; 
+            color: #999; 
+            font-size: 0.9rem; 
+        }
+        
+        /* Carousel Dots Styles */
+        .carousel-dots {
+            display: none;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .dot.active {
+            background: #D4AF37;
+        }
         
         /* Mobile Adjustments */
         @media (max-width: 768px) { 
             .hero h1 { font-size: 2.5rem; } 
             .hero p { font-size: 1.2rem; } 
             section { padding: 3rem 1rem; } 
-            .gallery { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-            .gallery img { height: 200px; }
+            .price-pill { font-size: 1.1rem; padding: 0.4rem 1.2rem; }
+            footer { padding: 2rem 1rem 1rem; }
+            .footer-content { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; }
+            /* Mobile Carousel for Gallery */
+            .gallery { 
+                display: flex; 
+                overflow-x: auto; 
+                scroll-snap-type: x mandatory; 
+                gap: 1rem; 
+                padding: 1rem 0; 
+                -webkit-overflow-scrolling: touch; /* Smooth iOS scrolling */
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE/Edge */
+                touch-action: pan-x; /* Better touch swiping */
+            }
+            .gallery::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+            .gallery img { 
+                flex: 0 0 80%; 
+                scroll-snap-align: center; 
+                height: 250px; 
+                min-width: 80%; 
+            }
+            .gallery img:hover { transform: none; } /* Disable hover scale on mobile carousel */
+            .carousel-dots { display: flex; }
         }
     </style>
 </head>
@@ -226,7 +343,7 @@
         </nav>
     </div>
     
-    <!-- Hamburger Button -->
+    <!-- Hamburger Button - Fixed Floating -->
     <button class="hamburger" id="hamburger">
         <span></span>
         <span></span>
@@ -285,7 +402,7 @@
             <div class="packages-grid">
                 <div class="package-card">
                     <h3>Wedding - Basic</h3>
-                    <p>R5,000</p>
+                    <p class="price-pill">R5,000</p>
                     <ul style="text-align: left; list-style: none;">
                         <li>• 4-hour coverage</li>
                         <li>• Edited photos & short highlight video</li>
@@ -293,7 +410,7 @@
                 </div>
                 <div class="package-card">
                     <h3>Wedding - Silver</h3>
-                    <p>R7,000</p>
+                    <p class="price-pill">R7,000</p>
                     <ul style="text-align: left; list-style: none;">
                         <li>• 6-hour coverage</li>
                         <li>• Full video & 80+ photos</li>
@@ -301,7 +418,7 @@
                 </div>
                 <div class="package-card">
                     <h3>Wedding - Gold</h3>
-                    <p>R10,000</p>
+                    <p class="price-pill">R10,000</p>
                     <ul style="text-align: left; list-style: none;">
                         <li>• Full-day coverage</li>
                         <li>• Drone footage, USB delivery, 100+ photos</li>
@@ -309,7 +426,7 @@
                 </div>
                 <div class="package-card">
                     <h3>Wedding - Platinum</h3>
-                    <p>R15,000</p>
+                    <p class="price-pill">R15,000</p>
                     <ul style="text-align: left; list-style: none;">
                         <li>• Full-day coverage</li>
                         <li>• Drone footage, lighting, smoke effects, cinematic edit, 150+ photos</li>
@@ -317,12 +434,12 @@
                 </div>
                 <div class="package-card">
                     <h3>Event - 1 Hour</h3>
-                    <p>R1,500</p>
+                    <p class="price-pill">R1,500</p>
                     <p>For parties, graduations, clubs.</p>
                 </div>
                 <div class="package-card">
                     <h3>Event - 2 Hours</h3>
-                    <p>R2,500</p>
+                    <p class="price-pill">R2,500</p>
                     <p>Extended coverage options available.</p>
                 </div>
             </div>
@@ -376,6 +493,7 @@
                 <img src="images/lifestyle2.jpg" alt="Lifestyle Photo 2" onclick="openLightbox(this.src)">
                 <!-- Add more images here -->
             </div>
+            <div class="carousel-dots" id="carousel-dots"></div>
         </section>
 
         <section id="contact">
@@ -421,11 +539,35 @@
         </section>
 
         <footer>
-            <div class="social-links">
-                <a href="https://facebook.com/Mshudepro" target="_blank">Facebook</a>
-                <a href="https://instagram.com/Mshudepro" target="_blank">Instagram</a>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-camera"></i> Mshudepro</h3>
+                    <p>Capturing Moments, Creating Memories. Professional photography and videography in Mokopane.</p>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-link"></i> Quick Links</h3>
+                    <a href="#services">Services</a>
+                    <a href="#packages">Packages</a>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Contact Info</h3>
+                    <p>Mokopane, Extension 17<br>House No. 358, Mabhida Avenue</p>
+                    <p><a href="mailto:givenglendi755@gmail.com">givenglendi755@gmail.com</a></p>
+                    <p><a href="tel:0661820839">066 182 0839</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-share-alt"></i> Follow Us</h3>
+                    <div class="social-links">
+                        <a href="https://facebook.com/Mshudepro" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://instagram.com/Mshudepro" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
             </div>
-            <p>&copy; 2025 Mshudepro. All rights reserved.</p>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Mshudepro. All rights reserved. | Designed with <i class="fas fa-heart" style="color: #D4AF37;"></i> for timeless memories.</p>
+            </div>
         </footer>
     </main>
 
@@ -489,6 +631,61 @@
                 document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
             });
         });
+
+        // Carousel Dots Functionality (Mobile Only)
+        function initCarouselDots() {
+            const gallery = document.querySelector('.gallery');
+            const dotsContainer = document.getElementById('carousel-dots');
+            const images = gallery.querySelectorAll('img');
+
+            if (images.length === 0 || window.innerWidth > 768) return; // Only init on mobile
+
+            // Create dots
+            images.forEach((_, index) => {
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                if (index === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = dotsContainer.querySelectorAll('.dot');
+
+            function updateDots() {
+                const scrollLeft = gallery.scrollLeft;
+                const imageWidth = images[0].offsetWidth + 16; // + gap (1rem = 16px)
+                const index = Math.round(scrollLeft / imageWidth);
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+
+            function goToSlide(index) {
+                const imageWidth = images[0].offsetWidth + 16; // + gap
+                gallery.scrollTo({
+                    left: index * imageWidth,
+                    behavior: 'smooth'
+                });
+            }
+
+            // Initial update
+            updateDots();
+
+            // Listen for scroll
+            gallery.addEventListener('scroll', updateDots);
+
+            // Handle resize (re-init if needed)
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    dotsContainer.innerHTML = ''; // Clear on desktop
+                } else if (dotsContainer.children.length === 0) {
+                    initCarouselDots(); // Re-init on mobile
+                }
+            });
+        }
+
+        // Init on load
+        window.addEventListener('load', initCarouselDots);
     </script>
 </body>
 </html>
