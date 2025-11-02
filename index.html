@@ -211,6 +211,7 @@
             transition: margin-left 0.3s ease; 
             position: relative; 
             overflow: hidden; 
+            width: 100%; 
         }
         body.mobile-menu-open footer { margin-left: 0; }
         footer::before {
@@ -322,14 +323,22 @@
             }
             .gallery img:hover { transform: none; } /* Disable hover scale on mobile carousel */
             .carousel-dots { display: flex; }
-            /* Compact Mobile Footer */
+            /* Compact Mobile Footer - Full Width */
             footer { 
                 padding: 1.5rem 1rem 1rem; 
+                margin-left: 0; 
+                width: 100vw; 
+                position: relative; 
+                left: 50%; 
+                right: 50%; 
+                margin-left: -50vw; 
             }
             .footer-content { 
                 grid-template-columns: repeat(2, 1fr); 
                 gap: 1rem; 
                 text-align: center; 
+                max-width: none; 
+                width: 100%; 
             }
             .footer-section { 
                 padding: 0.5rem; 
