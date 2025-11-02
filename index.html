@@ -8,41 +8,211 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: #ffffff; color: #333; line-height: 1.6; }
-        header { position: fixed; top: 0; width: 100%; background: rgba(255,255,255,0.95); padding: 1rem 2rem; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        nav ul { list-style: none; display: flex; justify-content: center; }
-        nav li { margin: 0 1.5rem; }
-        nav a { color: #333; text-decoration: none; font-weight: 600; transition: color 0.3s; }
-        nav a:hover { color: #D4AF37; }
-        .hero { height: 100vh; background: url('images/hero.jpg') center/cover no-repeat; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #fff; padding: 0 2rem; }
+        
+        /* Sidebar Styles */
+        .sidebar { 
+            position: fixed; 
+            left: -250px; /* Hidden by default on mobile */
+            top: 0; 
+            width: 250px; 
+            height: 100vh; 
+            background: rgba(255,255,255,0.95); 
+            transition: left 0.3s ease; 
+            z-index: 1000; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1); 
+            padding-top: 1rem; 
+        }
+        .sidebar.active { left: 0; } /* Slide in on mobile */
+        .sidebar nav ul { 
+            list-style: none; 
+            display: flex; 
+            flex-direction: column; 
+            padding: 1rem 0; 
+        }
+        .sidebar nav li { margin: 0.5rem 1rem; }
+        .sidebar nav a { 
+            color: #333; 
+            text-decoration: none; 
+            font-weight: 600; 
+            padding: 0.75rem 1rem; 
+            display: block; 
+            border-radius: 5px; 
+            transition: background 0.3s, color 0.3s; 
+        }
+        .sidebar nav a:hover { background: #f9f9f9; color: #D4AF37; }
+        
+        /* Hamburger Button */
+        .hamburger { 
+            display: none; 
+            flex-direction: column; 
+            justify-content: space-around; 
+            width: 30px; 
+            height: 25px; 
+            background: transparent; 
+            border: none; 
+            cursor: pointer; 
+            padding: 0; 
+            margin-left: auto; 
+            z-index: 1001; 
+            position: fixed; 
+            top: 1rem; 
+            right: 1rem; 
+        }
+        .hamburger span { 
+            width: 100%; 
+            height: 3px; 
+            background: #333; 
+            transition: all 0.3s; 
+            border-radius: 3px; 
+        }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(8px, 8px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+        
+        /* Overlay for mobile menu */
+        .overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.5); 
+            z-index: 999; 
+        }
+        .overlay.active { display: block; }
+        
+        /* Main Content */
+        main { 
+            margin-left: 250px; /* Offset for desktop sidebar */
+            transition: margin-left 0.3s ease; 
+            min-height: 100vh; 
+        }
+        body.mobile-menu-open main { margin-left: 0; } /* Full width on mobile when open */
+        
+        /* Desktop: Show sidebar, hide hamburger */
+        @media (min-width: 769px) {
+            .sidebar { left: 0; } /* Always visible on desktop */
+            .hamburger { display: none; }
+            main { margin-left: 250px; }
+        }
+        
+        /* Mobile: Hide sidebar by default, show hamburger */
+        @media (max-width: 768px) {
+            .sidebar { left: -250px; }
+            .hamburger { display: flex; }
+            main { margin-left: 0; }
+            body.mobile-menu-open main { margin-left: 0; } /* Ensure full width */
+            .sidebar.active { left: 0; }
+        }
+        
+        .hero { 
+            height: 100vh; 
+            background: url('images/hero.jpg') center/cover no-repeat; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            color: #fff; 
+            padding: 0 2rem; 
+            position: relative; 
+        }
         .hero h1 { font-size: 3.5rem; font-weight: 600; margin-bottom: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
         .hero p { font-size: 1.5rem; margin-bottom: 2rem; }
-        .btn { background: #D4AF37; color: #fff; padding: 1rem 2rem; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; text-decoration: none; display: inline-block; }
+        .btn { 
+            background: #D4AF37; 
+            color: #fff; 
+            padding: 1rem 2rem; 
+            border: none; 
+            border-radius: 50px; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: transform 0.3s, box-shadow 0.3s; 
+            text-decoration: none; 
+            display: inline-block; 
+        }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212,175,55,0.4); }
-        section { padding: 5rem 2rem; max-width: 1200px; margin: 0 auto; }
+        section { 
+            padding: 5rem 2rem; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
         h2 { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; color: #D4AF37; }
         .about-text { font-size: 1.1rem; text-align: center; max-width: 800px; margin: 0 auto; }
-        .services-grid, .packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .service-card, .package-card { background: #f9f9f9; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; transition: transform 0.3s; }
+        .services-grid, .packages-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+        }
+        .service-card, .package-card { 
+            background: #f9f9f9; 
+            padding: 2rem; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            text-align: center; 
+            transition: transform 0.3s; 
+        }
         .service-card:hover, .package-card:hover { transform: translateY(-5px); }
         .service-card h3, .package-card h3 { color: #D4AF37; margin-bottom: 1rem; }
         .steps { display: flex; flex-direction: column; gap: 2rem; }
-        .step { background: #f9f9f9; padding: 1.5rem; border-left: 5px solid #D4AF37; border-radius: 5px; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-        .gallery img { width: 100%; height: 250px; object-fit: cover; cursor: pointer; border-radius: 10px; transition: transform 0.3s; }
+        .step { 
+            background: #f9f9f9; 
+            padding: 1.5rem; 
+            border-left: 5px solid #D4AF37; 
+            border-radius: 5px; 
+        }
+        .gallery { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 1rem; 
+        }
+        .gallery img { 
+            width: 100%; 
+            height: 250px; 
+            object-fit: cover; 
+            cursor: pointer; 
+            border-radius: 10px; 
+            transition: transform 0.3s; 
+        }
         .gallery img:hover { transform: scale(1.05); }
         .contact-form { max-width: 600px; margin: 0 auto; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 1rem; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            font-family: inherit; 
+        }
         .form-group textarea { height: 120px; }
-        footer { background: #333; color: #fff; text-align: center; padding: 2rem; }
+        footer { 
+            background: #333; 
+            color: #fff; 
+            text-align: center; 
+            padding: 2rem; 
+            margin-left: 250px; /* Match main */
+            transition: margin-left 0.3s ease; 
+        }
+        body.mobile-menu-open footer { margin-left: 0; }
         .social-links { margin: 1rem 0; }
         .social-links a { color: #D4AF37; margin: 0 1rem; font-size: 1.5rem; text-decoration: none; }
-        @media (max-width: 768px) { .hero h1 { font-size: 2.5rem; } .hero p { font-size: 1.2rem; } nav ul { flex-direction: column; gap: 1rem; } section { padding: 3rem 1rem; } }
+        
+        /* Mobile Adjustments */
+        @media (max-width: 768px) { 
+            .hero h1 { font-size: 2.5rem; } 
+            .hero p { font-size: 1.2rem; } 
+            section { padding: 3rem 1rem; } 
+            .gallery { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+            .gallery img { height: 200px; }
+        }
     </style>
 </head>
 <body>
-    <header>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
         <nav>
             <ul>
                 <li><a href="#home">Home</a></li>
@@ -54,208 +224,257 @@
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
-    </header>
+    </div>
+    
+    <!-- Hamburger Button -->
+    <button class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Main Content -->
+    <main>
+        <section id="home" class="hero">
+            <h1>Welcome to Mshudepro</h1>
+            <p>Your Moment. Our Lens. Endless Memories.</p>
+            <a href="#contact" class="btn">Book Now</a>
+        </section>
 
-    <section id="home" class="hero">
-        <h1>Welcome to Mshudepro</h1>
-        <p>Your Moment. Our Lens. Endless Memories.</p>
-        <a href="#contact" class="btn">Book Now</a>
-    </section>
+        <section id="about">
+            <h2>About Mshudepro</h2>
+            <p class="about-text">Welcome to Mshudepro — Capturing Moments, Creating Memories. We are a professional photography and videography company based in Mokopane, Extension 17, House No. 358, Mabhida Avenue. At Mshudepro, we specialize in delivering high-quality visuals for weddings, events, parties, graduations, and more. Our mission is to turn every special moment into a timeless story through creativity, passion, and precision.</p>
+            <p class="about-text">Our story began with a simple passion for freezing life's most beautiful instances. From humble beginnings, we've grown into a trusted name in Mokopane, driven by our belief in delivering quality, creativity, and affordable packages that make memories accessible to all.</p>
+        </section>
 
-    <section id="about">
-        <h2>About Mshudepro</h2>
-        <p class="about-text">Welcome to Mshudepro — Capturing Moments, Creating Memories. We are a professional photography and videography company based in Mokopane, Extension 17, House No. 358, Mabhida Avenue. At Mshudepro, we specialize in delivering high-quality visuals for weddings, events, parties, graduations, and more. Our mission is to turn every special moment into a timeless story through creativity, passion, and precision.</p>
-        <p class="about-text">Our story began with a simple passion for freezing life's most beautiful instances. From humble beginnings, we've grown into a trusted name in Mokopane, driven by our belief in delivering quality, creativity, and affordable packages that make memories accessible to all.</p>
-    </section>
+        <section id="services">
+            <h2>Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Wedding Photography & Videography</h3>
+                    <p>Eternalize your big day with stunning photos and cinematic videos.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Events Coverage</h3>
+                    <p>From festivals to corporate gatherings, capture the energy of every moment.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Birthday & Party Shoots</h3>
+                    <p>Make celebrations unforgettable with vibrant, joyful visuals.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Baby Showers & Graduations</h3>
+                    <p>Cherish milestones with tender, heartfelt photography.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Restaurants, Clubs & Lifestyle Shoots</h3>
+                    <p>Elevate your brand with dynamic lifestyle imagery.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Extra Add-ons</h3>
+                    <p>Enhance with lighting, drone footage, smoke machine, and more.</p>
+                </div>
+            </div>
+        </section>
 
-    <section id="services">
-        <h2>Our Services</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <h3>Wedding Photography & Videography</h3>
-                <p>Eternalize your big day with stunning photos and cinematic videos.</p>
+        <section id="packages">
+            <h2>Packages & Pricing</h2>
+            <div class="packages-grid">
+                <div class="package-card">
+                    <h3>Wedding - Basic</h3>
+                    <p>R5,000</p>
+                    <ul style="text-align: left; list-style: none;">
+                        <li>• 4-hour coverage</li>
+                        <li>• Edited photos & short highlight video</li>
+                    </ul>
+                </div>
+                <div class="package-card">
+                    <h3>Wedding - Silver</h3>
+                    <p>R7,000</p>
+                    <ul style="text-align: left; list-style: none;">
+                        <li>• 6-hour coverage</li>
+                        <li>• Full video & 80+ photos</li>
+                    </ul>
+                </div>
+                <div class="package-card">
+                    <h3>Wedding - Gold</h3>
+                    <p>R10,000</p>
+                    <ul style="text-align: left; list-style: none;">
+                        <li>• Full-day coverage</li>
+                        <li>• Drone footage, USB delivery, 100+ photos</li>
+                    </ul>
+                </div>
+                <div class="package-card">
+                    <h3>Wedding - Platinum</h3>
+                    <p>R15,000</p>
+                    <ul style="text-align: left; list-style: none;">
+                        <li>• Full-day coverage</li>
+                        <li>• Drone footage, lighting, smoke effects, cinematic edit, 150+ photos</li>
+                    </ul>
+                </div>
+                <div class="package-card">
+                    <h3>Event - 1 Hour</h3>
+                    <p>R1,500</p>
+                    <p>For parties, graduations, clubs.</p>
+                </div>
+                <div class="package-card">
+                    <h3>Event - 2 Hours</h3>
+                    <p>R2,500</p>
+                    <p>Extended coverage options available.</p>
+                </div>
             </div>
-            <div class="service-card">
-                <h3>Events Coverage</h3>
-                <p>From festivals to corporate gatherings, capture the energy of every moment.</p>
+            <h3 style="text-align: center; margin-top: 3rem; color: #D4AF37;">Add-ons</h3>
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem;">
+                <p>Drone footage – R800</p>
+                <p>Smoke machine – R500</p>
+                <p>Lighting setup – R600</p>
             </div>
-            <div class="service-card">
-                <h3>Birthday & Party Shoots</h3>
-                <p>Make celebrations unforgettable with vibrant, joyful visuals.</p>
-            </div>
-            <div class="service-card">
-                <h3>Baby Showers & Graduations</h3>
-                <p>Cherish milestones with tender, heartfelt photography.</p>
-            </div>
-            <div class="service-card">
-                <h3>Restaurants, Clubs & Lifestyle Shoots</h3>
-                <p>Elevate your brand with dynamic lifestyle imagery.</p>
-            </div>
-            <div class="service-card">
-                <h3>Extra Add-ons</h3>
-                <p>Enhance with lighting, drone footage, smoke machine, and more.</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="packages">
-        <h2>Packages & Pricing</h2>
-        <div class="packages-grid">
-            <div class="package-card">
-                <h3>Wedding - Basic</h3>
-                <p>R5,000</p>
-                <ul style="text-align: left; list-style: none;">
-                    <li>• 4-hour coverage</li>
-                    <li>• Edited photos & short highlight video</li>
-                </ul>
+        <section id="booking">
+            <h2>Booking Process</h2>
+            <div class="steps">
+                <div class="step">
+                    <h3>1. Contact Us</h3>
+                    <p>Reach out via email, call, or social media DM.</p>
+                </div>
+                <div class="step">
+                    <h3>2. Discuss Details</h3>
+                    <p>Share your event date, location, and package preference.</p>
+                </div>
+                <div class="step">
+                    <h3>3. Receive Quote</h3>
+                    <p>Get a personalized quotation or invoice.</p>
+                </div>
+                <div class="step">
+                    <h3>4. Pay Deposit</h3>
+                    <p>50% deposit to secure your booking.</p>
+                </div>
+                <div class="step">
+                    <h3>5. Final Payment</h3>
+                    <p>Balance due on or before the event day.</p>
+                </div>
+                <div class="step">
+                    <h3>6. Receive Deliverables</h3>
+                    <p>Edited photos and videos within agreed time.</p>
+                </div>
             </div>
-            <div class="package-card">
-                <h3>Wedding - Silver</h3>
-                <p>R7,000</p>
-                <ul style="text-align: left; list-style: none;">
-                    <li>• 6-hour coverage</li>
-                    <li>• Full video & 80+ photos</li>
-                </ul>
-            </div>
-            <div class="package-card">
-                <h3>Wedding - Gold</h3>
-                <p>R10,000</p>
-                <ul style="text-align: left; list-style: none;">
-                    <li>• Full-day coverage</li>
-                    <li>• Drone footage, USB delivery, 100+ photos</li>
-                </ul>
-            </div>
-            <div class="package-card">
-                <h3>Wedding - Platinum</h3>
-                <p>R15,000</p>
-                <ul style="text-align: left; list-style: none;">
-                    <li>• Full-day coverage</li>
-                    <li>• Drone footage, lighting, smoke effects, cinematic edit, 150+ photos</li>
-                </ul>
-            </div>
-            <div class="package-card">
-                <h3>Event - 1 Hour</h3>
-                <p>R1,500</p>
-                <p>For parties, graduations, clubs.</p>
-            </div>
-            <div class="package-card">
-                <h3>Event - 2 Hours</h3>
-                <p>R2,500</p>
-                <p>Extended coverage options available.</p>
-            </div>
-        </div>
-        <h3 style="text-align: center; margin-top: 3rem; color: #D4AF37;">Add-ons</h3>
-        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem;">
-            <p>Drone footage – R800</p>
-            <p>Smoke machine – R500</p>
-            <p>Lighting setup – R600</p>
-        </div>
-    </section>
+        </section>
 
-    <section id="booking">
-        <h2>Booking Process</h2>
-        <div class="steps">
-            <div class="step">
-                <h3>1. Contact Us</h3>
-                <p>Reach out via email, call, or social media DM.</p>
+        <section id="gallery">
+            <h2>Gallery</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">Organized by categories: Weddings, Events, Lifestyle</p>
+            <div class="gallery">
+                <img src="images/wedding1.jpg" alt="Wedding Photo 1" onclick="openLightbox(this.src)">
+                <img src="images/event1.jpg" alt="Event Photo 1" onclick="openLightbox(this.src)">
+                <img src="images/lifestyle1.jpg" alt="Lifestyle Photo 1" onclick="openLightbox(this.src)">
+                <img src="images/wedding2.jpg" alt="Wedding Photo 2" onclick="openLightbox(this.src)">
+                <img src="images/event2.jpg" alt="Event Photo 2" onclick="openLightbox(this.src)">
+                <img src="images/lifestyle2.jpg" alt="Lifestyle Photo 2" onclick="openLightbox(this.src)">
+                <!-- Add more images here -->
             </div>
-            <div class="step">
-                <h3>2. Discuss Details</h3>
-                <p>Share your event date, location, and package preference.</p>
-            </div>
-            <div class="step">
-                <h3>3. Receive Quote</h3>
-                <p>Get a personalized quotation or invoice.</p>
-            </div>
-            <div class="step">
-                <h3>4. Pay Deposit</h3>
-                <p>50% deposit to secure your booking.</p>
-            </div>
-            <div class="step">
-                <h3>5. Final Payment</h3>
-                <p>Balance due on or before the event day.</p>
-            </div>
-            <div class="step">
-                <h3>6. Receive Deliverables</h3>
-                <p>Edited photos and videos within agreed time.</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="gallery">
-        <h2>Gallery</h2>
-        <p style="text-align: center; margin-bottom: 2rem;">Organized by categories: Weddings, Events, Lifestyle</p>
-        <div class="gallery">
-            <img src="images/wedding1.jpg" alt="Wedding Photo 1" onclick="openLightbox(this.src)">
-            <img src="images/event1.jpg" alt="Event Photo 1" onclick="openLightbox(this.src)">
-            <img src="images/lifestyle1.jpg" alt="Lifestyle Photo 1" onclick="openLightbox(this.src)">
-            <img src="images/wedding2.jpg" alt="Wedding Photo 2" onclick="openLightbox(this.src)">
-            <img src="images/event2.jpg" alt="Event Photo 2" onclick="openLightbox(this.src)">
-            <img src="images/lifestyle2.jpg" alt="Lifestyle Photo 2" onclick="openLightbox(this.src)">
-            <!-- Add more images here -->
-        </div>
-    </section>
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <form class="contact-form" action="mailto:givenglendi755@gmail.com" method="post" enctype="text/plain">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventType">Event Type</label>
+                    <select id="eventType" name="eventType" required>
+                        <option value="">Select...</option>
+                        <option value="wedding">Wedding</option>
+                        <option value="event">Event</option>
+                        <option value="party">Birthday/Party</option>
+                        <option value="graduation">Graduation</option>
+                        <option value="lifestyle">Lifestyle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Event Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" placeholder="Tell us more about your event..."></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Send Inquiry</button>
+            </form>
+            <p style="text-align: center; margin-top: 2rem; font-size: 1.1rem;">
+                Email: <a href="mailto:givenglendi755@gmail.com">givenglendi755@gmail.com</a> | Cell: 066 182 0839<br>
+                Location: Mokopane, Extension 17, House No. 358, Mabhida Avenue
+            </p>
+        </section>
 
-    <section id="contact">
-        <h2>Contact Us</h2>
-        <form class="contact-form" action="mailto:givenglendi755@gmail.com" method="post" enctype="text/plain">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
+        <footer>
+            <div class="social-links">
+                <a href="https://facebook.com/Mshudepro" target="_blank">Facebook</a>
+                <a href="https://instagram.com/Mshudepro" target="_blank">Instagram</a>
             </div>
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" required>
-            </div>
-            <div class="form-group">
-                <label for="eventType">Event Type</label>
-                <select id="eventType" name="eventType" required>
-                    <option value="">Select...</option>
-                    <option value="wedding">Wedding</option>
-                    <option value="event">Event</option>
-                    <option value="party">Birthday/Party</option>
-                    <option value="graduation">Graduation</option>
-                    <option value="lifestyle">Lifestyle</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="date">Event Date</label>
-                <input type="date" id="date" name="date" required>
-            </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" placeholder="Tell us more about your event..."></textarea>
-            </div>
-            <button type="submit" class="btn" style="width: 100%;">Send Inquiry</button>
-        </form>
-        <p style="text-align: center; margin-top: 2rem; font-size: 1.1rem;">
-            Email: <a href="mailto:givenglendi755@gmail.com">givenglendi755@gmail.com</a> | Cell: 066 182 0839<br>
-            Location: Mokopane, Extension 17, House No. 358, Mabhida Avenue
-        </p>
-    </section>
-
-    <footer>
-        <div class="social-links">
-            <a href="https://facebook.com/Mshudepro" target="_blank">Facebook</a>
-            <a href="https://instagram.com/Mshudepro" target="_blank">Instagram</a>
-        </div>
-        <p>&copy; 2025 Mshudepro. All rights reserved.</p>
-    </footer>
+            <p>&copy; 2025 Mshudepro. All rights reserved.</p>
+        </footer>
+    </main>
 
     <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const body = document.body;
+
+        hamburger.addEventListener('click', () => {
+            const isActive = sidebar.classList.contains('active');
+            if (isActive) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        });
+
+        overlay.addEventListener('click', closeMenu);
+
+        function openMenu() {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            hamburger.classList.add('active');
+            body.classList.add('mobile-menu-open');
+        }
+
+        function closeMenu() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            hamburger.classList.remove('active');
+            body.classList.remove('mobile-menu-open');
+        }
+
+        // Close menu on nav link click (mobile)
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
         function openLightbox(src) {
             const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:20;';
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:2000;';
             const img = document.createElement('img');
             img.src = src;
             img.style.cssText = 'max-width:90%;max-height:90%;border-radius:10px;';
             const close = document.createElement('span');
             close.innerHTML = '&times;';
-            close.style.cssText = 'position:absolute;top:20px;right:30px;font-size:40px;color:#fff;cursor:pointer;';
+            close.style.cssText = 'position:absolute;top:20px;right:30px;font-size:40px;color:#fff;cursor:pointer;z-index:2001;';
             close.onclick = () => document.body.removeChild(modal);
             modal.appendChild(close);
             modal.appendChild(img);
