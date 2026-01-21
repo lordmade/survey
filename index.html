@@ -117,6 +117,41 @@
         .status-won { background: #ecfdf5; color: #047857; }
         .status-lost { background: #fef2f2; color: #b91c1c; }
 
+        /* ── AI Assistant FAB ── */
+        .ai-fab {
+            position: absolute; bottom: 30px; right: 30px;
+            width: 60px; height: 60px; border-radius: 30px;
+            background: var(--text-main); color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 90; transition: transform 0.2s;
+        }
+        .ai-fab:hover { transform: scale(1.1); }
+        
+        /* ── AI Chat Window ── */
+        .ai-window {
+            position: absolute; bottom: 100px; right: 30px;
+            width: 350px; height: 500px;
+            background: white; border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            display: none; flex-direction: column; z-index: 95;
+            border: 1px solid var(--border);
+        }
+        .ai-header {
+            padding: 16px; border-bottom: 1px solid var(--border); background: #f9fafb;
+            border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center;
+        }
+        .ai-body { flex: 1; padding: 16px; overflow-y: auto; background: #fff; }
+        .ai-msg { margin-bottom: 12px; padding: 10px; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; }
+        .ai-msg.bot { background: #f0f7ff; color: var(--text-main); border-left: 3px solid var(--primary); }
+        .ai-msg.user { background: #f3f4f6; text-align: right; margin-left: auto; width: 80%; }
+        
+        .ai-input-area {
+            padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px;
+        }
+        .ai-input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 20px; outline: none; }
+
         /* ── Modal ── */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
@@ -142,6 +177,7 @@
             .menu-toggle { display: block; }
             .pipeline-wrapper { flex-direction: column; overflow-x: hidden; overflow-y: auto; }
             .pipeline-col { min-width: 100%; min-height: 200px; margin-bottom: 20px; }
+            .ai-window { width: 90%; right: 5%; bottom: 100px; }
         }
     </style>
 </head>
@@ -168,13 +204,13 @@
                 VynixCRM
             </div>
             <nav class="nav-links">
-                <a class="nav-item active" onclick="nav('dashboard')">
+                <a class="nav-item active" onclick="nav('dashboard', this)">
                     <span class="material-symbols-rounded">dashboard</span> Dashboard
                 </a>
-                <a class="nav-item" onclick="nav('pipeline')">
+                <a class="nav-item" onclick="nav('pipeline', this)">
                     <span class="material-symbols-rounded">view_kanban</span> Pipeline
                 </a>
-                <a class="nav-item" onclick="nav('contacts')">
+                <a class="nav-item" onclick="nav('contacts', this)">
                     <span class="material-symbols-rounded">groups</span> Contacts
                 </a>
             </nav>
@@ -207,7 +243,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <span class="material-symbols-rounded" style="color: var(--primary);">monetization_on</span>
-                        <div class="stat-val" id="statRevenue">$0</div>
+                        <div class="stat-val" id="statRevenue">R0</div>
                         <div class="stat-label">Total Pipeline Value</div>
                     </div>
                     <div class="stat-card">
@@ -259,7 +295,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Company</th>
-                                <th>Value</th>
+                                <th>Value (ZAR)</th>
                                 <th>Stage</th>
                                 <th>Actions</th>
                             </tr>
@@ -270,24 +306,49 @@
                 </div>
             </div>
 
+            <button class="ai-fab" onclick="toggleAIWindow()">
+                <span class="material-symbols-rounded">smart_toy</span>
+            </button>
+
+            <div id="aiWindow" class="ai-window">
+                <div class="ai-header">
+                    <span style="font-weight:600; display:flex; align-items:center; gap:8px;">
+                        <span class="material-symbols-rounded" style="color:var(--primary); font-size:20px;">smart_toy</span>
+                        AI Assistant
+                    </span>
+                    <button onclick="toggleAIWindow()" style="background:none; border:none; cursor:pointer;">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+                <div class="ai-body" id="aiChatBody">
+                    <div class="ai-msg bot">Hello Vynix! How can I assist you with your CRM today? I can help write emails or analyze your sales pipeline.</div>
+                </div>
+                <div class="ai-input-area">
+                    <input type="text" id="aiGlobalInput" class="ai-input" placeholder="Ask AI..." onkeypress="if(event.key === 'Enter') sendGlobalAI()">
+                    <button onclick="sendGlobalAI()" style="background:var(--primary); color:white; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer;">
+                        <span class="material-symbols-rounded" style="font-size:18px;">send</span>
+                    </button>
+                </div>
+            </div>
+
         </main>
     </div>
 
     <div class="modal-overlay" id="dealModal">
         <div class="modal">
-            <h2 style="margin-bottom: 20px;">Add New Deal</h2>
+            <h2 style="margin-bottom: 20px;">Deal Details</h2>
             <form id="dealForm" onsubmit="saveDeal(event)">
                 <input type="hidden" id="dealId">
                 <div class="form-group">
                     <label class="form-label">Client Name</label>
-                    <input type="text" id="inpName" class="form-input" required placeholder="e.g. John Doe">
+                    <input type="text" id="inpName" class="form-input" required placeholder="e.g. Thabo Mbeki">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Company</label>
-                    <input type="text" id="inpCompany" class="form-input" placeholder="e.g. Acme Corp">
+                    <input type="text" id="inpCompany" class="form-input" placeholder="e.g. Solutions Pty">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Deal Value ($)</label>
+                    <label class="form-label">Deal Value (R)</label>
                     <input type="number" id="inpValue" class="form-input" required placeholder="0.00">
                 </div>
                 <div class="form-group">
@@ -300,12 +361,14 @@
                     </select>
                 </div>
                 
-                <div style="margin-top:20px; padding:12px; background:#f0f7ff; border-radius:8px; border:1px dashed #4285F4;">
+                <div style="margin-top:20px; padding:12px; background:#f0f7ff; border-radius:8px; border:1px dashed #6366f1;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:0.85rem; font-weight:600; color:#0b57d0;">AI Assistant</span>
-                        <button type="button" onclick="generateEmail()" style="background:#fff; border:1px solid #ddd; padding:4px 8px; font-size:0.75rem; border-radius:4px; cursor:pointer;">Draft Email</button>
+                        <span style="font-size:0.85rem; font-weight:600; color:#4f46e5;">AI Email Draft</span>
+                        <button type="button" onclick="generateContextEmail()" style="background:#fff; border:1px solid #ddd; padding:4px 8px; font-size:0.75rem; border-radius:4px; cursor:pointer; color: var(--text-main);">
+                            Generate Draft
+                        </button>
                     </div>
-                    <textarea id="aiOutput" style="width:100%; height:60px; margin-top:8px; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; padding:4px; display:none;"></textarea>
+                    <textarea id="aiOutput" style="width:100%; height:80px; margin-top:8px; border:1px solid #ddd; border-radius:4px; font-size:0.8rem; padding:8px; display:none; resize:none;"></textarea>
                 </div>
 
                 <div class="btn-row">
@@ -336,6 +399,7 @@
         let deals = [];
         let chartInstance = null;
         let XAI_API_KEY = "";
+        const currencyFmt = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
 
         // ── Auth Logic ──
         function signIn() { auth.signInWithPopup(provider); }
@@ -388,11 +452,12 @@
             const wonCount = deals.filter(d => d.stage === 'won').length;
             const openCount = deals.filter(d => d.stage !== 'won' && d.stage !== 'lost').length;
 
-            document.getElementById('statRevenue').innerText = `$${totalVal.toLocaleString()}`;
+            // Updated for Rands
+            document.getElementById('statRevenue').innerText = currencyFmt.format(totalVal).replace('ZAR', 'R');
             document.getElementById('statWon').innerText = wonCount;
             document.getElementById('statOpen').innerText = openCount;
 
-            // Simple Chart
+            // Chart
             const ctx = document.getElementById('revenueChart').getContext('2d');
             const dataCounts = [
                 deals.filter(d => d.stage === 'lead').length,
@@ -435,7 +500,7 @@
                     card.innerHTML = `
                         <div style="font-weight:500;">${deal.clientName}</div>
                         <div style="font-size:0.8rem; color:var(--text-sub);">${deal.company || ''}</div>
-                        <div class="deal-price">$${parseInt(deal.value).toLocaleString()}</div>
+                        <div class="deal-price">${currencyFmt.format(deal.value).replace('ZAR', 'R')}</div>
                     `;
                     col.appendChild(card);
                 });
@@ -460,7 +525,7 @@
                 tr.innerHTML = `
                     <td style="font-weight:500">${deal.clientName}</td>
                     <td>${deal.company || '-'}</td>
-                    <td>$${deal.value}</td>
+                    <td>${currencyFmt.format(deal.value).replace('ZAR', 'R')}</td>
                     <td><span class="status-badge status-${deal.stage}">${deal.stage.toUpperCase()}</span></td>
                     <td>
                         <button onclick="deleteDeal('${deal.id}')" style="color:var(--danger); background:none; border:none; cursor:pointer;">
@@ -486,10 +551,10 @@
                 document.getElementById('inpStage').value = deal.stage;
             } else {
                 document.getElementById('dealId').value = '';
+                document.getElementById('inpStage').value = 'lead';
             }
         }
         function closeModal() { document.getElementById('dealModal').style.display = 'none'; }
-
         function editDeal(deal) { openModal(deal); }
 
         function saveDeal(e) {
@@ -503,11 +568,8 @@
                 updatedAt: firebase.database.ServerValue.TIMESTAMP
             };
 
-            if (id) {
-                db.ref(`crm/${currentUser.uid}/deals/${id}`).update(data);
-            } else {
-                db.ref(`crm/${currentUser.uid}/deals`).push(data);
-            }
+            if (id) db.ref(`crm/${currentUser.uid}/deals/${id}`).update(data);
+            else db.ref(`crm/${currentUser.uid}/deals`).push(data);
             closeModal();
         }
 
@@ -515,18 +577,68 @@
             if(confirm("Are you sure?")) db.ref(`crm/${currentUser.uid}/deals/${id}`).remove();
         }
 
-        // ── AI Generator ──
-        async function generateEmail() {
+        // ── AI FUNCTIONALITY ──
+
+        // 1. Context Email (Inside Deal Modal)
+        async function generateContextEmail() {
             if (!XAI_API_KEY) return alert("AI Key not loaded.");
             
             const name = document.getElementById('inpName').value;
             const company = document.getElementById('inpCompany').value;
+            const stage = document.getElementById('inpStage').value;
             const output = document.getElementById('aiOutput');
+            
+            if(!name) return alert("Please enter client name first.");
+
             output.style.display = 'block';
-            output.value = "Drafting email...";
+            output.value = "Thinking...";
 
-            const prompt = `Write a short, professional cold email to ${name} from ${company}. Keep it under 50 words.`;
+            let contextPrompt = "";
+            if(stage === 'lead') contextPrompt = "an introductory email offering services";
+            else if(stage === 'negotiation') contextPrompt = "a follow-up regarding our proposal and pricing in Rands";
+            else if(stage === 'won') contextPrompt = "a thank you email for closing the deal";
+            else contextPrompt = "a polite re-engagement email";
 
+            const prompt = `Write ${contextPrompt} to ${name} from ${company}. Keep it professional, concise, and use South African English spelling. Sender: Vynix Lingua.`;
+
+            await callAI(prompt, (text) => { output.value = text; });
+        }
+
+        // 2. Global AI Chat
+        function toggleAIWindow() {
+            const w = document.getElementById('aiWindow');
+            w.style.display = w.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function sendGlobalAI() {
+            const input = document.getElementById('aiGlobalInput');
+            const body = document.getElementById('aiChatBody');
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            // User msg
+            body.innerHTML += `<div class="ai-msg user">${txt}</div>`;
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+
+            // Loading msg
+            const loadingId = 'loading-' + Date.now();
+            body.innerHTML += `<div id="${loadingId}" class="ai-msg bot">...</div>`;
+
+            // Prepare context
+            const totalVal = deals.reduce((acc, d) => acc + (parseFloat(d.value)||0), 0);
+            const contextData = `The user has ${deals.length} deals. Total value: R${totalVal}. Won: ${deals.filter(d=>d.stage=='won').length}.`;
+            
+            const prompt = `Context: ${contextData}. User Name: Vynix Lingua. Request: ${txt}. Answer briefly.`;
+
+            await callAI(prompt, (text) => {
+                document.getElementById(loadingId).innerText = text;
+                body.scrollTop = body.scrollHeight;
+            });
+        }
+
+        // Shared AI Caller
+        async function callAI(prompt, callback) {
             try {
                 const res = await fetch("https://api.x.ai/v1/chat/completions", {
                     method: "POST",
@@ -538,19 +650,20 @@
                     })
                 });
                 const json = await res.json();
-                output.value = json.choices[0].message.content;
+                callback(json.choices[0].message.content);
             } catch (err) {
-                output.value = "Error generating email.";
+                console.error(err);
+                callback("Error connecting to AI.");
             }
         }
 
         // ── Navigation ──
-        function nav(viewName) {
+        function nav(viewName, btn) {
             document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
             document.getElementById(`view-${viewName}`).classList.add('active');
-            event.currentTarget.classList.add('active'); // Highlight nav
+            btn.classList.add('active');
             
             const titles = { dashboard: 'Dashboard', pipeline: 'Sales Pipeline', contacts: 'Client List' };
             document.getElementById('pageTitle').innerText = titles[viewName];
