@@ -6,6 +6,10 @@
     <title>Nexlify CRM</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+
     <style>
         :root {
             --primary: #2563eb;
@@ -52,11 +56,13 @@
             display:flex; flex-direction:column;
         }
         #sideDrawer.expanded { width:var(--sidebar-expanded); }
+
         .sidebar-header {
             padding:20px 16px; background:var(--primary); color:white; text-align:center;
             font-weight:600; font-size:18px; opacity:0; transition:opacity 0.2s ease 0.1s;
         }
         #sideDrawer.expanded .sidebar-header { opacity:1; }
+
         .drawer-menu { flex:1; padding:16px 0; }
         .drawer-item {
             display:flex; align-items:center; padding:14px 16px; color:var(--text-main);
@@ -66,7 +72,6 @@
         .drawer-item span.label { opacity:0; margin-left:12px; transition:opacity 0.2s ease 0.1s; }
         #sideDrawer.expanded .drawer-item span.label { opacity:1; }
         .drawer-item:hover { background:var(--gray-100); color:var(--primary); }
-        .drawer-item:hover .material-symbols-rounded { color:var(--primary); }
 
         .main-content {
             margin-top:64px; margin-left:var(--sidebar-collapsed);
@@ -77,7 +82,25 @@
         .section { display:none; }
         .section.active { display:block; }
 
-        /* Dashboard Layout */
+        /* Shimmer effect */
+        .shimmer-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .shimmer-card {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            border-radius: 12px;
+            height: 140px;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -90,24 +113,10 @@
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.06);
             border: 1px solid var(--gray-200);
+            text-align: center;
         }
-        .metric-card h3 {
-            font-size: 14px;
-            color: var(--gray-500);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .metric-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin: 4px 0;
-        }
-        .metric-trend {
-            font-size: 13px;
-            margin-top: 8px;
-        }
-        .metric-trend.positive { color: var(--success); }
-        .metric-trend.negative { color: var(--danger); }
+        .metric-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
+        .metric-label { font-size: 14px; color: var(--gray-500); }
 
         .activity-list {
             background: white;
@@ -146,7 +155,6 @@
             transform: translateY(-2px);
         }
 
-        /* Modal (from previous version) */
         #modalOverlay {
             position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
             display:none; align-items:center; justify-content:center;
@@ -218,44 +226,70 @@
         <div id="dashboard" class="section active">
             <h2>Dashboard</h2>
 
-            <div class="dashboard-grid" id="overviewCards">
-                <!-- Filled by JS -->
+            <!-- Shimmer loading state -->
+            <div id="dashboardLoading">
+                <div class="shimmer-wrapper">
+                    <div class="shimmer-card"></div>
+                    <div class="shimmer-card"></div>
+                    <div class="shimmer-card"></div>
+                    <div class="shimmer-card"></div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:32px 0;">
+                    <div class="activity-list">
+                        <h3 style="margin-bottom:16px;">Recent Activity</h3>
+                        <div class="shimmer-wrapper" style="height:200px;">
+                            <div class="shimmer-card" style="height:100%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom:16px;">Quick Actions</h3>
+                        <div class="quick-actions">
+                            <div class="action-btn shimmer-card" style="height:120px;"></div>
+                            <div class="action-btn shimmer-card" style="height:120px;"></div>
+                            <div class="action-btn shimmer-card" style="height:120px;"></div>
+                            <div class="action-btn shimmer-card" style="height:120px;"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:32px 0;">
-                <div class="activity-list">
-                    <h3 style="margin-bottom:16px;">Recent Activity</h3>
-                    <div id="recentActivity"></div>
-                </div>
-
-                <div>
-                    <h3 style="margin-bottom:16px;">Quick Actions</h3>
-                    <div class="quick-actions">
-                        <div class="action-btn" onclick="openNewDealModal()">
-                            <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">add_circle</span><br>New Deal
-                        </div>
-                        <div class="action-btn" onclick="showToast('Add contact feature coming soon')">
-                            <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">person_add</span><br>New Contact
-                        </div>
-                        <div class="action-btn" onclick="showToast('View tasks coming soon')">
-                            <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">task_alt</span><br>My Tasks
-                        </div>
-                        <div class="action-btn" onclick="showToast('Reports coming soon')">
-                            <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">bar_chart</span><br>View Reports
+            <!-- Real content (hidden until data loads) -->
+            <div id="dashboardContent" style="display:none;">
+                <div class="dashboard-grid" id="overviewCards"></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:32px 0;">
+                    <div class="activity-list">
+                        <h3 style="margin-bottom:16px;">Recent Activity</h3>
+                        <div id="recentActivity"></div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom:16px;">Quick Actions</h3>
+                        <div class="quick-actions">
+                            <div class="action-btn" onclick="openNewDealModal()">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">add_circle</span><br>New Deal
+                            </div>
+                            <div class="action-btn" onclick="showToast('Add contact feature coming soon')">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">person_add</span><br>New Contact
+                            </div>
+                            <div class="action-btn" onclick="showToast('View tasks coming soon')">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">task_alt</span><br>My Tasks
+                            </div>
+                            <div class="action-btn" onclick="showToast('Reports coming soon')">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">bar_chart</span><br>View Reports
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Other sections remain the same -->
+        <!-- Placeholder sections -->
         <div id="contacts" class="section"><h2>Contacts</h2><div class="placeholder">Contacts list coming soon...</div></div>
         <div id="deals" class="section"><h2>Deals</h2><div id="pipelineContainer" class="placeholder">Loading pipeline...</div></div>
         <div id="tasks" class="section"><h2>Tasks</h2><div class="placeholder">Task manager coming soon...</div></div>
         <div id="reports" class="section"><h2>Reports</h2><div class="placeholder">Analytics coming soon...</div></div>
     </div>
 
-    <!-- Deal Modal (same as before) -->
+    <!-- Deal Modal -->
     <div id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -305,136 +339,140 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        const firebaseConfig = { /* your config here */ };
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
+            authDomain: "fire-b-a8878.firebaseapp.com",
+            databaseURL: "https://fire-b-a8878.firebaseio.com",
+            projectId: "fire-b-a8878",
+            storageBucket: "fire-b-a8878.firebasestorage.app",
+            messagingSenderId: "658673187627",
+            appId: "1:658673187627:web:6e4c29af661785f0afa36e"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const auth = firebase.auth();
 
         let currentUser = null;
 
+        // ────────────────────────────────────────────────
+        //  Auth & Real-time Listener
+        // ────────────────────────────────────────────────
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
-                loadDashboard();
+                setupRealtimeListener();
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        // Sidebar controls (same as before)
-        function expandSidebar() { if(window.innerWidth >= 992) document.getElementById('sideDrawer').classList.add('expanded'); }
-        function collapseSidebar() { if(window.innerWidth >= 992) document.getElementById('sideDrawer').classList.remove('expanded'); }
-        function toggleDrawer() { document.getElementById('sideDrawer').classList.toggle('open'); }
-
-        // Navigation
-        document.querySelectorAll('.drawer-item[data-section]').forEach(item => {
-            item.addEventListener('click', () => {
-                const section = item.getAttribute('data-section');
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(section).classList.add('active');
-                document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
-                document.getElementById('actionBtn').style.display = (section === 'deals') ? 'flex' : 'none';
-                if (window.innerWidth < 992) toggleDrawer();
-                if (section === 'dashboard') loadDashboard();
-                if (section === 'deals') loadPipeline();
-            });
-        });
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+        function setupRealtimeListener() {
+            db.ref('deals')
+                .orderByChild('owner')
+                .equalTo(currentUser.uid)
+                .on('value', (snapshot) => {
+                    const deals = snapshot.val() || {};
+                    updateDashboard(deals);
+                }, (error) => {
+                    console.error("Firebase error:", error);
+                    showToast("Failed to load real-time data");
+                });
         }
 
-        function logout() { auth.signOut().then(() => window.location.href = "login.html"); }
+        // ────────────────────────────────────────────────
+        //  Dashboard Update with Real Data
+        // ────────────────────────────────────────────────
+        function updateDashboard(dealsObj) {
+            // Hide shimmer, show content
+            document.getElementById('dashboardLoading').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
 
-        // ── Dashboard Data Loading ──
-        async function loadDashboard() {
-            try {
-                const dealsSnap = await db.ref('deals')
-                    .orderByChild('owner')
-                    .equalTo(currentUser.uid)
-                    .once('value');
+            const dealArray = Object.values(dealsObj);
 
-                const deals = dealsSnap.val() || {};
-                const dealArray = Object.values(deals);
+            // Metrics calculations
+            const totalDeals = dealArray.length;
+            const pipelineValue = dealArray.reduce((sum, d) => sum + (Number(d.value) || 0), 0);
+            const wonDeals = dealArray.filter(d => d.stage === 'won').length;
+            const winRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0;
+            const activeDeals = dealArray.filter(d => !['won','lost'].includes(d.stage)).length;
 
-                // Calculations
-                const totalDeals = dealArray.length;
-                const pipelineValue = dealArray.reduce((sum, d) => sum + (Number(d.value) || 0), 0);
-                const wonDeals = dealArray.filter(d => d.stage === 'won').length;
-                const winRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0;
-                const activeDeals = dealArray.filter(d => !['won','lost'].includes(d.stage)).length;
-
-                // Render overview cards
-                document.getElementById('overviewCards').innerHTML = `
-                    <div class="metric-card">
-                        <h3>Total Pipeline Value</h3>
-                        <div class="metric-value">R ${pipelineValue.toLocaleString('en-ZA')}</div>
-                        <div class="metric-trend positive">+12% this month</div>
+            // Render metric cards
+            document.getElementById('overviewCards').innerHTML = `
+                <div class="metric-card">
+                    <h3>Total Pipeline Value</h3>
+                    <div class="metric-value">R ${pipelineValue.toLocaleString('en-ZA')}</div>
+                    <div class="metric-trend positive">Updated live</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Active Deals</h3>
+                    <div class="metric-value">${activeDeals}</div>
+                    <div class="metric-trend">in progress</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Win Rate</h3>
+                    <div class="metric-value">${winRate}%</div>
+                    <div class="metric-trend ${winRate >= 30 ? 'positive' : 'negative'}">
+                        ${winRate >= 30 ? 'Good performance' : 'Needs improvement'}
                     </div>
-                    <div class="metric-card">
-                        <h3>Active Deals</h3>
-                        <div class="metric-value">${activeDeals}</div>
-                        <div class="metric-trend">in progress</div>
-                    </div>
-                    <div class="metric-card">
-                        <h3>Win Rate</h3>
-                        <div class="metric-value">${winRate}%</div>
-                        <div class="metric-trend ${winRate >= 30 ? 'positive' : 'negative'}">${winRate >= 30 ? 'Good' : 'Needs attention'}</div>
-                    </div>
-                    <div class="metric-card">
-                        <h3>Total Deals</h3>
-                        <div class="metric-value">${totalDeals}</div>
-                        <div class="metric-trend">lifetime</div>
-                    </div>
-                `;
+                </div>
+                <div class="metric-card">
+                    <h3>Total Deals</h3>
+                    <div class="metric-value">${totalDeals}</div>
+                    <div class="metric-trend">lifetime</div>
+                </div>
+            `;
 
-                // Recent Activity (from all deals' activities)
-                const recent = [];
-                for (const dealId in deals) {
-                    const actsSnap = await db.ref(`deals/${dealId}/activities`)
-                        .orderByChild('created')
-                        .limitToLast(5)
-                        .once('value');
-                    const acts = actsSnap.val() || {};
-                    Object.entries(acts).forEach(([key, act]) => {
-                        recent.push({ ...act, dealCompany: deals[dealId].company || 'Deal' });
+            // Recent Activity – collect from all deals
+            const recent = [];
+            Object.entries(dealsObj).forEach(([dealId, deal]) => {
+                if (deal.activities) {
+                    Object.values(deal.activities).forEach(act => {
+                        recent.push({
+                            ...act,
+                            dealCompany: deal.company || 'Unnamed Deal'
+                        });
                     });
                 }
+            });
 
-                recent.sort((a,b) => b.created - a.created);
-                const recentHtml = recent.slice(0,8).map(act => `
-                    <div class="activity-item">
-                        <strong>${formatActivity(act.type)} on ${act.dealCompany}</strong><br>
-                        ${act.description.substring(0,80)}${act.description.length > 80 ? '...' : ''}
-                        <div class="activity-time">${formatRelativeTime(act.created)}</div>
-                    </div>
-                `).join('') || '<p style="color:var(--gray-500); text-align:center; padding:40px 0;">No recent activity yet</p>';
+            recent.sort((a,b) => (b.created || 0) - (a.created || 0));
 
-                document.getElementById('recentActivity').innerHTML = recentHtml;
+            const recentHtml = recent.slice(0,8).map(act => `
+                <div class="activity-item">
+                    <strong>${formatActivity(act.type)} on ${act.dealCompany}</strong><br>
+                    ${act.description ? act.description.substring(0,80) + (act.description.length > 80 ? '...' : '') : '(no description)'}
+                    <div class="activity-time">${formatRelativeTime(act.created)}</div>
+                </div>
+            `).join('') || '<p style="color:var(--gray-500); text-align:center; padding:40px 0;">No recent activity yet</p>';
 
-            } catch (err) {
-                showToast("Dashboard load error: " + err.message);
-            }
+            document.getElementById('recentActivity').innerHTML = recentHtml;
         }
 
         function formatActivity(type) {
-            const icons = { call: "📞 Call", email: "✉️ Email", meeting: "🗓️ Meeting", note: "📝 Note" };
-            return icons[type] || type.charAt(0).toUpperCase() + type.slice(1);
+            const map = {
+                call: "📞 Call",
+                email: "✉️ Email",
+                meeting: "🗓️ Meeting",
+                note: "📝 Note"
+            };
+            return map[type] || type.charAt(0).toUpperCase() + type.slice(1);
         }
 
         function formatRelativeTime(ts) {
+            if (!ts) return '—';
             const diff = Date.now() - ts;
-            const min = Math.floor(diff / 60000);
-            if (min < 1) return 'just now';
-            if (min < 60) return `${min}m ago`;
-            const h = Math.floor(min / 60);
-            if (h < 24) return `${h}h ago`;
-            return new Date(ts).toLocaleDateString('en-ZA', {month:'short', day:'numeric'});
+            const minutes = Math.floor(diff / 60000);
+            if (minutes < 1) return 'just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            return new Date(ts).toLocaleDateString('en-ZA', { month:'short', day:'numeric' });
         }
 
-        // Modal & Deal save functions (same as previous version)
+        // ────────────────────────────────────────────────
+        //  Modal & Save Deal
+        // ────────────────────────────────────────────────
         function openNewDealModal() {
             document.getElementById('modalTitle').textContent = "New Deal";
             document.getElementById('company').value = "";
@@ -453,7 +491,10 @@
 
         function saveDealFromModal() {
             const company = document.getElementById('company').value.trim();
-            if (!company) return showToast("Company name is required");
+            if (!company) {
+                showToast("Company name is required");
+                return;
+            }
 
             const dealData = {
                 company,
@@ -470,7 +511,7 @@
                 .then(() => {
                     showToast("Deal created successfully");
                     closeModal();
-                    loadDashboard();
+                    // No need to manually refresh – listener will catch it
                 })
                 .catch(err => showToast("Error: " + err.message));
         }
@@ -479,9 +520,44 @@
             if (e.target === document.getElementById('modalOverlay')) closeModal();
         });
 
-        // Pipeline placeholder (you can expand later)
-        function loadPipeline() {
-            document.getElementById('pipelineContainer').innerHTML = "Sales pipeline view coming soon...";
+        // ────────────────────────────────────────────────
+        //  Sidebar & Navigation
+        // ────────────────────────────────────────────────
+        function expandSidebar() {
+            if (window.innerWidth >= 992) {
+                document.getElementById('sideDrawer').classList.add('expanded');
+            }
+        }
+
+        function collapseSidebar() {
+            if (window.innerWidth >= 992) {
+                document.getElementById('sideDrawer').classList.remove('expanded');
+            }
+        }
+
+        function toggleDrawer() {
+            document.getElementById('sideDrawer').classList.toggle('open');
+        }
+
+        document.querySelectorAll('.drawer-item[data-section]').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.getAttribute('data-section');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+                document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                if (window.innerWidth < 992) toggleDrawer();
+            });
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3200);
+        }
+
+        function logout() {
+            auth.signOut().then(() => window.location.href = "login.html");
         }
     </script>
 </body>
