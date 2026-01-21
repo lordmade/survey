@@ -20,229 +20,188 @@
             --text-main: #111827;
             --text-sub: #6b7280;
             --bg: #f8fafc;
+            --sidebar-collapsed: 72px;
+            --sidebar-expanded: 260px;
         }
+
         * {
             margin: 0; padding: 0; box-sizing: border-box;
             font-family: 'Inter', sans-serif;
         }
+
         body {
             background: var(--bg);
             color: var(--text-main);
             height: 100vh;
             overflow: hidden;
         }
-        #menuBtn {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            width: 48px;
-            height: 48px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            cursor: pointer;
-        }
-        #sideDrawer {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100%;
-            background: white;
-            box-shadow: 6px 0 30px rgba(0,0,0,0.15);
-            transition: left 0.35s ease;
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-        }
-        #sideDrawer.open { left: 0; }
-        .drawer-header {
-            padding: 32px 24px 24px;
-            background: var(--primary);
-            color: white;
-            text-align: center;
-        }
-        .drawer-header h3 { font-size: 20px; font-weight: 600; }
-        .drawer-header p { font-size: 14px; opacity: 0.9; margin-top: 6px; }
-        .drawer-menu {
-            flex: 1;
-            padding: 16px 0;
-        }
-        .drawer-item {
-            display: flex;
-            align-items: center;
-            padding: 16px 24px;
-            font-size: 16px;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .drawer-item:hover { background: var(--gray-100); }
-        .drawer-item .material-symbols-rounded {
-            font-size: 28px;
-            margin-right: 20px;
-            color: var(--gray-500);
-        }
-        #drawerOverlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 150;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.35s;
-        }
-        #drawerOverlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
+
+        /* ── Top Bar ── */
         .top-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
             height: 64px;
             background: white;
             border-bottom: 1px solid var(--gray-200);
-            padding: 0 24px;
+            padding: 0 24px 0 80px;           /* space for hamburger + logo area */
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 90;
         }
-        .top-bar h1 {
+
+        .top-bar .logo-area {
             font-size: 22px;
             font-weight: 700;
             color: var(--primary);
+            white-space: nowrap;
         }
-        .main-content {
-            margin-top: 64px;
-            height: calc(100vh - 64px);
-            overflow-y: auto;
-            padding: 24px;
+
+        .top-bar h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
         }
-        .pipeline-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .pipeline-header h2 {
-            font-size: 24px;
-            font-weight: 700;
-        }
+
         .btn-primary {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 10px 20px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
-        .pipeline-container {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding-bottom: 20px;
-        }
-        .stage-column {
-            min-width: 320px;
-            background: var(--gray-50);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid var(--gray-200);
-        }
-        .stage-title {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--text-main);
-        }
-        .deal-card {
+
+        /* ── Hamburger Button ── */
+        #menuBtn {
+            position: fixed;
+            top: 12px;
+            left: 16px;
+            width: 48px;
+            height: 48px;
             background: white;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            border: 1px solid var(--gray-200);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .deal-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-        }
-        .deal-company {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        .deal-contact {
-            color: var(--gray-500);
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-        .deal-value {
-            font-weight: 700;
-            font-size: 18px;
-            color: var(--success);
-            margin-bottom: 8px;
-        }
-        .deal-meta {
-            font-size: 13px;
-            color: var(--gray-500);
-            display: flex;
-            justify-content: space-between;
-        }
-        .detail-panel {
-            position: fixed;
-            top: 64px;
-            right: -420px;
-            width: 420px;
-            height: calc(100vh - 64px);
-            background: white;
-            box-shadow: -6px 0 30px rgba(0,0,0,0.15);
-            transition: right 0.35s ease;
-            z-index: 120;
-            overflow-y: auto;
-        }
-        .detail-panel.open { right: 0; }
-        .detail-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--gray-200);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             display: flex;
             align-items: center;
-            gap: 16px;
+            justify-content: center;
+            z-index: 150;
+            cursor: pointer;
         }
-        .detail-header img {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
+
+        /* ── Sidebar ── */
+        #sideDrawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-collapsed);
+            height: 100%;
+            background: white;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+            transition: width 0.25s ease;
+            z-index: 100;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-        .detail-body {
-            padding: 24px;
+
+        #sideDrawer.expanded {
+            width: var(--sidebar-expanded);
         }
-        .section-title {
+
+        .sidebar-header {
+            padding: 20px 16px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            font-weight: 600;
             font-size: 18px;
-            font-weight: 700;
-            margin: 24px 0 12px;
+            opacity: 0;
+            transition: opacity 0.2s ease 0.1s;
         }
-        .activity-item {
-            padding: 12px 0;
-            border-bottom: 1px solid var(--gray-100);
-            font-size: 14px;
+
+        #sideDrawer.expanded .sidebar-header {
+            opacity: 1;
         }
-        .activity-item .time {
+
+        .drawer-menu {
+            flex: 1;
+            padding: 16px 0;
+        }
+
+        .drawer-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .drawer-item .material-symbols-rounded {
+            font-size: 26px;
+            min-width: 40px;
+            text-align: center;
             color: var(--gray-500);
-            font-size: 13px;
-            margin-top: 4px;
         }
+
+        .drawer-item span.label {
+            opacity: 0;
+            margin-left: 12px;
+            transition: opacity 0.2s ease 0.1s;
+        }
+
+        #sideDrawer.expanded .drawer-item span.label {
+            opacity: 1;
+        }
+
+        .drawer-item:hover {
+            background: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .drawer-item:hover .material-symbols-rounded {
+            color: var(--primary);
+        }
+
+        /* ── Main Content ── */
+        .main-content {
+            margin-top: 64px;
+            margin-left: var(--sidebar-collapsed);
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+            padding: 24px;
+            transition: margin-left 0.25s ease;
+        }
+
+        #sideDrawer.expanded ~ .main-content {
+            margin-left: var(--sidebar-expanded);
+        }
+
+        /* ── Section styling ── */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .placeholder {
+            text-align: center;
+            color: var(--gray-500);
+            margin-top: 80px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        /* ── Toast ── */
         #toast {
             position: fixed;
             bottom: 32px;
@@ -256,91 +215,141 @@
             z-index: 9999;
             display: none;
         }
-        @media (max-width: 768px) {
-            .detail-panel { width: 100%; right: -100%; }
-            .pipeline-container { flex-direction: column; }
-            .stage-column { min-width: 100%; }
+
+        /* ── Responsive ── */
+        @media (max-width: 991px) {
+            #sideDrawer {
+                left: calc(var(--sidebar-collapsed) * -1);
+                width: var(--sidebar-expanded);
+            }
+
+            #sideDrawer.open {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            #sideDrawer.expanded,
+            #sideDrawer:hover {
+                width: var(--sidebar-expanded);
+            }
+
+            .sidebar-header,
+            .drawer-item span.label {
+                opacity: 1 !important;
+            }
+
+            #menuBtn {
+                z-index: 250;
+            }
+        }
+
+        @media (min-width: 992px) {
+            #menuBtn {
+                display: none; /* hide hamburger on desktop */
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Hamburger (mobile only) -->
     <div id="menuBtn" onclick="toggleDrawer()">
         <span class="material-symbols-rounded">menu</span>
     </div>
 
-    <div id="sideDrawer">
-        <div class="drawer-header">
-            <h3 id="userName">Welcome</h3>
-            <p>Nexlify CRM</p>
-        </div>
+    <!-- Sidebar -->
+    <div id="sideDrawer" onmouseenter="expandSidebar()" onmouseleave="collapseSidebar()">
+        <div class="sidebar-header">Nexlify CRM</div>
         <div class="drawer-menu">
-            <div class="drawer-item" onclick="showSection('dashboard')"><span class="material-symbols-rounded">dashboard</span>Dashboard</div>
-            <div class="drawer-item" onclick="showSection('contacts')"><span class="material-symbols-rounded">people</span>Contacts</div>
-            <div class="drawer-item" onclick="showSection('deals')"><span class="material-symbols-rounded">handshake</span>Deals</div>
-            <div class="drawer-item" onclick="showSection('tasks')"><span class="material-symbols-rounded">task_alt</span>Tasks</div>
-            <div class="drawer-item" onclick="showSection('reports')"><span class="material-symbols-rounded">bar_chart</span>Reports</div>
-            <div class="drawer-item" onclick="logout()"><span class="material-symbols-rounded">logout</span>Log Out</div>
+            <a class="drawer-item" data-section="dashboard">
+                <span class="material-symbols-rounded">dashboard</span>
+                <span class="label">Dashboard</span>
+            </a>
+            <a class="drawer-item" data-section="contacts">
+                <span class="material-symbols-rounded">people</span>
+                <span class="label">Contacts</span>
+            </a>
+            <a class="drawer-item" data-section="deals">
+                <span class="material-symbols-rounded">handshake</span>
+                <span class="label">Deals</span>
+            </a>
+            <a class="drawer-item" data-section="tasks">
+                <span class="material-symbols-rounded">task_alt</span>
+                <span class="label">Tasks</span>
+            </a>
+            <a class="drawer-item" data-section="reports">
+                <span class="material-symbols-rounded">bar_chart</span>
+                <span class="label">Reports</span>
+            </a>
+            <a class="drawer-item" onclick="logout()">
+                <span class="material-symbols-rounded">logout</span>
+                <span class="label">Log Out</span>
+            </a>
         </div>
     </div>
 
-    <div id="drawerOverlay" onclick="toggleDrawer()"></div>
-
+    <!-- Top Bar -->
     <div class="top-bar">
-        <h1 id="pageTitle">Pipeline</h1>
-        <button class="btn-primary" onclick="addNewDeal()">
+        <div class="logo-area" id="pageTitle">Pipeline</div>
+        <button class="btn-primary" id="actionBtn" onclick="addNewDeal()">
             <span class="material-symbols-rounded">add</span> New Deal
         </button>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content" id="mainContent">
-        <!-- Pipeline View -->
-        <div id="pipelineView">
-            <div class="pipeline-header">
-                <h2>Sales Pipeline</h2>
+        <div id="dashboard" class="section active">
+            <h2>Dashboard</h2>
+            <div class="placeholder">
+                Welcome to your CRM Dashboard<br><br>
+                • Pipeline overview<br>
+                • Key metrics & charts<br>
+                • Recent activity<br>
+                • Quick actions
             </div>
-            <div class="pipeline-container" id="pipelineStages"></div>
         </div>
 
-        <!-- Placeholder views -->
-        <div id="contactsView" style="display:none;">
+        <div id="contacts" class="section">
             <h2>Contacts</h2>
-            <p style="color:var(--gray-500); margin-top:40px; text-align:center;">Contact list coming soon...</p>
-        </div>
-        <div id="tasksView" style="display:none;">
-            <h2>My Tasks</h2>
-            <p style="color:var(--gray-500); margin-top:40px; text-align:center;">Task manager coming soon...</p>
-        </div>
-        <div id="reportsView" style="display:none;">
-            <h2>Reports</h2>
-            <p style="color:var(--gray-500); margin-top:40px; text-align:center;">Analytics & reports coming soon...</p>
-        </div>
-    </div>
-
-    <!-- Detail / 360° Panel -->
-    <div class="detail-panel" id="detailPanel">
-        <div class="detail-header">
-            <img id="detailAvatar" src="https://ui-avatars.com/api/?name=Company&background=2563eb&color=fff" alt="">
-            <div>
-                <h2 id="detailName">Company Name</h2>
-                <p id="detailSubtitle" style="color:var(--gray-500);">Contact • Deal Value</p>
+            <div class="placeholder">
+                Contacts & Companies<br><br>
+                • Search & filter<br>
+                • Add new contact<br>
+                • Import from CSV<br>
+                • Tags & custom fields
             </div>
         </div>
-        <div class="detail-body">
-            <div class="section-title">Deal Information</div>
-            <p><strong>Stage:</strong> <span id="detailStage">Proposal</span></p>
-            <p><strong>Value:</strong> <span id="detailValue">R 240 000</span></p>
-            <p><strong>Expected Close:</strong> <span id="detailClose">2026-03-15</span></p>
 
-            <div class="section-title">Next Action</div>
-            <button class="btn-primary" style="width:100%; margin:8px 0;" onclick="logActivity(selectedDealId, 'call', prompt('Call notes:'))">Log Call</button>
-            <button class="btn-primary" style="width:100%; margin:8px 0; background:var(--success);" onclick="logActivity(selectedDealId, 'email', prompt('Email subject / summary:'))">Log Email</button>
-            <button class="btn-primary" style="width:100%; margin:8px 0; background:#8b5cf6;" onclick="logActivity(selectedDealId, 'meeting', prompt('Meeting summary:'))">Log Meeting</button>
-            <button class="btn-primary" style="width:100%; margin:8px 0; background:#f59e0b;" onclick="logActivity(selectedDealId, 'note', prompt('Note:'))">Add Note</button>
+        <div id="deals" class="section">
+            <h2>Deals / Pipeline</h2>
+            <div class="placeholder" id="pipelinePlaceholder">
+                Loading sales pipeline...
+            </div>
+            <!-- Pipeline will be injected here by JS -->
+        </div>
 
-            <div class="section-title">Activity History</div>
-            <div id="activityList">
-                <!-- Filled dynamically -->
+        <div id="tasks" class="section">
+            <h2>Tasks & Activities</h2>
+            <div class="placeholder">
+                My Tasks & Reminders<br><br>
+                • Due today / upcoming<br>
+                • Overdue items<br>
+                • Create new task<br>
+                • Calendar integration
+            </div>
+        </div>
+
+        <div id="reports" class="section">
+            <h2>Reports & Analytics</h2>
+            <div class="placeholder">
+                Business Insights<br><br>
+                • Win rate<br>
+                • Pipeline value<br>
+                • Activity stats<br>
+                • Export reports
             </div>
         </div>
     </div>
@@ -351,9 +360,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        // ────────────────────────────────────────────────
-        //  Firebase Config  (← replace with your own project)
-        // ────────────────────────────────────────────────
+        // Firebase (use your own config)
         const firebaseConfig = {
             apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
             authDomain: "fire-b-a8878.firebaseapp.com",
@@ -368,32 +375,51 @@
         const auth = firebase.auth();
 
         let currentUser = null;
-        let selectedDealId = null;
-
-        const stages = [
-            {id: "lead",        name: "Lead",        color: "#9ca3af"},
-            {id: "contacted",   name: "Contacted",   color: "#60a5fa"},
-            {id: "qualified",   name: "Qualified",   color: "#8b5cf6"},
-            {id: "proposal",    name: "Proposal",    color: "#f59e0b"},
-            {id: "negotiation", name: "Negotiation", color: "#f97316"},
-            {id: "won",         name: "Won",         color: "#10b981"},
-            {id: "lost",        name: "Lost",        color: "#ef4444"}
-        ];
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
                 document.getElementById('userName').textContent = user.displayName || "User";
-                loadPipeline();
+                // Load pipeline only when deals section is active
             } else {
-                window.location.href = "login.html"; // ← create your login page
+                window.location.href = "login.html";
             }
         });
 
+        // ── Sidebar Hover (Desktop only) ──
+        function expandSidebar() {
+            if (window.innerWidth >= 992) {
+                document.getElementById('sideDrawer').classList.add('expanded');
+            }
+        }
+
+        function collapseSidebar() {
+            if (window.innerWidth >= 992) {
+                document.getElementById('sideDrawer').classList.remove('expanded');
+            }
+        }
+
+        // ── Mobile Drawer Toggle ──
         function toggleDrawer() {
             document.getElementById('sideDrawer').classList.toggle('open');
-            document.getElementById('drawerOverlay').classList.toggle('open');
         }
+
+        // ── Section Switching ──
+        document.querySelectorAll('.drawer-item[data-section]').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.getAttribute('data-section');
+
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+
+                document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+
+                // Show/hide action button
+                document.getElementById('actionBtn').style.display = (section === 'deals') ? 'flex' : 'none';
+
+                if (window.innerWidth < 992) toggleDrawer(); // close drawer on mobile after click
+            });
+        });
 
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -406,281 +432,14 @@
             auth.signOut().then(() => window.location.href = "login.html");
         }
 
-        function showSection(section) {
-            toggleDrawer();
-            document.querySelectorAll('#mainContent > div').forEach(el => el.style.display = 'none');
-            document.getElementById(`${section}View`).style.display = 'block';
-            document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
-            if (section === 'deals' || section === 'dashboard') loadPipeline();
-        }
-
-        function loadPipeline() {
-            const container = document.getElementById('pipelineStages');
-            container.innerHTML = '<div style="text-align:center; padding:60px 0; color:var(--gray-500);">Loading pipeline...</div>';
-
-            const stageCounts = {};
-            stages.forEach(s => stageCounts[s.id] = 0);
-
-            db.ref('deals')
-                .orderByChild('owner')
-                .equalTo(currentUser.uid)
-                .once('value')
-                .then(snap => {
-                    const deals = snap.val() || {};
-                    container.innerHTML = '';
-
-                    stages.forEach(stage => {
-                        const column = document.createElement('div');
-                        column.className = 'stage-column';
-                        column.innerHTML = `
-                            <div class="stage-title">
-                                ${stage.name}
-                                <span style="float:right; background:#e5e7eb; color:#4b5563; font-size:12px; padding:2px 8px; border-radius:999px;">
-                                    ${stageCounts[stage.id]}
-                                </span>
-                            </div>
-                            <div id="stage-${stage.id}" class="stage-cards"></div>
-                        `;
-                        container.appendChild(column);
-                    });
-
-                    // Group & sort deals (newest first within each stage)
-                    const grouped = {};
-                    stages.forEach(s => grouped[s.id] = []);
-
-                    Object.entries(deals).forEach(([id, deal]) => {
-                        const stageId = deal.stage || 'lead';
-                        if (grouped[stageId]) {
-                            grouped[stageId].push({ id, ...deal });
-                            stageCounts[stageId]++;
-                        }
-                    });
-
-                    // Render cards – newest first
-                    Object.keys(grouped).forEach(stageId => {
-                        const sorted = grouped[stageId].sort((a,b) => (b.lastActivity || 0) - (a.lastActivity || 0));
-                        const container = document.getElementById(`stage-${stageId}`);
-
-                        if (sorted.length === 0) {
-                            container.innerHTML = '<div style="text-align:center; padding:40px 0; color:#9ca3af; font-size:14px;">No deals here yet</div>';
-                            return;
-                        }
-
-                        sorted.forEach(deal => {
-                            const card = document.createElement('div');
-                            card.className = 'deal-card';
-                            card.dataset.dealId = deal.id;
-                            card.onclick = () => openDealDetail(deal.id, deal);
-
-                            const valueFormatted = Number(deal.value || 0).toLocaleString('en-ZA', {
-                                style: 'currency',
-                                currency: 'ZAR',
-                                minimumFractionDigits: 0
-                            });
-
-                            card.innerHTML = `
-                                <div class="deal-company">${deal.company || 'Unnamed Account'}</div>
-                                <div class="deal-contact">${deal.contactName || '—'} ${deal.contactRole ? `(${deal.contactRole})` : ''}</div>
-                                <div class="deal-value" style="color: ${deal.stage === 'won' ? 'var(--success)' : deal.stage === 'lost' ? 'var(--danger)' : 'inherit'}">
-                                    ${valueFormatted}
-                                </div>
-                                <div class="deal-meta">
-                                    <span>Close: ${deal.expectedClose || '?'}</span>
-                                    <span title="${new Date(deal.lastActivity).toLocaleString()}">
-                                        ${formatRelativeTime(deal.lastActivity || deal.created || Date.now())}
-                                    </span>
-                                </div>
-                            `;
-                            container.appendChild(card);
-                        });
-
-                        // Update count badge
-                        const badge = document.querySelector(`#stage-${stageId}`).parentElement.querySelector('span');
-                        if (badge) badge.textContent = sorted.length;
-                    });
-                })
-                .catch(err => {
-                    showToast("Failed to load pipeline: " + err.message);
-                });
-        }
-
-        function formatRelativeTime(timestamp) {
-            if (!timestamp) return '—';
-            const diff = Date.now() - timestamp;
-            const minutes = Math.floor(diff / 60000);
-            const hours   = Math.floor(minutes / 60);
-            const days    = Math.floor(hours / 24);
-
-            if (minutes < 1)   return 'just now';
-            if (minutes < 60)  return `${minutes}m ago`;
-            if (hours < 24)    return `${hours}h ago`;
-            if (days === 1)    return 'yesterday';
-            if (days < 7)      return `${days}d ago`;
-
-            return new Date(timestamp).toLocaleDateString('en-ZA', {
-                day: 'numeric', month: 'short'
-            });
-        }
-
-        function saveDeal(dealData, dealId = null) {
-            const baseData = {
-                owner: currentUser.uid,
-                lastActivity: Date.now(),
-                ...dealData
-            };
-
-            let ref;
-            if (dealId) {
-                ref = db.ref(`deals/${dealId}`);
-                return ref.update(baseData)
-                    .then(() => {
-                        showToast("Deal updated");
-                        loadPipeline();
-                        document.getElementById('detailPanel').classList.remove('open');
-                    })
-                    .catch(err => showToast("Update failed: " + err.message));
-            } else {
-                ref = db.ref('deals').push();
-                return ref.set({
-                    ...baseData,
-                    created: Date.now()
-                })
-                .then(() => {
-                    showToast("Deal created");
-                    loadPipeline();
-                })
-                .catch(err => showToast("Creation failed: " + err.message));
-            }
-        }
-
+        // Placeholder action (expand later)
         function addNewDeal() {
-            const company = prompt("Company / Account name:", "")?.trim();
-            if (!company) return;
-
-            const contact = prompt("Primary contact name:", "")?.trim() || "";
-            const valueStr = prompt("Deal value (R):", "0")?.trim() || "0";
-            const value = parseFloat(valueStr.replace(/[^0-9.]/g, '')) || 0;
-
-            const today = new Date();
-            const defaultClose = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
-
-            const closeDate = prompt("Expected close date (YYYY-MM-DD):", defaultClose)?.trim() || defaultClose;
-
-            const deal = {
-                company,
-                contactName: contact,
-                value,
-                stage: "lead",
-                expectedClose: closeDate
-            };
-
-            saveDeal(deal);
+            showToast("New deal form would open here...");
+            // You can put your prompt / modal logic here
         }
 
-        function logActivity(dealId, type, description) {
-            if (!dealId || !description?.trim()) return;
-
-            const activity = {
-                type,           // "call", "email", "meeting", "note"
-                description,
-                created: Date.now(),
-                user: currentUser.uid
-            };
-
-            db.ref(`deals/${dealId}/activities`).push(activity)
-                .then(() => {
-                    db.ref(`deals/${dealId}`).update({ lastActivity: Date.now() });
-                    showToast(`Activity logged: ${type}`);
-                    // Refresh detail view if open
-                    if (selectedDealId === dealId) {
-                        openDealDetail(dealId, null); // reload from DB
-                    }
-                })
-                .catch(err => showToast("Failed to log activity"));
-        }
-
-        function openDealDetail(dealId, cachedDeal = null) {
-            selectedDealId = dealId;
-
-            // If we have cached data → show immediately, then update
-            if (cachedDeal) renderDealDetail(cachedDeal);
-
-            db.ref(`deals/${dealId}`).once('value')
-                .then(snap => {
-                    const deal = snap.val();
-                    if (!deal) {
-                        showToast("Deal not found");
-                        return;
-                    }
-                    renderDealDetail(deal);
-                })
-                .catch(err => showToast("Error loading deal: " + err.message));
-
-            // Load activities
-            db.ref(`deals/${dealId}/activities`)
-                .orderByChild('created')
-                .limitToLast(20)
-                .once('value')
-                .then(snap => {
-                    const acts = snap.val() || {};
-                    const list = document.getElementById('activityList');
-                    list.innerHTML = '';
-
-                    if (Object.keys(acts).length === 0) {
-                        list.innerHTML = '<p style="color:#9ca3af; text-align:center; padding:20px 0;">No activities yet</p>';
-                        return;
-                    }
-
-                    Object.values(acts).reverse().forEach(act => {  // newest first
-                        const item = document.createElement('div');
-                        item.className = 'activity-item';
-                        item.innerHTML = `
-                            <strong>${formatActivityType(act.type)}</strong><br>
-                            ${act.description || '(no details)'}
-                            <div class="time">${formatRelativeTime(act.created)}</div>
-                        `;
-                        list.appendChild(item);
-                    });
-                });
-        }
-
-        function renderDealDetail(deal) {
-            document.getElementById('detailName').textContent = deal.company || 'Unnamed Account';
-            document.getElementById('detailSubtitle').textContent =
-                `${deal.contactName || '—'} • ${deal.value ? 'R ' + Number(deal.value).toLocaleString('en-ZA') : 'No value'}`;
-
-            document.getElementById('detailStage').textContent =
-                (stages.find(s => s.id === deal.stage) || {name:'Unknown'}).name;
-
-            document.getElementById('detailValue').textContent =
-                deal.value ? 'R ' + Number(deal.value).toLocaleString('en-ZA') : '—';
-
-            document.getElementById('detailClose').textContent = deal.expectedClose || '—';
-
-            document.getElementById('detailAvatar').src =
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(deal.company || 'Account')}&background=2563eb&color=fff&size=128`;
-
-            document.getElementById('detailPanel').classList.add('open');
-        }
-
-        function formatActivityType(type) {
-            const map = {
-                call:    "📞 Call",
-                email:   "✉️ Email",
-                meeting: "🗓️ Meeting",
-                note:    "📝 Note",
-                other:   "Activity"
-            };
-            return map[type] || type.charAt(0).toUpperCase() + type.slice(1);
-        }
-
-        // Close detail panel when clicking outside (optional)
-        document.addEventListener('click', e => {
-            const panel = document.getElementById('detailPanel');
-            if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.deal-card')) {
-                panel.classList.remove('open');
-            }
-        });
+        // Initial setup
+        document.getElementById('actionBtn').style.display = 'flex'; // shown on deals by default
     </script>
 </body>
 </html>
