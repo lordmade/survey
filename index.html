@@ -2,208 +2,685 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FireCRM - Business Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nexlify CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-500: #6b7280;
+            --text-main: #111827;
+            --text-sub: #6b7280;
+            --bg: #f8fafc;
+        }
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+        }
+        #menuBtn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            cursor: pointer;
+        }
+        #sideDrawer {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background: white;
+            box-shadow: 6px 0 30px rgba(0,0,0,0.15);
+            transition: left 0.35s ease;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+        }
+        #sideDrawer.open { left: 0; }
+        .drawer-header {
+            padding: 32px 24px 24px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+        .drawer-header h3 { font-size: 20px; font-weight: 600; }
+        .drawer-header p { font-size: 14px; opacity: 0.9; margin-top: 6px; }
+        .drawer-menu {
+            flex: 1;
+            padding: 16px 0;
+        }
+        .drawer-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            font-size: 16px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .drawer-item:hover { background: var(--gray-100); }
+        .drawer-item .material-symbols-rounded {
+            font-size: 28px;
+            margin-right: 20px;
+            color: var(--gray-500);
+        }
+        #drawerOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 150;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s;
+        }
+        #drawerOverlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .top-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 90;
+        }
+        .top-bar h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .main-content {
+            margin-top: 64px;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+            padding: 24px;
+        }
+        .pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .pipeline-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pipeline-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+        .stage-column {
+            min-width: 320px;
+            background: var(--gray-50);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid var(--gray-200);
+        }
+        .stage-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+        .deal-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--gray-200);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .deal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        .deal-company {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .deal-contact {
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .deal-value {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+        .deal-meta {
+            font-size: 13px;
+            color: var(--gray-500);
+            display: flex;
+            justify-content: space-between;
+        }
+        .detail-panel {
+            position: fixed;
+            top: 64px;
+            right: -420px;
+            width: 420px;
+            height: calc(100vh - 64px);
+            background: white;
+            box-shadow: -6px 0 30px rgba(0,0,0,0.15);
+            transition: right 0.35s ease;
+            z-index: 120;
+            overflow-y: auto;
+        }
+        .detail-panel.open { right: 0; }
+        .detail-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .detail-header img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+        }
+        .detail-body {
+            padding: 24px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 24px 0 12px;
+        }
+        .activity-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-100);
+            font-size: 14px;
+        }
+        .activity-item .time {
+            color: var(--gray-500);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        #toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 999px;
+            font-size: 14px;
+            z-index: 9999;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .detail-panel { width: 100%; right: -100%; }
+            .pipeline-container { flex-direction: column; }
+            .stage-column { min-width: 100%; }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-    <div id="login-screen" class="flex items-center justify-center h-screen">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h1 class="text-2xl font-bold mb-6 text-blue-600 text-center">FireCRM Login</h1>
-            <input type="email" id="email" placeholder="Email" class="w-full p-3 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <input type="password" id="password" placeholder="Password" class="w-full p-3 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <button onclick="login()" class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition">Sign In / Sign Up</button>
-            <p id="login-msg" class="text-red-500 text-sm mt-4 text-center"></p>
+    <div id="menuBtn" onclick="toggleDrawer()">
+        <span class="material-symbols-rounded">menu</span>
+    </div>
+
+    <div id="sideDrawer">
+        <div class="drawer-header">
+            <h3 id="userName">Welcome</h3>
+            <p>Nexlify CRM</p>
+        </div>
+        <div class="drawer-menu">
+            <div class="drawer-item" onclick="showSection('dashboard')"><span class="material-symbols-rounded">dashboard</span>Dashboard</div>
+            <div class="drawer-item" onclick="showSection('contacts')"><span class="material-symbols-rounded">people</span>Contacts</div>
+            <div class="drawer-item" onclick="showSection('deals')"><span class="material-symbols-rounded">handshake</span>Deals</div>
+            <div class="drawer-item" onclick="showSection('tasks')"><span class="material-symbols-rounded">task_alt</span>Tasks</div>
+            <div class="drawer-item" onclick="showSection('reports')"><span class="material-symbols-rounded">bar_chart</span>Reports</div>
+            <div class="drawer-item" onclick="logout()"><span class="material-symbols-rounded">logout</span>Log Out</div>
         </div>
     </div>
 
-    <div id="dashboard" class="hidden min-h-screen">
-        <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-gray-800"><i class="fas fa-users text-blue-600 mr-2"></i>FireCRM</h1>
-            <button onclick="logout()" class="text-gray-600 hover:text-red-500 font-medium">Logout</button>
-        </nav>
+    <div id="drawerOverlay" onclick="toggleDrawer()"></div>
 
-        <div class="container mx-auto p-6">
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded shadow border-l-4 border-blue-500">
-                    <h3 class="text-gray-500 text-sm uppercase">Total Leads</h3>
-                    <p class="text-2xl font-bold" id="total-count">0</p>
-                </div>
-                <div class="bg-white p-6 rounded shadow border-l-4 border-green-500">
-                    <h3 class="text-gray-500 text-sm uppercase">Active Deals</h3>
-                    <p class="text-2xl font-bold" id="active-count">0</p>
-                </div>
+    <div class="top-bar">
+        <h1 id="pageTitle">Pipeline</h1>
+        <button class="btn-primary" onclick="addNewDeal()">
+            <span class="material-symbols-rounded">add</span> New Deal
+        </button>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <!-- Pipeline View -->
+        <div id="pipelineView">
+            <div class="pipeline-header">
+                <h2>Sales Pipeline</h2>
             </div>
+            <div class="pipeline-container" id="pipelineStages"></div>
+        </div>
 
-            <div class="bg-white p-6 rounded shadow mb-8">
-                <h2 class="text-lg font-bold mb-4">Add New Customer</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <input type="text" id="leadName" placeholder="Name" class="p-2 border rounded">
-                    <input type="text" id="leadCompany" placeholder="Company" class="p-2 border rounded">
-                    <select id="leadStatus" class="p-2 border rounded bg-white">
-                        <option value="New">New Lead</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Closed">Closed Deal</option>
-                    </select>
-                    <button onclick="addLead()" class="bg-green-600 text-white p-2 rounded hover:bg-green-700"><i class="fas fa-plus mr-1"></i> Add Lead</button>
-                </div>
+        <!-- Placeholder views -->
+        <div id="contactsView" style="display:none;">
+            <h2>Contacts</h2>
+            <p style="color:var(--gray-500); margin-top:40px; text-align:center;">Contact list coming soon...</p>
+        </div>
+        <div id="tasksView" style="display:none;">
+            <h2>My Tasks</h2>
+            <p style="color:var(--gray-500); margin-top:40px; text-align:center;">Task manager coming soon...</p>
+        </div>
+        <div id="reportsView" style="display:none;">
+            <h2>Reports</h2>
+            <p style="color:var(--gray-500); margin-top:40px; text-align:center;">Analytics & reports coming soon...</p>
+        </div>
+    </div>
+
+    <!-- Detail / 360° Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <img id="detailAvatar" src="https://ui-avatars.com/api/?name=Company&background=2563eb&color=fff" alt="">
+            <div>
+                <h2 id="detailName">Company Name</h2>
+                <p id="detailSubtitle" style="color:var(--gray-500);">Contact • Deal Value</p>
             </div>
+        </div>
+        <div class="detail-body">
+            <div class="section-title">Deal Information</div>
+            <p><strong>Stage:</strong> <span id="detailStage">Proposal</span></p>
+            <p><strong>Value:</strong> <span id="detailValue">R 240 000</span></p>
+            <p><strong>Expected Close:</strong> <span id="detailClose">2026-03-15</span></p>
 
-            <div class="bg-white rounded shadow overflow-hidden">
-                <div class="px-6 py-4 border-b">
-                    <h2 class="font-bold text-gray-700">Customer Database</h2>
-                </div>
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50 text-gray-600 text-sm uppercase">
-                            <th class="p-4 border-b">Name</th>
-                            <th class="p-4 border-b">Company</th>
-                            <th class="p-4 border-b">Status</th>
-                            <th class="p-4 border-b text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leads-table-body">
-                        </tbody>
-                </table>
+            <div class="section-title">Next Action</div>
+            <button class="btn-primary" style="width:100%; margin:8px 0;" onclick="logActivity(selectedDealId, 'call', prompt('Call notes:'))">Log Call</button>
+            <button class="btn-primary" style="width:100%; margin:8px 0; background:var(--success);" onclick="logActivity(selectedDealId, 'email', prompt('Email subject / summary:'))">Log Email</button>
+            <button class="btn-primary" style="width:100%; margin:8px 0; background:#8b5cf6;" onclick="logActivity(selectedDealId, 'meeting', prompt('Meeting summary:'))">Log Meeting</button>
+            <button class="btn-primary" style="width:100%; margin:8px 0; background:#f59e0b;" onclick="logActivity(selectedDealId, 'note', prompt('Note:'))">Add Note</button>
+
+            <div class="section-title">Activity History</div>
+            <div id="activityList">
+                <!-- Filled dynamically -->
             </div>
         </div>
     </div>
 
-    <script type="module">
-        // 1. Import Firebase SDKs (using version 9 modular syntax)
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+    <div id="toast"></div>
 
-        // 2. YOUR CONFIGURATION
-       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBQSPwpVbGrdCuOoyitAeWQHIeipj2MgIY",
-  authDomain: "newstart-64c43.firebaseapp.com",
-  projectId: "newstart-64c43",
-  storageBucket: "newstart-64c43.firebasestorage.app",
-  messagingSenderId: "941619830061",
-  appId: "1:941619830061:web:de9e0f791eb8f6eacf87a4",
-  measurementId: "G-7064P2RFHN"
-};
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+        // ────────────────────────────────────────────────
+        //  Firebase Config  (← replace with your own project)
+        // ────────────────────────────────────────────────
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
+            authDomain: "fire-b-a8878.firebaseapp.com",
+            databaseURL: "https://fire-b-a8878.firebaseio.com",
+            projectId: "fire-b-a8878",
+            storageBucket: "fire-b-a8878.firebasestorage.app",
+            messagingSenderId: "658673187627",
+            appId: "1:658673187627:web:6e4c29af661785f0afa36e"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+        let currentUser = null;
+        let selectedDealId = null;
 
-        // --- AUTHENTICATION LOGIC ---
+        const stages = [
+            {id: "lead",        name: "Lead",        color: "#9ca3af"},
+            {id: "contacted",   name: "Contacted",   color: "#60a5fa"},
+            {id: "qualified",   name: "Qualified",   color: "#8b5cf6"},
+            {id: "proposal",    name: "Proposal",    color: "#f59e0b"},
+            {id: "negotiation", name: "Negotiation", color: "#f97316"},
+            {id: "won",         name: "Won",         color: "#10b981"},
+            {id: "lost",        name: "Lost",        color: "#ef4444"}
+        ];
 
-        // Check login state
-        onAuthStateChanged(auth, (user) => {
+        auth.onAuthStateChanged(user => {
             if (user) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                loadLeads(); // Load data when logged in
+                currentUser = user;
+                document.getElementById('userName').textContent = user.displayName || "User";
+                loadPipeline();
             } else {
-                document.getElementById('login-screen').classList.remove('hidden');
-                document.getElementById('dashboard').classList.add('hidden');
+                window.location.href = "login.html"; // ← create your login page
             }
         });
 
-        // Login Function (Exposed to window for HTML onclick)
-        window.login = async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const msg = document.getElementById('login-msg');
+        function toggleDrawer() {
+            document.getElementById('sideDrawer').classList.toggle('open');
+            document.getElementById('drawerOverlay').classList.toggle('open');
+        }
 
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                // If user not found, try to create account (Quick dev hack)
-                if(error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                     try {
-                        await createUserWithEmailAndPassword(auth, email, password);
-                        alert("Account created! You are now logged in.");
-                     } catch (createError) {
-                        msg.innerText = createError.message;
-                     }
-                } else {
-                    msg.innerText = error.message;
-                }
-            }
-        };
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3200);
+        }
 
-        window.logout = () => signOut(auth);
+        function logout() {
+            auth.signOut().then(() => window.location.href = "login.html");
+        }
 
-        // --- DATABASE LOGIC (CRM) ---
+        function showSection(section) {
+            toggleDrawer();
+            document.querySelectorAll('#mainContent > div').forEach(el => el.style.display = 'none');
+            document.getElementById(`${section}View`).style.display = 'block';
+            document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            if (section === 'deals' || section === 'dashboard') loadPipeline();
+        }
 
-        // Add Lead
-        window.addLead = () => {
-            const name = document.getElementById('leadName').value;
-            const company = document.getElementById('leadCompany').value;
-            const status = document.getElementById('leadStatus').value;
+        function loadPipeline() {
+            const container = document.getElementById('pipelineStages');
+            container.innerHTML = '<div style="text-align:center; padding:60px 0; color:var(--gray-500);">Loading pipeline...</div>';
 
-            if (!name) return alert("Please enter a name");
+            const stageCounts = {};
+            stages.forEach(s => stageCounts[s.id] = 0);
 
-            const leadsRef = ref(db, 'leads');
-            push(leadsRef, {
-                name: name,
-                company: company,
-                status: status,
-                timestamp: Date.now()
-            });
+            db.ref('deals')
+                .orderByChild('owner')
+                .equalTo(currentUser.uid)
+                .once('value')
+                .then(snap => {
+                    const deals = snap.val() || {};
+                    container.innerHTML = '';
 
-            // Clear inputs
-            document.getElementById('leadName').value = '';
-            document.getElementById('leadCompany').value = '';
-        };
-
-        // Load and Listen for Leads
-        function loadLeads() {
-            const leadsRef = ref(db, 'leads');
-            onValue(leadsRef, (snapshot) => {
-                const tableBody = document.getElementById('leads-table-body');
-                tableBody.innerHTML = ""; // Clear current list
-                let total = 0;
-                let active = 0;
-
-                const data = snapshot.val();
-                if (data) {
-                    Object.keys(data).forEach(key => {
-                        const lead = data[key];
-                        total++;
-                        if(lead.status !== "Closed") active++;
-
-                        // Color badge based on status
-                        let badgeColor = lead.status === 'New' ? 'bg-blue-100 text-blue-800' : 
-                                         lead.status === 'Closed' ? 'bg-gray-100 text-gray-800' : 'bg-yellow-100 text-yellow-800';
-
-                        const row = `
-                            <tr class="hover:bg-gray-50 border-b last:border-0">
-                                <td class="p-4 font-medium">${lead.name}</td>
-                                <td class="p-4 text-gray-500">${lead.company}</td>
-                                <td class="p-4"><span class="px-2 py-1 rounded-full text-xs font-bold ${badgeColor}">${lead.status}</span></td>
-                                <td class="p-4 text-right">
-                                    <button onclick="deleteLead('${key}')" class="text-red-500 hover:text-red-700 text-sm">Delete</button>
-                                </td>
-                            </tr>
+                    stages.forEach(stage => {
+                        const column = document.createElement('div');
+                        column.className = 'stage-column';
+                        column.innerHTML = `
+                            <div class="stage-title">
+                                ${stage.name}
+                                <span style="float:right; background:#e5e7eb; color:#4b5563; font-size:12px; padding:2px 8px; border-radius:999px;">
+                                    ${stageCounts[stage.id]}
+                                </span>
+                            </div>
+                            <div id="stage-${stage.id}" class="stage-cards"></div>
                         `;
-                        tableBody.innerHTML += row;
+                        container.appendChild(column);
                     });
-                }
-                
-                // Update stats
-                document.getElementById('total-count').innerText = total;
-                document.getElementById('active-count').innerText = active;
+
+                    // Group & sort deals (newest first within each stage)
+                    const grouped = {};
+                    stages.forEach(s => grouped[s.id] = []);
+
+                    Object.entries(deals).forEach(([id, deal]) => {
+                        const stageId = deal.stage || 'lead';
+                        if (grouped[stageId]) {
+                            grouped[stageId].push({ id, ...deal });
+                            stageCounts[stageId]++;
+                        }
+                    });
+
+                    // Render cards – newest first
+                    Object.keys(grouped).forEach(stageId => {
+                        const sorted = grouped[stageId].sort((a,b) => (b.lastActivity || 0) - (a.lastActivity || 0));
+                        const container = document.getElementById(`stage-${stageId}`);
+
+                        if (sorted.length === 0) {
+                            container.innerHTML = '<div style="text-align:center; padding:40px 0; color:#9ca3af; font-size:14px;">No deals here yet</div>';
+                            return;
+                        }
+
+                        sorted.forEach(deal => {
+                            const card = document.createElement('div');
+                            card.className = 'deal-card';
+                            card.dataset.dealId = deal.id;
+                            card.onclick = () => openDealDetail(deal.id, deal);
+
+                            const valueFormatted = Number(deal.value || 0).toLocaleString('en-ZA', {
+                                style: 'currency',
+                                currency: 'ZAR',
+                                minimumFractionDigits: 0
+                            });
+
+                            card.innerHTML = `
+                                <div class="deal-company">${deal.company || 'Unnamed Account'}</div>
+                                <div class="deal-contact">${deal.contactName || '—'} ${deal.contactRole ? `(${deal.contactRole})` : ''}</div>
+                                <div class="deal-value" style="color: ${deal.stage === 'won' ? 'var(--success)' : deal.stage === 'lost' ? 'var(--danger)' : 'inherit'}">
+                                    ${valueFormatted}
+                                </div>
+                                <div class="deal-meta">
+                                    <span>Close: ${deal.expectedClose || '?'}</span>
+                                    <span title="${new Date(deal.lastActivity).toLocaleString()}">
+                                        ${formatRelativeTime(deal.lastActivity || deal.created || Date.now())}
+                                    </span>
+                                </div>
+                            `;
+                            container.appendChild(card);
+                        });
+
+                        // Update count badge
+                        const badge = document.querySelector(`#stage-${stageId}`).parentElement.querySelector('span');
+                        if (badge) badge.textContent = sorted.length;
+                    });
+                })
+                .catch(err => {
+                    showToast("Failed to load pipeline: " + err.message);
+                });
+        }
+
+        function formatRelativeTime(timestamp) {
+            if (!timestamp) return '—';
+            const diff = Date.now() - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours   = Math.floor(minutes / 60);
+            const days    = Math.floor(hours / 24);
+
+            if (minutes < 1)   return 'just now';
+            if (minutes < 60)  return `${minutes}m ago`;
+            if (hours < 24)    return `${hours}h ago`;
+            if (days === 1)    return 'yesterday';
+            if (days < 7)      return `${days}d ago`;
+
+            return new Date(timestamp).toLocaleDateString('en-ZA', {
+                day: 'numeric', month: 'short'
             });
         }
 
-        // Delete Lead
-        window.deleteLead = (id) => {
-            if(confirm('Are you sure you want to remove this lead?')) {
-                const leadRef = ref(db, `leads/${id}`);
-                remove(leadRef);
+        function saveDeal(dealData, dealId = null) {
+            const baseData = {
+                owner: currentUser.uid,
+                lastActivity: Date.now(),
+                ...dealData
+            };
+
+            let ref;
+            if (dealId) {
+                ref = db.ref(`deals/${dealId}`);
+                return ref.update(baseData)
+                    .then(() => {
+                        showToast("Deal updated");
+                        loadPipeline();
+                        document.getElementById('detailPanel').classList.remove('open');
+                    })
+                    .catch(err => showToast("Update failed: " + err.message));
+            } else {
+                ref = db.ref('deals').push();
+                return ref.set({
+                    ...baseData,
+                    created: Date.now()
+                })
+                .then(() => {
+                    showToast("Deal created");
+                    loadPipeline();
+                })
+                .catch(err => showToast("Creation failed: " + err.message));
             }
-        };
+        }
+
+        function addNewDeal() {
+            const company = prompt("Company / Account name:", "")?.trim();
+            if (!company) return;
+
+            const contact = prompt("Primary contact name:", "")?.trim() || "";
+            const valueStr = prompt("Deal value (R):", "0")?.trim() || "0";
+            const value = parseFloat(valueStr.replace(/[^0-9.]/g, '')) || 0;
+
+            const today = new Date();
+            const defaultClose = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
+
+            const closeDate = prompt("Expected close date (YYYY-MM-DD):", defaultClose)?.trim() || defaultClose;
+
+            const deal = {
+                company,
+                contactName: contact,
+                value,
+                stage: "lead",
+                expectedClose: closeDate
+            };
+
+            saveDeal(deal);
+        }
+
+        function logActivity(dealId, type, description) {
+            if (!dealId || !description?.trim()) return;
+
+            const activity = {
+                type,           // "call", "email", "meeting", "note"
+                description,
+                created: Date.now(),
+                user: currentUser.uid
+            };
+
+            db.ref(`deals/${dealId}/activities`).push(activity)
+                .then(() => {
+                    db.ref(`deals/${dealId}`).update({ lastActivity: Date.now() });
+                    showToast(`Activity logged: ${type}`);
+                    // Refresh detail view if open
+                    if (selectedDealId === dealId) {
+                        openDealDetail(dealId, null); // reload from DB
+                    }
+                })
+                .catch(err => showToast("Failed to log activity"));
+        }
+
+        function openDealDetail(dealId, cachedDeal = null) {
+            selectedDealId = dealId;
+
+            // If we have cached data → show immediately, then update
+            if (cachedDeal) renderDealDetail(cachedDeal);
+
+            db.ref(`deals/${dealId}`).once('value')
+                .then(snap => {
+                    const deal = snap.val();
+                    if (!deal) {
+                        showToast("Deal not found");
+                        return;
+                    }
+                    renderDealDetail(deal);
+                })
+                .catch(err => showToast("Error loading deal: " + err.message));
+
+            // Load activities
+            db.ref(`deals/${dealId}/activities`)
+                .orderByChild('created')
+                .limitToLast(20)
+                .once('value')
+                .then(snap => {
+                    const acts = snap.val() || {};
+                    const list = document.getElementById('activityList');
+                    list.innerHTML = '';
+
+                    if (Object.keys(acts).length === 0) {
+                        list.innerHTML = '<p style="color:#9ca3af; text-align:center; padding:20px 0;">No activities yet</p>';
+                        return;
+                    }
+
+                    Object.values(acts).reverse().forEach(act => {  // newest first
+                        const item = document.createElement('div');
+                        item.className = 'activity-item';
+                        item.innerHTML = `
+                            <strong>${formatActivityType(act.type)}</strong><br>
+                            ${act.description || '(no details)'}
+                            <div class="time">${formatRelativeTime(act.created)}</div>
+                        `;
+                        list.appendChild(item);
+                    });
+                });
+        }
+
+        function renderDealDetail(deal) {
+            document.getElementById('detailName').textContent = deal.company || 'Unnamed Account';
+            document.getElementById('detailSubtitle').textContent =
+                `${deal.contactName || '—'} • ${deal.value ? 'R ' + Number(deal.value).toLocaleString('en-ZA') : 'No value'}`;
+
+            document.getElementById('detailStage').textContent =
+                (stages.find(s => s.id === deal.stage) || {name:'Unknown'}).name;
+
+            document.getElementById('detailValue').textContent =
+                deal.value ? 'R ' + Number(deal.value).toLocaleString('en-ZA') : '—';
+
+            document.getElementById('detailClose').textContent = deal.expectedClose || '—';
+
+            document.getElementById('detailAvatar').src =
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(deal.company || 'Account')}&background=2563eb&color=fff&size=128`;
+
+            document.getElementById('detailPanel').classList.add('open');
+        }
+
+        function formatActivityType(type) {
+            const map = {
+                call:    "📞 Call",
+                email:   "✉️ Email",
+                meeting: "🗓️ Meeting",
+                note:    "📝 Note",
+                other:   "Activity"
+            };
+            return map[type] || type.charAt(0).toUpperCase() + type.slice(1);
+        }
+
+        // Close detail panel when clicking outside (optional)
+        document.addEventListener('click', e => {
+            const panel = document.getElementById('detailPanel');
+            if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.deal-card')) {
+                panel.classList.remove('open');
+            }
+        });
     </script>
 </body>
 </html>
