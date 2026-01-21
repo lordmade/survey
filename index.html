@@ -7,9 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
     
-    <!-- Chart.js core -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
-    <!-- Funnel plugin -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-funnel@4.2.5/dist/chartjs-chart-funnel.min.js"></script>
 
     <style>
@@ -80,6 +78,74 @@
         .section { display:none; }
         .section.active { display:block; }
 
+        /* ── Shimmer Loading ── */
+        .shimmer-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .shimmer-card {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            border-radius: 12px;
+            height: 140px;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .chart-card-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            border-radius: 12px;
+            height: 340px;
+            animation: shimmer 1.5s infinite;
+            margin: 32px 0;
+        }
+
+        /* ── Saving Overlay ── */
+        #savingOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .pulse-loader {
+            width: 80px; height: 80px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 24px;
+            animation: pulse 1.6s infinite;
+        }
+        .pulse-loader span { color: white; font-size: 40px; }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37,99,235,0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 30px rgba(37,99,235,0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37,99,235,0); }
+        }
+        #savingOverlay h2 { font-size: 22px; color: var(--text-main); margin-bottom: 8px; }
+        #savingOverlay p { color: var(--gray-500); }
+
+        /* Chart cards */
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            border: 1px solid var(--gray-200);
+            height: 340px;
+        }
+        .chart-card h3 { margin-bottom: 16px; font-size: 18px; }
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -97,23 +163,13 @@
         .metric-value { font-size: 32px; font-weight: 700; margin: 8px 0; }
         .metric-label { font-size: 14px; color: var(--gray-500); }
 
-        .chart-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            border: 1px solid var(--gray-200);
-            height: 340px;
-        }
-        .chart-card h3 { margin-bottom: 16px; font-size: 18px; }
-
         #toast {
             position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
             background:#111; color:white; padding:12px 28px; border-radius:999px;
             font-size:14px; z-index:9999; display:none;
         }
 
-        /* Modal styles */
+        /* Modal */
         #modalOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:none; align-items:center; justify-content:center; }
         .modal-content { background:white; border-radius:16px; width:90%; max-width:480px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.25); }
         .modal-header { padding:20px 24px; border-bottom:1px solid var(--gray-200); display:flex; justify-content:space-between; align-items:center; }
@@ -160,36 +216,93 @@
     </div>
 
     <div class="main-content">
+        <!-- Dashboard with shimmer -->
         <div id="dashboard" class="section active">
             <h2>Dashboard Overview</h2>
-
-            <div class="dashboard-grid" id="metricCards">
-                <!-- Filled dynamically -->
+            <div id="dashboardLoading" class="shimmer-wrapper">
+                <div class="shimmer-card"></div>
+                <div class="shimmer-card"></div>
+                <div class="shimmer-card"></div>
+                <div class="shimmer-card"></div>
             </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin: 32px 0;">
-                <div class="chart-card">
-                    <h3>Deals by Stage</h3>
-                    <canvas id="dealsByStageChart" height="180"></canvas>
-                </div>
-
-                <div class="chart-card">
-                    <h3>Win Rate</h3>
-                    <canvas id="winRateChart" height="180"></canvas>
-                </div>
-
-                <div class="chart-card" style="grid-column: 1 / -1;">
-                    <h3>Sales Pipeline Funnel</h3>
-                    <canvas id="funnelChart" height="160"></canvas>
+            <div id="dashboardContent" style="display:none;">
+                <div class="dashboard-grid" id="metricCards"></div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin: 32px 0;">
+                    <div class="chart-card"><h3>Deals by Stage</h3><canvas id="dealsByStageChart" height="180"></canvas></div>
+                    <div class="chart-card"><h3>Win Rate</h3><canvas id="winRateChart" height="180"></canvas></div>
+                    <div class="chart-card" style="grid-column: 1 / -1;"><h3>Sales Pipeline Funnel</h3><canvas id="funnelChart" height="160"></canvas></div>
                 </div>
             </div>
         </div>
 
-        <!-- Other sections (placeholders) -->
-        <div id="contacts" class="section"><h2>Contacts</h2><div class="placeholder">Coming soon...</div></div>
-        <div id="deals" class="section"><h2>Deals</h2><div id="pipelineContainer" class="placeholder">Loading pipeline...</div></div>
-        <div id="tasks" class="section"><h2>Tasks</h2><div class="placeholder">Coming soon...</div></div>
-        <div id="reports" class="section"><h2>Reports</h2><div class="placeholder">Coming soon...</div></div>
+        <!-- Contacts tab with sample data -->
+        <div id="contacts" class="section">
+            <h2>Contacts</h2>
+            <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                <h3 style="margin-bottom:16px;">Recent Contacts</h3>
+                <ul style="list-style:none;">
+                    <li style="padding:12px 0; border-bottom:1px solid var(--gray-200);">John Smith - Acme Corp <small style="color:var(--gray-500); float:right;">Jan 15, 2026</small></li>
+                    <li style="padding:12px 0; border-bottom:1px solid var(--gray-200);">Sarah Johnson - TechNova <small style="color:var(--gray-500); float:right;">Jan 12, 2026</small></li>
+                    <li style="padding:12px 0; border-bottom:1px solid var(--gray-200);">Mike van der Merwe - BizSolutions <small style="color:var(--gray-500); float:right;">Jan 8, 2026</small></li>
+                </ul>
+                <button class="btn-primary" style="margin-top:16px;" onclick="showToast('Add contact form coming soon')">+ Add Contact</button>
+            </div>
+        </div>
+
+        <!-- Deals tab with sample pipeline -->
+        <div id="deals" class="section">
+            <h2>Deals Pipeline</h2>
+            <div style="display:flex; gap:16px; overflow-x:auto; padding-bottom:16px;">
+                <div style="min-width:300px; background:#f0f9ff; border:1px solid #bfdbfe; border-radius:12px; padding:16px;">
+                    <h4 style="margin-bottom:12px;">Lead</h4>
+                    <div style="background:white; padding:12px; border-radius:8px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">Acme Corp - R 450 000</div>
+                </div>
+                <div style="min-width:300px; background:#fef3f2; border:1px solid #fecaca; border-radius:12px; padding:16px;">
+                    <h4 style="margin-bottom:12px;">Proposal</h4>
+                    <div style="background:white; padding:12px; border-radius:8px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">TechNova - R 1 200 000</div>
+                </div>
+                <div style="min-width:300px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px;">
+                    <h4 style="margin-bottom:12px;">Won</h4>
+                    <div style="background:white; padding:12px; border-radius:8px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">BizSolutions - R 780 000</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks tab with sample data -->
+        <div id="tasks" class="section">
+            <h2>My Tasks</h2>
+            <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                <ul style="list-style:none;">
+                    <li style="padding:12px 0; border-bottom:1px solid var(--gray-200);">
+                        <strong>Follow up with John Smith</strong><br>
+                        <small style="color:var(--gray-500);">Due: Tomorrow • High priority</small>
+                    </li>
+                    <li style="padding:12px 0; border-bottom:1px solid var(--gray-200);">
+                        <strong>Send proposal to TechNova</strong><br>
+                        <small style="color:var(--gray-500);">Due: Jan 23, 2026</small>
+                    </li>
+                </ul>
+                <button class="btn-primary" style="margin-top:16px;" onclick="showToast('Create task coming soon')">+ New Task</button>
+            </div>
+        </div>
+
+        <!-- Reports tab with sample data -->
+        <div id="reports" class="section">
+            <h2>Reports</h2>
+            <div style="background:white; border-radius:12px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.06); text-align:center; color:var(--gray-500); padding:60px 20px;">
+                <span class="material-symbols-rounded" style="font-size:64px; color:var(--gray-300);">bar_chart</span><br><br>
+                Advanced reports & analytics<br>coming soon...
+            </div>
+        </div>
+    </div>
+
+    <!-- Saving Overlay -->
+    <div id="savingOverlay">
+        <div class="pulse-loader">
+            <span class="material-symbols-rounded">sync</span>
+        </div>
+        <h2>Saving Deal</h2>
+        <p>Please wait...</p>
     </div>
 
     <!-- Deal Modal -->
@@ -257,8 +370,6 @@
 
         let currentUser = null;
         let dealsListener = null;
-
-        // Chart instances
         let dealsByStageChart, winRateChart, funnelChart;
 
         auth.onAuthStateChanged(user => {
@@ -271,7 +382,6 @@
             }
         });
 
-        // ── Real-time listener ───────────────────────────────────────────────
         function setupRealtimeListener() {
             if (dealsListener) dealsListener.off();
 
@@ -280,18 +390,18 @@
                 .equalTo(currentUser.uid)
                 .on('value', (snapshot) => {
                     const deals = snapshot.val() || {};
+                    document.getElementById('dashboardLoading').style.display = 'none';
+                    document.getElementById('dashboardContent').style.display = 'block';
                     updateDashboard(deals);
                 }, (error) => {
-                    console.error("Realtime listener error:", error);
-                    showToast("Error loading real-time data");
+                    console.error("Firebase listener error:", error);
+                    showToast("Failed to load real-time data");
                 });
         }
 
-        // ── Update UI + Charts when data changes ─────────────────────────────
         function updateDashboard(dealsObj) {
             const dealArray = Object.values(dealsObj);
 
-            // Metrics
             const totalDeals = dealArray.length;
             const pipelineValue = dealArray.reduce((sum, d) => sum + (Number(d.value) || 0), 0);
             const wonDeals = dealArray.filter(d => d.stage === 'won').length;
@@ -317,7 +427,6 @@
                 </div>
             `;
 
-            // Stage data
             const stageOrder = ['lead','contacted','qualified','proposal','negotiation','won'];
             const stageLabels = stageOrder.map(s => s.charAt(0).toUpperCase() + s.slice(1));
             const stageCounts = {};
@@ -327,13 +436,8 @@
             });
             const funnelData = stageOrder.map(s => stageCounts[s]);
 
-            // ── Bar chart ──
             updateBarChart(stageLabels, funnelData);
-
-            // ── Doughnut win rate ──
             updateDoughnutChart(winRate);
-
-            // ── Real funnel chart ──
             updateFunnelChart(stageLabels, funnelData);
         }
 
@@ -341,22 +445,8 @@
             if (dealsByStageChart) dealsByStageChart.destroy();
             dealsByStageChart = new Chart(document.getElementById('dealsByStageChart'), {
                 type: 'bar',
-                data: {
-                    labels,
-                    datasets: [{
-                        label: 'Deals',
-                        data,
-                        backgroundColor: 'rgba(37, 99, 235, 0.65)',
-                        borderColor: 'rgba(37, 99, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { x: { beginAtZero: true } }
-                }
+                data: { labels, datasets: [{ label: 'Deals', data, backgroundColor: 'rgba(37,99,235,0.65)', borderColor: 'rgba(37,99,235,1)', borderWidth:1 }] },
+                options: { indexAxis: 'y', responsive:true, maintainAspectRatio:false, scales:{x:{beginAtZero:true}} }
             });
         }
 
@@ -364,33 +454,14 @@
             if (winRateChart) winRateChart.destroy();
             winRateChart = new Chart(document.getElementById('winRateChart'), {
                 type: 'doughnut',
-                data: {
-                    labels: ['Won', 'Not Won'],
-                    datasets: [{
-                        data: [winRate, 100 - winRate],
-                        backgroundColor: ['#10b981', '#e5e7eb'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: { legend: { display: false } }
-                },
-                plugins: [{
-                    id: 'centerText',
-                    afterDraw(chart) {
-                        const { ctx, chartArea: { width, height } } = chart;
-                        ctx.save();
-                        ctx.font = 'bold 36px Inter, sans-serif';
-                        ctx.fillStyle = '#111827';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.fillText(winRate + '%', width / 2, height / 2);
-                        ctx.restore();
-                    }
-                }]
+                data: { labels:['Won','Not Won'], datasets:[{data:[winRate,100-winRate], backgroundColor:['#10b981','#e5e7eb'], borderWidth:0}] },
+                options: { responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{legend:{display:false}} },
+                plugins:[{id:'centerText', afterDraw(chart){
+                    const {ctx, chartArea:{width,height}} = chart;
+                    ctx.save(); ctx.font='bold 36px Inter,sans-serif'; ctx.fillStyle='#111827';
+                    ctx.textAlign='center'; ctx.textBaseline='middle';
+                    ctx.fillText(winRate+'%', width/2, height/2); ctx.restore();
+                }}]
             });
         }
 
@@ -403,14 +474,7 @@
                     datasets: [{
                         label: 'Pipeline',
                         data,
-                        backgroundColor: [
-                            'rgba(107,114,128,0.75)', // lead
-                            'rgba(59,130,246,0.75)',  // contacted
-                            'rgba(139,92,246,0.75)',  // qualified
-                            'rgba(245,158,11,0.75)',  // proposal
-                            'rgba(249,115,22,0.75)',  // negotiation
-                            'rgba(16,185,129,0.75)'   // won
-                        ],
+                        backgroundColor: ['rgba(107,114,128,0.75)','rgba(59,130,246,0.75)','rgba(139,92,246,0.75)','rgba(245,158,11,0.75)','rgba(249,115,22,0.75)','rgba(16,185,129,0.75)'],
                         borderWidth: 1,
                         borderColor: '#ffffff'
                     }]
@@ -421,34 +485,18 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: { enabled: true },
-                        datalabels: {
-                            color: '#fff',
-                            font: { weight: 'bold' },
-                            formatter: (v) => v > 0 ? v : ''
-                        }
+                        datalabels: { color: '#fff', font: { weight: 'bold' }, formatter: v => v > 0 ? v : '' }
                     }
                 }
             });
         }
 
-        // Modal & save logic (unchanged)
-        function openNewDealModal() {
-            document.getElementById('modalTitle').textContent = "New Deal";
-            document.getElementById('company').value = "";
-            document.getElementById('contactName').value = "";
-            document.getElementById('value').value = "0";
-            document.getElementById('stage').value = "proposal";
-            const today = new Date();
-            const def = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
-            document.getElementById('expectedClose').value = def;
-            document.getElementById('modalOverlay').style.display = 'flex';
-        }
-
-        function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-
-        function saveDealFromModal() {
+        // ── Saving Overlay & Modal Logic ─────────────────────────────────────
+        async function saveDealFromModal() {
             const company = document.getElementById('company').value.trim();
             if (!company) return showToast("Company name is required");
+
+            document.getElementById('savingOverlay').style.display = 'flex';
 
             const dealData = {
                 company,
@@ -461,23 +509,60 @@
                 created: Date.now()
             };
 
-            db.ref('deals').push(dealData)
-                .then(() => {
-                    showToast("Deal created → dashboard updating...");
-                    closeModal();
-                    // No need to call loadDashboard – listener will catch it
-                })
-                .catch(err => showToast("Error: " + err.message));
+            try {
+                await db.ref('deals').push(dealData);
+                showToast("Deal created successfully");
+                closeModal();
+            } catch (err) {
+                showToast("Error saving deal: " + err.message);
+            } finally {
+                document.getElementById('savingOverlay').style.display = 'none';
+            }
+        }
+
+        function openNewDealModal() {
+            document.getElementById('modalTitle').textContent = "New Deal";
+            document.getElementById('company').value = "";
+            document.getElementById('contactName').value = "";
+            document.getElementById('value').value = "0";
+            document.getElementById('stage').value = "proposal";
+            const today = new Date();
+            const def = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
+            document.getElementById('expectedClose').value = def;
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
         }
 
         document.getElementById('modalOverlay').addEventListener('click', e => {
             if (e.target === document.getElementById('modalOverlay')) closeModal();
         });
 
-        // Sidebar & nav functions (unchanged)
+        // Sidebar & navigation (unchanged)
         function expandSidebar() { if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.add('expanded'); }
         function collapseSidebar() { if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.remove('expanded'); }
         function toggleDrawer() { document.getElementById('sideDrawer').classList.toggle('open'); }
+
+        document.querySelectorAll('.drawer-item[data-section]').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.getAttribute('data-section');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+                document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                document.getElementById('actionBtn').style.display = (section === 'deals') ? 'flex' : 'none';
+                if (window.innerWidth < 992) toggleDrawer();
+            });
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3200);
+        }
+
+        function logout() { auth.signOut().then(() => window.location.href = "login.html"); }
     </script>
 </body>
 </html>
