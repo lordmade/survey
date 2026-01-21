@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nexlify CRM</title>
+    <title>Nexlify POS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-    
-    <!-- Chart.js CDN -->
+    <!-- Chart.js (optional – include if you want graphs later) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
-
     <style>
         :root {
             --primary: #2563eb;
@@ -27,10 +25,8 @@
             --sidebar-collapsed: 72px;
             --sidebar-expanded: 260px;
         }
-
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
         body { background:var(--bg); color:var(--text-main); height:100vh; overflow:hidden; }
-
         .top-bar {
             position:fixed; top:0; left:0; right:0; height:64px;
             background:white; border-bottom:1px solid var(--gray-200);
@@ -42,13 +38,11 @@
             background:var(--primary); color:white; border:none; padding:10px 20px;
             border-radius:10px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;
         }
-
         #menuBtn {
             position:fixed; top:12px; left:16px; width:48px; height:48px;
             background:white; border-radius:12px; box-shadow:0 2px 10px rgba(0,0,0,0.08);
             display:flex; align-items:center; justify-content:center; z-index:150; cursor:pointer;
         }
-
         #sideDrawer {
             position:fixed; top:0; left:0; width:var(--sidebar-collapsed); height:100%;
             background:white; box-shadow:4px 0 20px rgba(0,0,0,0.08);
@@ -56,13 +50,11 @@
             display:flex; flex-direction:column;
         }
         #sideDrawer.expanded { width:var(--sidebar-expanded); }
-
         .sidebar-header {
             padding:20px 16px; background:var(--primary); color:white; text-align:center;
             font-weight:600; font-size:18px; opacity:0; transition:opacity 0.2s ease 0.1s;
         }
         #sideDrawer.expanded .sidebar-header { opacity:1; }
-
         .drawer-menu { flex:1; padding:16px 0; }
         .drawer-item {
             display:flex; align-items:center; padding:14px 16px; color:var(--text-main);
@@ -72,17 +64,13 @@
         .drawer-item span.label { opacity:0; margin-left:12px; transition:opacity 0.2s ease 0.1s; }
         #sideDrawer.expanded .drawer-item span.label { opacity:1; }
         .drawer-item:hover { background:var(--gray-100); color:var(--primary); }
-
         .main-content {
             margin-top:64px; margin-left:var(--sidebar-collapsed);
             height:calc(100vh - 64px); overflow-y:auto; padding:24px; transition:margin-left 0.25s ease;
         }
         #sideDrawer.expanded ~ .main-content { margin-left:var(--sidebar-expanded); }
-
         .section { display:none; }
         .section.active { display:block; }
-
-        /* Shimmer effect */
         .shimmer-wrapper {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -100,7 +88,6 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -117,7 +104,6 @@
         }
         .metric-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
         .metric-label { font-size: 14px; color: var(--gray-500); }
-
         .activity-list {
             background: white;
             border-radius: 12px;
@@ -132,35 +118,12 @@
         .activity-item:last-child { border-bottom: none; }
         .activity-item strong { color: var(--text-main); }
         .activity-time { color: var(--gray-500); font-size: 13px; margin-top: 4px; }
-
-        .quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 24px;
-        }
-        .action-btn {
-            flex: 1 1 160px;
-            background: var(--gray-100);
-            border: 1px solid var(--gray-200);
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .action-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
         #modalOverlay {
             position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
             display:none; align-items:center; justify-content:center;
         }
         .modal-content {
-            background:white; border-radius:16px; width:90%; max-width:480px;
+            background:white; border-radius:16px; width:90%; max-width:600px;
             max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.25);
         }
         .modal-header { padding:20px 24px; border-bottom:1px solid var(--gray-200);
@@ -182,13 +145,11 @@
             background:var(--gray-200); color:var(--text-main); border:none;
             padding:12px 24px; border-radius:10px; cursor:pointer; font-weight:600;
         }
-
         #toast {
             position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
             background:#111; color:white; padding:12px 28px; border-radius:999px;
             font-size:14px; z-index:9999; display:none;
         }
-
         @media (max-width:991px) {
             #sideDrawer { left:calc(var(--sidebar-collapsed)*-1); width:var(--sidebar-expanded); }
             #sideDrawer.open { left:0; }
@@ -198,18 +159,17 @@
     </style>
 </head>
 <body>
-
     <div id="menuBtn" onclick="toggleDrawer()">
         <span class="material-symbols-rounded">menu</span>
     </div>
 
     <div id="sideDrawer" onmouseenter="expandSidebar()" onmouseleave="collapseSidebar()">
-        <div class="sidebar-header">Nexlify CRM</div>
+        <div class="sidebar-header">Nexlify POS</div>
         <div class="drawer-menu">
             <a class="drawer-item" data-section="dashboard"><span class="material-symbols-rounded">dashboard</span><span class="label">Dashboard</span></a>
-            <a class="drawer-item" data-section="contacts"><span class="material-symbols-rounded">people</span><span class="label">Contacts</span></a>
-            <a class="drawer-item" data-section="deals"><span class="material-symbols-rounded">handshake</span><span class="label">Deals</span></a>
-            <a class="drawer-item" data-section="tasks"><span class="material-symbols-rounded">task_alt</span><span class="label">Tasks</span></a>
+            <a class="drawer-item" data-section="products"><span class="material-symbols-rounded">inventory_2</span><span class="label">Products</span></a>
+            <a class="drawer-item" data-section="sales"><span class="material-symbols-rounded">receipt_long</span><span class="label">Sales History</span></a>
+            <a class="drawer-item" data-section="inventory"><span class="material-symbols-rounded">warehouse</span><span class="label">Inventory</span></a>
             <a class="drawer-item" data-section="reports"><span class="material-symbols-rounded">bar_chart</span><span class="label">Reports</span></a>
             <a class="drawer-item" onclick="logout()"><span class="material-symbols-rounded">logout</span><span class="label">Log Out</span></a>
         </div>
@@ -217,16 +177,15 @@
 
     <div class="top-bar">
         <div class="logo-area" id="pageTitle">Dashboard</div>
-        <button class="btn-primary" id="actionBtn" onclick="openNewDealModal()">
-            <span class="material-symbols-rounded">add</span> New Deal
+        <button class="btn-primary" id="actionBtn" onclick="openNewSaleModal()">
+            <span class="material-symbols-rounded">point_of_sale</span> New Sale
         </button>
     </div>
 
     <div class="main-content">
         <div id="dashboard" class="section active">
-            <h2>Dashboard</h2>
+            <h2>Today's Overview</h2>
 
-            <!-- Shimmer loading state -->
             <div id="dashboardLoading">
                 <div class="shimmer-wrapper">
                     <div class="shimmer-card"></div>
@@ -234,47 +193,31 @@
                     <div class="shimmer-card"></div>
                     <div class="shimmer-card"></div>
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:32px 0;">
-                    <div class="activity-list">
-                        <h3 style="margin-bottom:16px;">Recent Activity</h3>
-                        <div class="shimmer-wrapper" style="height:200px;">
-                            <div class="shimmer-card" style="height:100%;"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 style="margin-bottom:16px;">Quick Actions</h3>
-                        <div class="quick-actions">
-                            <div class="action-btn shimmer-card" style="height:120px;"></div>
-                            <div class="action-btn shimmer-card" style="height:120px;"></div>
-                            <div class="action-btn shimmer-card" style="height:120px;"></div>
-                            <div class="action-btn shimmer-card" style="height:120px;"></div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- Real content (hidden until data loads) -->
             <div id="dashboardContent" style="display:none;">
                 <div class="dashboard-grid" id="overviewCards"></div>
+
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:32px 0;">
                     <div class="activity-list">
-                        <h3 style="margin-bottom:16px;">Recent Activity</h3>
-                        <div id="recentActivity"></div>
+                        <h3 style="margin-bottom:16px;">Recent Transactions</h3>
+                        <div id="recentTransactions"></div>
                     </div>
+
                     <div>
                         <h3 style="margin-bottom:16px;">Quick Actions</h3>
-                        <div class="quick-actions">
-                            <div class="action-btn" onclick="openNewDealModal()">
-                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">add_circle</span><br>New Deal
+                        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;">
+                            <div class="action-btn" style="flex:1 1 160px; background:var(--gray-100); border:1px solid var(--gray-200); padding:16px; border-radius:12px; text-align:center; cursor:pointer;" onclick="openNewSaleModal()">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">point_of_sale</span><br>New Sale
                             </div>
-                            <div class="action-btn" onclick="showToast('Add contact feature coming soon')">
-                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">person_add</span><br>New Contact
+                            <div class="action-btn" style="flex:1 1 160px; background:var(--gray-100); border:1px solid var(--gray-200); padding:16px; border-radius:12px; text-align:center; cursor:pointer;" onclick="showToast('Add product feature coming soon')">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">add_box</span><br>Add Product
                             </div>
-                            <div class="action-btn" onclick="showToast('View tasks coming soon')">
-                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">task_alt</span><br>My Tasks
+                            <div class="action-btn" style="flex:1 1 160px; background:var(--gray-100); border:1px solid var(--gray-200); padding:16px; border-radius:12px; text-align:center; cursor:pointer;" onclick="showToast('Stock count coming soon')">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">inventory</span><br>Stock Count
                             </div>
-                            <div class="action-btn" onclick="showToast('Reports coming soon')">
-                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">bar_chart</span><br>View Reports
+                            <div class="action-btn" style="flex:1 1 160px; background:var(--gray-100); border:1px solid var(--gray-200); padding:16px; border-radius:12px; text-align:center; cursor:pointer;" onclick="showToast('Reports coming soon')">
+                                <span class="material-symbols-rounded" style="font-size:32px; margin-bottom:8px;">bar_chart</span><br>Reports
                             </div>
                         </div>
                     </div>
@@ -282,64 +225,66 @@
             </div>
         </div>
 
-        <!-- Placeholder sections -->
-        <div id="contacts" class="section"><h2>Contacts</h2><div class="placeholder">Contacts list coming soon...</div></div>
-        <div id="deals" class="section"><h2>Deals</h2><div id="pipelineContainer" class="placeholder">Loading pipeline...</div></div>
-        <div id="tasks" class="section"><h2>Tasks</h2><div class="placeholder">Task manager coming soon...</div></div>
-        <div id="reports" class="section"><h2>Reports</h2><div class="placeholder">Analytics coming soon...</div></div>
+        <div id="products" class="section"><h2>Products</h2><div style="padding:40px; text-align:center; color:var(--gray-500);">Product catalog coming soon...</div></div>
+        <div id="sales" class="section"><h2>Sales History</h2><div style="padding:40px; text-align:center; color:var(--gray-500);">Full sales list coming soon...</div></div>
+        <div id="inventory" class="section"><h2>Inventory</h2><div style="padding:40px; text-align:center; color:var(--gray-500);">Stock management & alerts coming soon...</div></div>
+        <div id="reports" class="section"><h2>Reports</h2><div style="padding:40px; text-align:center; color:var(--gray-500);">Sales analytics coming soon...</div></div>
     </div>
 
-    <!-- Deal Modal -->
+    <!-- New Sale Modal (basic – expand later with cart) -->
     <div id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">New Deal</h2>
+                <h2>New Sale</h2>
                 <span class="modal-close material-symbols-rounded" onclick="closeModal()">close</span>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="company">Company / Account Name *</label>
-                    <input type="text" id="company" required placeholder="e.g. Acme Corp">
+                    <label for="productSearch">Product / Barcode</label>
+                    <input type="text" id="productSearch" placeholder="Scan barcode or type product name">
                 </div>
+
                 <div class="form-group">
-                    <label for="contactName">Primary Contact Name</label>
-                    <input type="text" id="contactName" placeholder="e.g. John Smith">
+                    <label>Items (demo – will show cart here)</label>
+                    <div style="min-height:140px; border:1px dashed var(--gray-300); border-radius:8px; padding:16px; background:var(--gray-50);">
+                        <p style="color:var(--gray-500); text-align:center; margin-top:50px;">No items added yet</p>
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="value">Deal Value (R)</label>
-                    <input type="number" id="value" min="0" placeholder="0" value="0">
+                    <label>Total (R)</label>
+                    <input type="text" value="0.00" readonly style="font-size:28px; font-weight:700; text-align:right; background:#f1f5f9; border:1px solid var(--gray-300);">
                 </div>
+
                 <div class="form-group">
-                    <label for="stage">Stage</label>
-                    <select id="stage">
-                        <option value="lead">Lead</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="qualified">Qualified</option>
-                        <option value="proposal" selected>Proposal</option>
-                        <option value="negotiation">Negotiation</option>
-                        <option value="won">Won</option>
-                        <option value="lost">Lost</option>
+                    <label>Payment Method</label>
+                    <select id="paymentMethod">
+                        <option>Cash</option>
+                        <option>Card</option>
+                        <option>Instant EFT</option>
+                        <option>Mobicred</option>
+                        <option>Other</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label for="expectedClose">Expected Close Date</label>
-                    <input type="date" id="expectedClose">
                 </div>
             </div>
             <div class="form-actions">
                 <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn-primary" onclick="saveDealFromModal()">Save Deal</button>
+                <button class="btn-primary" onclick="completeSale()">Complete Sale</button>
             </div>
         </div>
     </div>
 
     <div id="toast"></div>
 
+    <!-- Firebase SDKs (using compat version for simplicity) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <script>
-        // Firebase Config
+        // ────────────────────────────────────────────────
+        //  Replace with YOUR OWN Firebase project config
+        // ────────────────────────────────────────────────
         const firebaseConfig = {
             apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
             authDomain: "fire-b-a8878.firebaseapp.com",
@@ -349,139 +294,98 @@
             messagingSenderId: "658673187627",
             appId: "1:658673187627:web:6e4c29af661785f0afa36e"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const auth = firebase.auth();
-
         let currentUser = null;
 
-        // ────────────────────────────────────────────────
-        //  Auth & Real-time Listener
-        // ────────────────────────────────────────────────
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
                 setupRealtimeListener();
             } else {
-                window.location.href = "login.html";
+                window.location.href = "login.html"; // you need to create this page
             }
         });
 
         function setupRealtimeListener() {
-            db.ref('deals')
+            db.ref('transactions')
                 .orderByChild('owner')
                 .equalTo(currentUser.uid)
-                .on('value', (snapshot) => {
-                    const deals = snapshot.val() || {};
-                    updateDashboard(deals);
-                }, (error) => {
-                    console.error("Firebase error:", error);
-                    showToast("Failed to load real-time data");
+                .on('value', snapshot => {
+                    const transactions = snapshot.val() || {};
+                    updateDashboard(transactions);
+                }, error => {
+                    console.error(error);
+                    showToast("Failed to load sales data");
                 });
         }
 
-        // ────────────────────────────────────────────────
-        //  Dashboard Update with Real Data
-        // ────────────────────────────────────────────────
-        function updateDashboard(dealsObj) {
-            // Hide shimmer, show content
+        function updateDashboard(transObj) {
             document.getElementById('dashboardLoading').style.display = 'none';
             document.getElementById('dashboardContent').style.display = 'block';
 
-            const dealArray = Object.values(dealsObj);
+            const transArray = Object.values(transObj || {});
+            const today = new Date().toISOString().split('T')[0];
+            const todayTrans = transArray.filter(t => t.date === today);
 
-            // Metrics calculations
-            const totalDeals = dealArray.length;
-            const pipelineValue = dealArray.reduce((sum, d) => sum + (Number(d.value) || 0), 0);
-            const wonDeals = dealArray.filter(d => d.stage === 'won').length;
-            const winRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0;
-            const activeDeals = dealArray.filter(d => !['won','lost'].includes(d.stage)).length;
+            const todaySales = todayTrans.reduce((sum, t) => sum + (Number(t.total) || 0), 0);
+            const transCount = todayTrans.length;
+            const topProduct = todayTrans.length > 0 ? "Top seller (placeholder)" : "—";
+            const lowStock = 2; // ← placeholder – later query products
 
-            // Render metric cards
             document.getElementById('overviewCards').innerHTML = `
                 <div class="metric-card">
-                    <h3>Total Pipeline Value</h3>
-                    <div class="metric-value">R ${pipelineValue.toLocaleString('en-ZA')}</div>
-                    <div class="metric-trend positive">Updated live</div>
+                    <h3>Today's Sales</h3>
+                    <div class="metric-value">R ${todaySales.toLocaleString('en-ZA')}</div>
+                    <div class="metric-label">Live update</div>
                 </div>
                 <div class="metric-card">
-                    <h3>Active Deals</h3>
-                    <div class="metric-value">${activeDeals}</div>
-                    <div class="metric-trend">in progress</div>
+                    <h3>Transactions</h3>
+                    <div class="metric-value">${transCount}</div>
+                    <div class="metric-label">today</div>
                 </div>
                 <div class="metric-card">
-                    <h3>Win Rate</h3>
-                    <div class="metric-value">${winRate}%</div>
-                    <div class="metric-trend ${winRate >= 30 ? 'positive' : 'negative'}">
-                        ${winRate >= 30 ? 'Good performance' : 'Needs improvement'}
+                    <h3>Top Product</h3>
+                    <div class="metric-value">${topProduct}</div>
+                    <div class="metric-label">today</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Low Stock Items</h3>
+                    <div class="metric-value">${lowStock}</div>
+                    <div class="metric-label ${lowStock > 0 ? 'text-danger' : ''}">
+                        ${lowStock > 0 ? 'Attention needed' : 'All good'}
                     </div>
-                </div>
-                <div class="metric-card">
-                    <h3>Total Deals</h3>
-                    <div class="metric-value">${totalDeals}</div>
-                    <div class="metric-trend">lifetime</div>
                 </div>
             `;
 
-            // Recent Activity – collect from all deals
-            const recent = [];
-            Object.entries(dealsObj).forEach(([dealId, deal]) => {
-                if (deal.activities) {
-                    Object.values(deal.activities).forEach(act => {
-                        recent.push({
-                            ...act,
-                            dealCompany: deal.company || 'Unnamed Deal'
-                        });
-                    });
-                }
-            });
+            const recent = transArray
+                .sort((a,b) => (b.created||0) - (a.created||0))
+                .slice(0, 8);
 
-            recent.sort((a,b) => (b.created || 0) - (a.created || 0));
-
-            const recentHtml = recent.slice(0,8).map(act => `
-                <div class="activity-item">
-                    <strong>${formatActivity(act.type)} on ${act.dealCompany}</strong><br>
-                    ${act.description ? act.description.substring(0,80) + (act.description.length > 80 ? '...' : '') : '(no description)'}
-                    <div class="activity-time">${formatRelativeTime(act.created)}</div>
-                </div>
-            `).join('') || '<p style="color:var(--gray-500); text-align:center; padding:40px 0;">No recent activity yet</p>';
-
-            document.getElementById('recentActivity').innerHTML = recentHtml;
-        }
-
-        function formatActivity(type) {
-            const map = {
-                call: "📞 Call",
-                email: "✉️ Email",
-                meeting: "🗓️ Meeting",
-                note: "📝 Note"
-            };
-            return map[type] || type.charAt(0).toUpperCase() + type.slice(1);
+            document.getElementById('recentTransactions').innerHTML = recent.length === 0
+                ? '<p style="color:var(--gray-500); text-align:center; padding:60px 0;">No recent sales</p>'
+                : recent.map(t => `
+                    <div class="activity-item">
+                        <strong>Sale • R ${Number(t.total||0).toLocaleString('en-ZA')}</strong>
+                        <div class="activity-time">${formatRelativeTime(t.created)}</div>
+                    </div>
+                `).join('');
         }
 
         function formatRelativeTime(ts) {
             if (!ts) return '—';
             const diff = Date.now() - ts;
-            const minutes = Math.floor(diff / 60000);
-            if (minutes < 1) return 'just now';
-            if (minutes < 60) return `${minutes}m ago`;
-            const hours = Math.floor(minutes / 60);
-            if (hours < 24) return `${hours}h ago`;
-            return new Date(ts).toLocaleDateString('en-ZA', { month:'short', day:'numeric' });
+            const min = Math.floor(diff / 60000);
+            if (min < 1) return 'just now';
+            if (min < 60) return min + ' min ago';
+            const h = Math.floor(min / 60);
+            if (h < 24) return h + ' hr ago';
+            return new Date(ts).toLocaleDateString('en-ZA');
         }
 
-        // ────────────────────────────────────────────────
-        //  Modal & Save Deal
-        // ────────────────────────────────────────────────
-        function openNewDealModal() {
-            document.getElementById('modalTitle').textContent = "New Deal";
-            document.getElementById('company').value = "";
-            document.getElementById('contactName').value = "";
-            document.getElementById('value').value = "0";
-            document.getElementById('stage').value = "proposal";
-            const today = new Date();
-            const defClose = new Date(today.setMonth(today.getMonth() + 3)).toISOString().split('T')[0];
-            document.getElementById('expectedClose').value = defClose;
+        function openNewSaleModal() {
             document.getElementById('modalOverlay').style.display = 'flex';
         }
 
@@ -489,50 +393,32 @@
             document.getElementById('modalOverlay').style.display = 'none';
         }
 
-        function saveDealFromModal() {
-            const company = document.getElementById('company').value.trim();
-            if (!company) {
-                showToast("Company name is required");
-                return;
-            }
+        function completeSale() {
+            // Demo – in real app collect actual cart data
+            const total = 285.50; // ← placeholder
 
-            const dealData = {
-                company,
-                contactName: document.getElementById('contactName').value.trim(),
-                value: Number(document.getElementById('value').value) || 0,
-                stage: document.getElementById('stage').value,
-                expectedClose: document.getElementById('expectedClose').value || "",
-                lastActivity: Date.now(),
+            const saleData = {
+                total: total,
+                date: new Date().toISOString().split('T')[0],
+                paymentMethod: document.getElementById('paymentMethod')?.value || "Cash",
                 owner: currentUser.uid,
                 created: Date.now()
             };
 
-            db.ref('deals').push(dealData)
+            db.ref('transactions').push(saleData)
                 .then(() => {
-                    showToast("Deal created successfully");
+                    showToast(`Sale completed – R ${total.toLocaleString('en-ZA')}`);
                     closeModal();
-                    // No need to manually refresh – listener will catch it
                 })
-                .catch(err => showToast("Error: " + err.message));
+                .catch(err => showToast("Error saving sale: " + err.message));
         }
 
-        document.getElementById('modalOverlay').addEventListener('click', e => {
-            if (e.target === document.getElementById('modalOverlay')) closeModal();
-        });
-
-        // ────────────────────────────────────────────────
-        //  Sidebar & Navigation
-        // ────────────────────────────────────────────────
         function expandSidebar() {
-            if (window.innerWidth >= 992) {
-                document.getElementById('sideDrawer').classList.add('expanded');
-            }
+            if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.add('expanded');
         }
 
         function collapseSidebar() {
-            if (window.innerWidth >= 992) {
-                document.getElementById('sideDrawer').classList.remove('expanded');
-            }
+            if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.remove('expanded');
         }
 
         function toggleDrawer() {
@@ -541,10 +427,9 @@
 
         document.querySelectorAll('.drawer-item[data-section]').forEach(item => {
             item.addEventListener('click', () => {
-                const section = item.getAttribute('data-section');
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(section).classList.add('active');
-                document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+                document.getElementById(item.dataset.section).classList.add('active');
+                document.getElementById('pageTitle').textContent = item.querySelector('.label').textContent;
                 if (window.innerWidth < 992) toggleDrawer();
             });
         });
@@ -553,7 +438,7 @@
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3200);
+            setTimeout(() => t.style.display = 'none', 3000);
         }
 
         function logout() {
