@@ -4,20 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VynixCRM • Business Solution</title>
-    
+   
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
-
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-remote-config-compat.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         :root {
-            --primary: #6366f1; /* Indigo */
+            --primary: #6366f1;
             --primary-dark: #4f46e5;
             --bg-body: #f3f4f6;
             --surface: #ffffff;
@@ -29,10 +26,8 @@
             --danger: #ef4444;
             --sidebar-w: 260px;
         }
-
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg-body); color: var(--text-main); height: 100vh; display: flex; overflow: hidden; }
-
         /* ── Auth Screen ── */
         #authScreen {
             position: fixed; inset: 0; z-index: 100;
@@ -43,7 +38,6 @@
             background: var(--surface); padding: 40px; border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 400px;
         }
-
         /* ── Sidebar ── */
         .sidebar {
             width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border);
@@ -64,10 +58,9 @@
         .user-mini {
             padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px;
         }
-
         /* ── Main Layout ── */
         .main-content { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
-        
+       
         .top-bar {
             height: 64px; border-bottom: 1px solid var(--border); background: var(--surface);
             display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
@@ -79,17 +72,14 @@
             display: flex; align-items: center; gap: 8px; transition: background 0.2s;
         }
         .action-btn:hover { background: var(--primary-dark); }
-
         /* ── Views Container ── */
         .view-container { flex: 1; overflow-y: auto; padding: 24px; display: none; }
         .view-container.active { display: block; }
-
         /* ── Dashboard Cards ── */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 24px; }
         .stat-card { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
         .stat-val { font-size: 1.8rem; font-weight: 700; margin: 8px 0; }
         .stat-label { color: var(--text-sub); font-size: 0.875rem; }
-
         /* ── Kanban Pipeline ── */
         .pipeline-wrapper { display: flex; gap: 24px; height: 100%; overflow-x: auto; padding-bottom: 10px; }
         .pipeline-col {
@@ -98,7 +88,7 @@
         }
         .col-header { padding: 16px; font-weight: 600; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
         .col-body { padding: 12px; flex: 1; overflow-y: auto; }
-        
+       
         .deal-card {
             background: var(--surface); padding: 16px; border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 12px; cursor: pointer;
@@ -107,16 +97,15 @@
         .deal-card:hover { border-color: var(--primary); transform: translateY(-2px); }
         .deal-price { font-weight: 600; color: var(--text-main); margin-top: 8px; }
         .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: #eef2ff; color: var(--primary); }
-
         /* ── Table View ── */
         .data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 8px; overflow: hidden; }
         .data-table th, .data-table td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
         .data-table th { background: #f9fafb; font-weight: 600; color: var(--text-sub); font-size: 0.875rem; }
         .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
-        .status-new { background: #eff6ff; color: #1d4ed8; }
+        .status-lead { background: #eff6ff; color: #1d4ed8; }
+        .status-negotiation { background: #fefce8; color: #854d0e; }
         .status-won { background: #ecfdf5; color: #047857; }
         .status-lost { background: #fef2f2; color: #b91c1c; }
-
         /* ── AI Assistant FAB ── */
         .ai-fab {
             position: absolute; bottom: 30px; right: 30px;
@@ -128,7 +117,7 @@
             z-index: 90; transition: transform 0.2s;
         }
         .ai-fab:hover { transform: scale(1.1); }
-        
+       
         /* ── AI Chat Window ── */
         .ai-window {
             position: absolute; bottom: 100px; right: 30px;
@@ -146,12 +135,11 @@
         .ai-msg { margin-bottom: 12px; padding: 10px; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; }
         .ai-msg.bot { background: #f0f7ff; color: var(--text-main); border-left: 3px solid var(--primary); }
         .ai-msg.user { background: #f3f4f6; text-align: right; margin-left: auto; width: 80%; }
-        
+       
         .ai-input-area {
             padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px;
         }
         .ai-input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 20px; outline: none; }
-
         /* ── Modal ── */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
@@ -165,10 +153,10 @@
             font-size: 0.95rem; outline: none;
         }
         .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
-        
+       
         .btn-row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
         .btn-cancel { background: white; border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-        
+       
         /* Mobile Toggle */
         .menu-toggle { display: none; background: none; border: none; cursor: pointer; }
         @media(max-width: 768px) {
@@ -182,7 +170,6 @@
     </style>
 </head>
 <body>
-
     <div id="authScreen">
         <div class="login-card">
             <div style="width: 50px; height: 50px; background: var(--primary); border-radius: 12px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
@@ -196,23 +183,22 @@
         </div>
     </div>
 
-    <div id="appLayout" style="display: none; width: 100%;">
-        
+    <div id="appLayout" style="display: none; width: 100%; height: 100%;">
         <aside class="sidebar" id="sidebar">
             <div class="brand">
                 <span class="material-symbols-rounded">pie_chart</span>
                 VynixCRM
             </div>
             <nav class="nav-links">
-                <a class="nav-item active" onclick="nav('dashboard', this)">
+                <div class="nav-item active" onclick="nav('dashboard', this)">
                     <span class="material-symbols-rounded">dashboard</span> Dashboard
-                </a>
-                <a class="nav-item" onclick="nav('pipeline', this)">
+                </div>
+                <div class="nav-item" onclick="nav('pipeline', this)">
                     <span class="material-symbols-rounded">view_kanban</span> Pipeline
-                </a>
-                <a class="nav-item" onclick="nav('contacts', this)">
+                </div>
+                <div class="nav-item" onclick="nav('contacts', this)">
                     <span class="material-symbols-rounded">groups</span> Contacts
-                </a>
+                </div>
             </nav>
             <div class="user-mini">
                 <img id="userAvatar" src="" style="width: 32px; height: 32px; border-radius: 50%; background: #ddd;">
@@ -239,6 +225,7 @@
                 </button>
             </header>
 
+            <!-- Dashboard View -->
             <div id="view-dashboard" class="view-container active">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -257,12 +244,13 @@
                         <div class="stat-label">Open Deals</div>
                     </div>
                 </div>
-                <div style="background: white; padding: 24px; border-radius: 12px; border: 1px solid var(--border); height: 300px;">
+                <div style="background: white; padding: 24px; border-radius: 12px; border: 1px solid var(--border); height: 320px;">
                     <canvas id="revenueChart"></canvas>
                 </div>
             </div>
 
-            <div id="view-pipeline" class="view-container" style="overflow: hidden; display: none;">
+            <!-- Pipeline View -->
+            <div id="view-pipeline" class="view-container">
                 <div class="pipeline-wrapper">
                     <div class="pipeline-col">
                         <div class="col-header">
@@ -285,10 +273,18 @@
                         </div>
                         <div class="col-body" id="col-won" ondrop="drop(event, 'won')" ondragover="allowDrop(event)"></div>
                     </div>
+                    <div class="pipeline-col">
+                        <div class="col-header" style="border-bottom-color: var(--danger);">
+                            <span style="color: var(--danger);">Lost</span>
+                            <span class="tag" id="count-lost">0</span>
+                        </div>
+                        <div class="col-body" id="col-lost" ondrop="drop(event, 'lost')" ondragover="allowDrop(event)"></div>
+                    </div>
                 </div>
             </div>
 
-            <div id="view-contacts" class="view-container" style="display: none;">
+            <!-- Contacts View -->
+            <div id="view-contacts" class="view-container">
                 <div style="overflow-x: auto;">
                     <table class="data-table">
                         <thead>
@@ -300,16 +296,15 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="contactsTableBody">
-                            </tbody>
+                        <tbody id="contactsTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- AI FAB & Window -->
             <button class="ai-fab" onclick="toggleAIWindow()">
                 <span class="material-symbols-rounded">smart_toy</span>
             </button>
-
             <div id="aiWindow" class="ai-window">
                 <div class="ai-header">
                     <span style="font-weight:600; display:flex; align-items:center; gap:8px;">
@@ -321,19 +316,19 @@
                     </button>
                 </div>
                 <div class="ai-body" id="aiChatBody">
-                    <div class="ai-msg bot">Hello Vynix! How can I assist you with your CRM today? I can help write emails or analyze your sales pipeline.</div>
+                    <div class="ai-msg bot">Hello! How can I assist you with your CRM today?</div>
                 </div>
                 <div class="ai-input-area">
-                    <input type="text" id="aiGlobalInput" class="ai-input" placeholder="Ask AI..." onkeypress="if(event.key === 'Enter') sendGlobalAI()">
+                    <input type="text" id="aiGlobalInput" class="ai-input" placeholder="Ask AI..." onkeypress="if(event.key==='Enter') sendGlobalAI()">
                     <button onclick="sendGlobalAI()" style="background:var(--primary); color:white; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer;">
                         <span class="material-symbols-rounded" style="font-size:18px;">send</span>
                     </button>
                 </div>
             </div>
-
         </main>
     </div>
 
+    <!-- Deal Modal -->
     <div class="modal-overlay" id="dealModal">
         <div class="modal">
             <h2 style="margin-bottom: 20px;">Deal Details</h2>
@@ -349,7 +344,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Deal Value (R)</label>
-                    <input type="number" id="inpValue" class="form-input" required placeholder="0.00">
+                    <input type="number" step="0.01" id="inpValue" class="form-input" required placeholder="0.00">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Stage</label>
@@ -360,11 +355,11 @@
                         <option value="lost">Closed Lost</option>
                     </select>
                 </div>
-                
+               
                 <div style="margin-top:20px; padding:12px; background:#f0f7ff; border-radius:8px; border:1px dashed #6366f1;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:0.85rem; font-weight:600; color:#4f46e5;">AI Email Draft</span>
-                        <button type="button" onclick="generateContextEmail()" style="background:#fff; border:1px solid #ddd; padding:4px 8px; font-size:0.75rem; border-radius:4px; cursor:pointer; color: var(--text-main);">
+                        <button type="button" onclick="generateContextEmail()" style="background:#fff; border:1px solid #ddd; padding:4px 8px; font-size:0.75rem; border-radius:4px; cursor:pointer;">
                             Generate Draft
                         </button>
                     </div>
@@ -388,6 +383,7 @@
             databaseURL: "https://fire-b-a8878-default-rtdb.firebaseio.com",
             appId: "1:658673187627:web:6e4c29af661785f0afa36e"
         };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
@@ -399,7 +395,7 @@
         let deals = [];
         let chartInstance = null;
         let XAI_API_KEY = "";
-        const currencyFmt = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
+        const currencyFmt = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR', minimumFractionDigits: 2 });
 
         // ── Auth Logic ──
         function signIn() { auth.signInWithPopup(provider); }
@@ -410,25 +406,26 @@
                 currentUser = user;
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('appLayout').style.display = 'flex';
-                document.getElementById('userAvatar').src = user.photoURL;
-                document.getElementById('userName').innerText = user.displayName;
+                document.getElementById('userAvatar').src = user.photoURL || 'https://via.placeholder.com/32';
+                document.getElementById('userName').innerText = user.displayName || 'User';
                 document.getElementById('userEmail').innerText = user.email;
-                
+
                 fetchConfig();
                 initRealtimeListener();
             } else {
                 document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('appLayout').style.display = 'none';
             }
         });
 
         function fetchConfig() {
             remoteConfig.settings = { minimumFetchIntervalMillis: 0 };
             remoteConfig.fetchAndActivate().then(() => {
-                XAI_API_KEY = remoteConfig.getValue('xai_api_key').asString();
-            }).catch(err => console.error("Config error", err));
+                XAI_API_KEY = remoteConfig.getValue('xai_api_key').asString() || "";
+            }).catch(err => console.error("Remote Config error:", err));
         }
 
-        // ── Data Sync ──
+        // ── Real-time Data Listener ──
         function initRealtimeListener() {
             const ref = db.ref(`crm/${currentUser.uid}/deals`);
             ref.on('value', snapshot => {
@@ -436,60 +433,69 @@
                 snapshot.forEach(child => {
                     deals.push({ id: child.key, ...child.val() });
                 });
-                renderAll();
+                renderAllViews();
             });
         }
 
-        function renderAll() {
+        function renderAllViews() {
             updateDashboard();
             renderPipeline();
-            renderContacts();
+            renderContactsTable();
         }
 
         // ── Dashboard ──
         function updateDashboard() {
-            const totalVal = deals.reduce((acc, d) => acc + (parseFloat(d.value)||0), 0);
+            const totalValue = deals.reduce((sum, d) => sum + (parseFloat(d.value) || 0), 0);
             const wonCount = deals.filter(d => d.stage === 'won').length;
-            const openCount = deals.filter(d => d.stage !== 'won' && d.stage !== 'lost').length;
+            const openCount = deals.filter(d => !['won','lost'].includes(d.stage)).length;
 
-            // Updated for Rands
-            document.getElementById('statRevenue').innerText = currencyFmt.format(totalVal).replace('ZAR', 'R');
+            document.getElementById('statRevenue').innerText = currencyFmt.format(totalValue).replace('ZAR', 'R');
             document.getElementById('statWon').innerText = wonCount;
             document.getElementById('statOpen').innerText = openCount;
 
-            // Chart
+            // Update Chart
             const ctx = document.getElementById('revenueChart').getContext('2d');
-            const dataCounts = [
-                deals.filter(d => d.stage === 'lead').length,
-                deals.filter(d => d.stage === 'negotiation').length,
-                deals.filter(d => d.stage === 'won').length
-            ];
+            const stageCounts = {
+                lead: deals.filter(d => d.stage === 'lead').length,
+                negotiation: deals.filter(d => d.stage === 'negotiation').length,
+                won: deals.filter(d => d.stage === 'won').length,
+                lost: deals.filter(d => d.stage === 'lost').length
+            };
 
             if (chartInstance) chartInstance.destroy();
+
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Lead', 'Negotiation', 'Won'],
+                    labels: ['New Leads', 'Negotiation', 'Won', 'Lost'],
                     datasets: [{
-                        label: 'Deals Count',
-                        data: dataCounts,
-                        backgroundColor: ['#6366f1', '#f59e0b', '#10b981'],
+                        label: 'Number of Deals',
+                        data: [stageCounts.lead, stageCounts.negotiation, stageCounts.won, stageCounts.lost],
+                        backgroundColor: ['#6366f1', '#f59e0b', '#10b981', '#ef4444'],
                         borderRadius: 6
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display:false} } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
             });
         }
 
         // ── Pipeline (Kanban) ──
         function renderPipeline() {
-            ['lead', 'negotiation', 'won'].forEach(stage => {
-                const col = document.getElementById(`col-${stage}`);
-                const countBadge = document.getElementById(`count-${stage}`);
-                col.innerHTML = '';
-                
+            const stages = ['lead', 'negotiation', 'won', 'lost'];
+
+            stages.forEach(stage => {
+                const container = document.getElementById(`col-${stage}`);
+                const countEl = document.getElementById(`count-${stage}`);
+                if (!container || !countEl) return;
+
+                container.innerHTML = '';
                 const stageDeals = deals.filter(d => d.stage === stage);
-                countBadge.innerText = stageDeals.length;
+                countEl.innerText = stageDeals.length;
 
                 stageDeals.forEach(deal => {
                     const card = document.createElement('div');
@@ -497,139 +503,159 @@
                     card.draggable = true;
                     card.ondragstart = (e) => drag(e, deal.id);
                     card.onclick = () => editDeal(deal);
+
                     card.innerHTML = `
-                        <div style="font-weight:500;">${deal.clientName}</div>
-                        <div style="font-size:0.8rem; color:var(--text-sub);">${deal.company || ''}</div>
-                        <div class="deal-price">${currencyFmt.format(deal.value).replace('ZAR', 'R')}</div>
+                        <div style="font-weight:500;">${deal.clientName || 'Unnamed'}</div>
+                        <div style="font-size:0.8rem; color:var(--text-sub);">${deal.company || '-'}</div>
+                        <div class="deal-price">${currencyFmt.format(parseFloat(deal.value) || 0).replace('ZAR', 'R')}</div>
                     `;
-                    col.appendChild(card);
+                    container.appendChild(card);
                 });
             });
         }
 
-        // ── Drag & Drop Logic ──
-        function allowDrop(ev) { ev.preventDefault(); }
-        function drag(ev, id) { ev.dataTransfer.setData("text", id); }
-        function drop(ev, newStage) {
-            ev.preventDefault();
-            const id = ev.dataTransfer.getData("text");
-            db.ref(`crm/${currentUser.uid}/deals/${id}`).update({ stage: newStage });
-        }
-
-        // ── Contacts (Table) ──
-        function renderContacts() {
+        // ── Contacts Table ──
+        function renderContactsTable() {
             const tbody = document.getElementById('contactsTableBody');
             tbody.innerHTML = '';
+
             deals.forEach(deal => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight:500">${deal.clientName}</td>
+                    <td style="font-weight:500">${deal.clientName || 'Unnamed'}</td>
                     <td>${deal.company || '-'}</td>
-                    <td>${currencyFmt.format(deal.value).replace('ZAR', 'R')}</td>
+                    <td>${currencyFmt.format(parseFloat(deal.value) || 0).replace('ZAR', 'R')}</td>
                     <td><span class="status-badge status-${deal.stage}">${deal.stage.toUpperCase()}</span></td>
                     <td>
-                        <button onclick="deleteDeal('${deal.id}')" style="color:var(--danger); background:none; border:none; cursor:pointer;">
+                        <button onclick="deleteDeal('${deal.id}')" style="color:var(--danger); background:none; border:none; cursor:pointer; font-size:1.1rem;">
                             <span class="material-symbols-rounded">delete</span>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            if (deals.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-sub);">No deals yet. Add your first deal!</td></tr>';
+            }
         }
 
-        // ── Modal & Form ──
+        // ── Drag & Drop ──
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev, id) { ev.dataTransfer.setData("text", id); }
+        function drop(ev, newStage) {
+            ev.preventDefault();
+            const id = ev.dataTransfer.getData("text");
+            if (id) {
+                db.ref(`crm/${currentUser.uid}/deals/${id}`).update({ 
+                    stage: newStage,
+                    updatedAt: firebase.database.ServerValue.TIMESTAMP 
+                });
+            }
+        }
+
+        // ── Modal & CRUD ──
         function openModal(deal = null) {
             document.getElementById('dealModal').style.display = 'flex';
-            const f = document.getElementById('dealForm');
-            f.reset();
+            const form = document.getElementById('dealForm');
+            form.reset();
             document.getElementById('aiOutput').style.display = 'none';
+
             if (deal) {
                 document.getElementById('dealId').value = deal.id;
-                document.getElementById('inpName').value = deal.clientName;
-                document.getElementById('inpCompany').value = deal.company;
-                document.getElementById('inpValue').value = deal.value;
-                document.getElementById('inpStage').value = deal.stage;
+                document.getElementById('inpName').value = deal.clientName || '';
+                document.getElementById('inpCompany').value = deal.company || '';
+                document.getElementById('inpValue').value = deal.value || '';
+                document.getElementById('inpStage').value = deal.stage || 'lead';
             } else {
                 document.getElementById('dealId').value = '';
                 document.getElementById('inpStage').value = 'lead';
             }
         }
-        function closeModal() { document.getElementById('dealModal').style.display = 'none'; }
-        function editDeal(deal) { openModal(deal); }
+
+        function closeModal() {
+            document.getElementById('dealModal').style.display = 'none';
+        }
+
+        function editDeal(deal) {
+            openModal(deal);
+        }
 
         function saveDeal(e) {
             e.preventDefault();
             const id = document.getElementById('dealId').value;
             const data = {
-                clientName: document.getElementById('inpName').value,
-                company: document.getElementById('inpCompany').value,
-                value: document.getElementById('inpValue').value,
+                clientName: document.getElementById('inpName').value.trim(),
+                company: document.getElementById('inpCompany').value.trim(),
+                value: parseFloat(document.getElementById('inpValue').value) || 0,
                 stage: document.getElementById('inpStage').value,
                 updatedAt: firebase.database.ServerValue.TIMESTAMP
             };
 
-            if (id) db.ref(`crm/${currentUser.uid}/deals/${id}`).update(data);
-            else db.ref(`crm/${currentUser.uid}/deals`).push(data);
+            if (id) {
+                db.ref(`crm/${currentUser.uid}/deals/${id}`).update(data);
+            } else {
+                db.ref(`crm/${currentUser.uid}/deals`).push(data);
+            }
             closeModal();
         }
 
         function deleteDeal(id) {
-            if(confirm("Are you sure?")) db.ref(`crm/${currentUser.uid}/deals/${id}`).remove();
+            if (confirm("Are you sure you want to delete this deal?")) {
+                db.ref(`crm/${currentUser.uid}/deals/${id}`).remove();
+            }
         }
 
-        // ── AI FUNCTIONALITY ──
-
-        // 1. Context Email (Inside Deal Modal)
+        // ── AI Features ──
         async function generateContextEmail() {
-            if (!XAI_API_KEY) return alert("AI Key not loaded.");
-            
-            const name = document.getElementById('inpName').value;
-            const company = document.getElementById('inpCompany').value;
+            if (!XAI_API_KEY) return alert("AI configuration not loaded yet.");
+           
+            const name = document.getElementById('inpName').value.trim();
+            const company = document.getElementById('inpCompany').value.trim();
             const stage = document.getElementById('inpStage').value;
             const output = document.getElementById('aiOutput');
-            
-            if(!name) return alert("Please enter client name first.");
-
+           
+            if (!name) return alert("Please enter client name first.");
+           
             output.style.display = 'block';
-            output.value = "Thinking...";
+            output.value = "Generating email draft...";
 
             let contextPrompt = "";
-            if(stage === 'lead') contextPrompt = "an introductory email offering services";
-            else if(stage === 'negotiation') contextPrompt = "a follow-up regarding our proposal and pricing in Rands";
-            else if(stage === 'won') contextPrompt = "a thank you email for closing the deal";
+            if (stage === 'lead') contextPrompt = "an introductory email offering our services";
+            else if (stage === 'negotiation') contextPrompt = "a professional follow-up email regarding our proposal and pricing in South African Rand";
+            else if (stage === 'won') contextPrompt = "a thank-you email for closing the deal";
             else contextPrompt = "a polite re-engagement email";
 
-            const prompt = `Write ${contextPrompt} to ${name} from ${company}. Keep it professional, concise, and use South African English spelling. Sender: Vynix Lingua.`;
+            const prompt = `Write ${contextPrompt} to ${name} at ${company || "their company"}. Keep it professional, concise, warm, and use South African English spelling. Sender name: Vynix Lingua.`;
 
-            await callAI(prompt, (text) => { output.value = text; });
+            await callAI(prompt, (text) => {
+                output.value = text;
+            });
         }
 
-        // 2. Global AI Chat
         function toggleAIWindow() {
-            const w = document.getElementById('aiWindow');
-            w.style.display = w.style.display === 'flex' ? 'none' : 'flex';
+            const win = document.getElementById('aiWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
         }
 
         async function sendGlobalAI() {
             const input = document.getElementById('aiGlobalInput');
             const body = document.getElementById('aiChatBody');
             const txt = input.value.trim();
-            if(!txt) return;
+            if (!txt) return;
 
-            // User msg
             body.innerHTML += `<div class="ai-msg user">${txt}</div>`;
             input.value = '';
             body.scrollTop = body.scrollHeight;
 
-            // Loading msg
             const loadingId = 'loading-' + Date.now();
-            body.innerHTML += `<div id="${loadingId}" class="ai-msg bot">...</div>`;
+            body.innerHTML += `<div id="${loadingId}" class="ai-msg bot">Thinking...</div>`;
+            body.scrollTop = body.scrollHeight;
 
-            // Prepare context
-            const totalVal = deals.reduce((acc, d) => acc + (parseFloat(d.value)||0), 0);
-            const contextData = `The user has ${deals.length} deals. Total value: R${totalVal}. Won: ${deals.filter(d=>d.stage=='won').length}.`;
-            
-            const prompt = `Context: ${contextData}. User Name: Vynix Lingua. Request: ${txt}. Answer briefly.`;
+            const totalValue = deals.reduce((sum, d) => sum + (parseFloat(d.value)||0), 0);
+            const context = `Current CRM stats: ${deals.length} total deals | Total pipeline value: R${totalValue.toLocaleString('en-ZA')} | Won deals: ${deals.filter(d=>d.stage==='won').length}`;
+
+            const prompt = `${context}\n\nUser question: ${txt}\nAnswer concisely and helpfully.`;
 
             await callAI(prompt, (text) => {
                 document.getElementById(loadingId).innerText = text;
@@ -637,43 +663,57 @@
             });
         }
 
-        // Shared AI Caller
         async function callAI(prompt, callback) {
             try {
                 const res = await fetch("https://api.x.ai/v1/chat/completions", {
                     method: "POST",
-                    headers: { "Authorization": `Bearer ${XAI_API_KEY}`, "Content-Type": "application/json" },
+                    headers: {
+                        "Authorization": `Bearer ${XAI_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
                         model: "grok-beta",
-                        messages: [{role: "user", content: prompt}],
-                        temperature: 0.7
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7,
+                        max_tokens: 800
                     })
                 });
+
+                if (!res.ok) throw new Error("API error");
                 const json = await res.json();
-                callback(json.choices[0].message.content);
+                callback(json.choices[0].message.content.trim());
             } catch (err) {
                 console.error(err);
-                callback("Error connecting to AI.");
+                callback("Sorry, couldn't connect to the AI assistant right now.");
             }
         }
 
         // ── Navigation ──
-        function nav(viewName, btn) {
-            document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
+        function nav(viewName, el) {
+            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
             document.getElementById(`view-${viewName}`).classList.add('active');
-            btn.classList.add('active');
-            
-            const titles = { dashboard: 'Dashboard', pipeline: 'Sales Pipeline', contacts: 'Client List' };
-            document.getElementById('pageTitle').innerText = titles[viewName];
-            
-            if(window.innerWidth <= 768) toggleSidebar();
+            el.classList.add('active');
+
+            const titles = {
+                dashboard: 'Dashboard',
+                pipeline: 'Sales Pipeline',
+                contacts: 'Client List'
+            };
+            document.getElementById('pageTitle').innerText = titles[viewName] || 'Dashboard';
+
+            if (window.innerWidth <= 768) toggleSidebar();
         }
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
         }
+
+        // Close modal when clicking outside
+        document.getElementById('dealModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
     </script>
 </body>
 </html>
