@@ -6,8 +6,12 @@
     <title>Nexlify CRM</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
-    <!-- Chart.js CDN -->
+    
+    <!-- Chart.js core -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <!-- Funnel plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-funnel@4.2.5/dist/chartjs-chart-funnel.min.js"></script>
+
     <style>
         :root {
             --primary: #2563eb;
@@ -99,7 +103,7 @@
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.06);
             border: 1px solid var(--gray-200);
-            height: 320px;
+            height: 340px;
         }
         .chart-card h3 { margin-bottom: 16px; font-size: 18px; }
 
@@ -109,7 +113,7 @@
             font-size:14px; z-index:9999; display:none;
         }
 
-        /* Modal styles (kept minimal) */
+        /* Modal styles */
         #modalOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; display:none; align-items:center; justify-content:center; }
         .modal-content { background:white; border-radius:16px; width:90%; max-width:480px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.25); }
         .modal-header { padding:20px 24px; border-bottom:1px solid var(--gray-200); display:flex; justify-content:space-between; align-items:center; }
@@ -160,7 +164,7 @@
             <h2>Dashboard Overview</h2>
 
             <div class="dashboard-grid" id="metricCards">
-                <!-- Dynamic metrics cards -->
+                <!-- Filled dynamically -->
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin: 32px 0;">
@@ -175,8 +179,8 @@
                 </div>
 
                 <div class="chart-card" style="grid-column: 1 / -1;">
-                    <h3>Pipeline Distribution (Funnel Approximation)</h3>
-                    <canvas id="pipelineFunnelChart" height="140"></canvas>
+                    <h3>Sales Pipeline Funnel</h3>
+                    <canvas id="funnelChart" height="160"></canvas>
                 </div>
             </div>
         </div>
@@ -188,7 +192,7 @@
         <div id="reports" class="section"><h2>Reports</h2><div class="placeholder">Coming soon...</div></div>
     </div>
 
-    <!-- Deal Creation Modal -->
+    <!-- Deal Modal -->
     <div id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -238,7 +242,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        // Firebase Config (replace with yours)
         const firebaseConfig = {
             apiKey: "AIzaSyBOyZ3As4GTuNvjemvPF_SpsC6m6vqtNhc",
             authDomain: "fire-b-a8878.firebaseapp.com",
@@ -253,52 +256,40 @@
         const auth = firebase.auth();
 
         let currentUser = null;
-        let dealsByStageChart, winRateChart, pipelineFunnelChart;
+        let dealsListener = null;
+
+        // Chart instances
+        let dealsByStageChart, winRateChart, funnelChart;
 
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
-                loadDashboard(); // Load charts on login
+                setupRealtimeListener();
             } else {
+                if (dealsListener) dealsListener.off();
                 window.location.href = "login.html";
             }
         });
 
-        // Sidebar controls
-        function expandSidebar() { if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.add('expanded'); }
-        function collapseSidebar() { if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.remove('expanded'); }
-        function toggleDrawer() { document.getElementById('sideDrawer').classList.toggle('open'); }
+        // ── Real-time listener ───────────────────────────────────────────────
+        function setupRealtimeListener() {
+            if (dealsListener) dealsListener.off();
 
-        // Navigation
-        document.querySelectorAll('.drawer-item[data-section]').forEach(item => {
-            item.addEventListener('click', () => {
-                const section = item.getAttribute('data-section');
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(section).classList.add('active');
-                document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
-                document.getElementById('actionBtn').style.display = (section === 'deals') ? 'flex' : 'none';
-                if (window.innerWidth < 992) toggleDrawer();
-                if (section === 'dashboard') loadDashboard();
-            });
-        });
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3200);
-        }
-
-        function logout() { auth.signOut().then(() => window.location.href = "login.html"); }
-
-        // ── Load Dashboard with Charts ──
-        async function loadDashboard() {
-            const dealsSnap = await db.ref('deals')
+            dealsListener = db.ref('deals')
                 .orderByChild('owner')
                 .equalTo(currentUser.uid)
-                .once('value');
+                .on('value', (snapshot) => {
+                    const deals = snapshot.val() || {};
+                    updateDashboard(deals);
+                }, (error) => {
+                    console.error("Realtime listener error:", error);
+                    showToast("Error loading real-time data");
+                });
+        }
 
-            const deals = dealsSnap.val() || {};
-            const dealArray = Object.values(deals);
+        // ── Update UI + Charts when data changes ─────────────────────────────
+        function updateDashboard(dealsObj) {
+            const dealArray = Object.values(dealsObj);
 
             // Metrics
             const totalDeals = dealArray.length;
@@ -326,27 +317,36 @@
                 </div>
             `;
 
-            // Prepare data for charts
-            const stageOrder = ['lead','contacted','qualified','proposal','negotiation','won','lost'];
+            // Stage data
+            const stageOrder = ['lead','contacted','qualified','proposal','negotiation','won'];
+            const stageLabels = stageOrder.map(s => s.charAt(0).toUpperCase() + s.slice(1));
             const stageCounts = {};
             stageOrder.forEach(s => stageCounts[s] = 0);
             dealArray.forEach(d => {
-                if (d.stage && stageCounts.hasOwnProperty(d.stage)) stageCounts[d.stage]++;
+                if (d.stage && stageCounts[d.stage] !== undefined) stageCounts[d.stage]++;
             });
+            const funnelData = stageOrder.map(s => stageCounts[s]);
 
-            const labels = stageOrder.map(s => s.charAt(0).toUpperCase() + s.slice(1));
-            const counts = stageOrder.map(s => stageCounts[s]);
+            // ── Bar chart ──
+            updateBarChart(stageLabels, funnelData);
 
-            // ── Deals by Stage (Horizontal Bar) ──
+            // ── Doughnut win rate ──
+            updateDoughnutChart(winRate);
+
+            // ── Real funnel chart ──
+            updateFunnelChart(stageLabels, funnelData);
+        }
+
+        function updateBarChart(labels, data) {
             if (dealsByStageChart) dealsByStageChart.destroy();
             dealsByStageChart = new Chart(document.getElementById('dealsByStageChart'), {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
-                        label: 'Number of Deals',
-                        data: counts,
-                        backgroundColor: 'rgba(37, 99, 235, 0.6)',
+                        label: 'Deals',
+                        data,
+                        backgroundColor: 'rgba(37, 99, 235, 0.65)',
                         borderColor: 'rgba(37, 99, 235, 1)',
                         borderWidth: 1
                     }]
@@ -358,8 +358,9 @@
                     scales: { x: { beginAtZero: true } }
                 }
             });
+        }
 
-            // ── Win Rate Doughnut with center text ──
+        function updateDoughnutChart(winRate) {
             if (winRateChart) winRateChart.destroy();
             winRateChart = new Chart(document.getElementById('winRateChart'), {
                 type: 'doughnut',
@@ -367,7 +368,7 @@
                     labels: ['Won', 'Not Won'],
                     datasets: [{
                         data: [winRate, 100 - winRate],
-                        backgroundColor: [var(--success), '#e5e7eb'],
+                        backgroundColor: ['#10b981', '#e5e7eb'],
                         borderWidth: 0
                     }]
                 },
@@ -375,9 +376,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     cutout: '70%',
-                    plugins: {
-                        legend: { display: false }
-                    }
+                    plugins: { legend: { display: false } }
                 },
                 plugins: [{
                     id: 'centerText',
@@ -385,54 +384,54 @@
                         const { ctx, chartArea: { width, height } } = chart;
                         ctx.save();
                         ctx.font = 'bold 36px Inter, sans-serif';
-                        ctx.fillStyle = var(--text-main);
+                        ctx.fillStyle = '#111827';
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        const text = winRate + '%';
-                        const textX = width / 2;
-                        const textY = height / 2;
-                        ctx.fillText(text, textX, textY);
+                        ctx.fillText(winRate + '%', width / 2, height / 2);
                         ctx.restore();
                     }
                 }]
             });
+        }
 
-            // ── Pipeline Funnel Approximation (Horizontal bar, decreasing width feel) ──
-            if (pipelineFunnelChart) pipelineFunnelChart.destroy();
-            pipelineFunnelChart = new Chart(document.getElementById('pipelineFunnelChart'), {
-                type: 'bar',
+        function updateFunnelChart(labels, data) {
+            if (funnelChart) funnelChart.destroy();
+            funnelChart = new Chart(document.getElementById('funnelChart'), {
+                type: 'funnel',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
-                        label: 'Deals in Stage',
-                        data: counts,
+                        label: 'Pipeline',
+                        data,
                         backgroundColor: [
-                            'rgba(107, 114, 128, 0.7)',   // lead
-                            'rgba(59, 130, 246, 0.7)',    // contacted
-                            'rgba(139, 92, 246, 0.7)',    // qualified
-                            'rgba(245, 158, 11, 0.7)',    // proposal
-                            'rgba(249, 115, 22, 0.7)',    // negotiation
-                            'rgba(16, 185, 129, 0.7)',    // won
-                            'rgba(239, 68, 68, 0.7)'      // lost
+                            'rgba(107,114,128,0.75)', // lead
+                            'rgba(59,130,246,0.75)',  // contacted
+                            'rgba(139,92,246,0.75)',  // qualified
+                            'rgba(245,158,11,0.75)',  // proposal
+                            'rgba(249,115,22,0.75)',  // negotiation
+                            'rgba(16,185,129,0.75)'   // won
                         ],
-                        borderWidth: 0,
-                        borderRadius: 6
+                        borderWidth: 1,
+                        borderColor: '#ffffff'
                     }]
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        x: { beginAtZero: true, display: false },
-                        y: { grid: { display: false } }
-                    },
-                    plugins: { legend: { display: false } }
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true },
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: 'bold' },
+                            formatter: (v) => v > 0 ? v : ''
+                        }
+                    }
                 }
             });
         }
 
-        // Modal & Deal save (same as before)
+        // Modal & save logic (unchanged)
         function openNewDealModal() {
             document.getElementById('modalTitle').textContent = "New Deal";
             document.getElementById('company').value = "";
@@ -464,9 +463,9 @@
 
             db.ref('deals').push(dealData)
                 .then(() => {
-                    showToast("Deal created!");
+                    showToast("Deal created → dashboard updating...");
                     closeModal();
-                    loadDashboard();
+                    // No need to call loadDashboard – listener will catch it
                 })
                 .catch(err => showToast("Error: " + err.message));
         }
@@ -474,6 +473,11 @@
         document.getElementById('modalOverlay').addEventListener('click', e => {
             if (e.target === document.getElementById('modalOverlay')) closeModal();
         });
+
+        // Sidebar & nav functions (unchanged)
+        function expandSidebar() { if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.add('expanded'); }
+        function collapseSidebar() { if (window.innerWidth >= 992) document.getElementById('sideDrawer').classList.remove('expanded'); }
+        function toggleDrawer() { document.getElementById('sideDrawer').classList.toggle('open'); }
     </script>
 </body>
 </html>
