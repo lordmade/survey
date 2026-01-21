@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VynixCRM • Business Solution</title>
-  
+   
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Rounded" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -28,6 +28,7 @@
         }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg-body); color: var(--text-main); height: 100vh; display: flex; overflow: hidden; }
+
         #authScreen {
             position: fixed; inset: 0; z-index: 100;
             background: var(--bg-body);
@@ -37,6 +38,7 @@
             background: var(--surface); padding: 40px; border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; width: 100%; max-width: 400px;
         }
+
         .sidebar {
             width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border);
             display: flex; flex-direction: column; z-index: 50; transition: transform 0.3s;
@@ -54,6 +56,7 @@
         .user-mini {
             padding: 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px;
         }
+
         .main-content { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; }
         .top-bar {
             height: 64px; border-bottom: 1px solid var(--border); background: var(--surface);
@@ -67,12 +70,15 @@
         }
         .action-btn:hover { background: var(--primary-dark); }
         .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
         .view-container { flex: 1; overflow-y: auto; padding: 24px; display: none; }
         .view-container.active { display: block; }
+
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 24px; }
         .stat-card { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
         .stat-val { font-size: 1.8rem; font-weight: 700; margin: 8px 0; }
         .stat-label { color: var(--text-sub); font-size: 0.875rem; }
+
         .pipeline-wrapper { display: flex; gap: 24px; height: 100%; overflow-x: auto; padding-bottom: 10px; }
         .pipeline-col {
             min-width: 300px; background: #f9fafb; border-radius: 12px;
@@ -80,6 +86,7 @@
         }
         .col-header { padding: 16px; font-weight: 600; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
         .col-body { padding: 12px; flex: 1; overflow-y: auto; }
+
         .deal-card {
             background: var(--surface); padding: 16px; border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 12px; cursor: pointer;
@@ -88,6 +95,7 @@
         .deal-card:hover { border-color: var(--primary); transform: translateY(-2px); }
         .deal-price { font-weight: 600; color: var(--text-main); margin-top: 8px; }
         .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: #eef2ff; color: var(--primary); }
+
         .data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 8px; overflow: hidden; }
         .data-table th, .data-table td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border); }
         .data-table th { background: #f9fafb; font-weight: 600; color: var(--text-sub); font-size: 0.875rem; }
@@ -96,6 +104,7 @@
         .status-negotiation { background: #fefce8; color: #854d0e; }
         .status-won { background: #ecfdf5; color: #047857; }
         .status-lost { background: #fef2f2; color: #b91c1c; }
+
         .ai-fab {
             position: absolute; bottom: 30px; right: 30px;
             width: 60px; height: 60px; border-radius: 30px;
@@ -106,6 +115,7 @@
             z-index: 90; transition: transform 0.2s;
         }
         .ai-fab:hover { transform: scale(1.1); }
+
         .ai-window {
             position: absolute; bottom: 100px; right: 30px;
             width: 350px; height: 500px;
@@ -122,10 +132,12 @@
         .ai-msg { margin-bottom: 12px; padding: 10px; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; }
         .ai-msg.bot { background: #f0f7ff; color: var(--text-main); border-left: 3px solid var(--primary); }
         .ai-msg.user { background: #f3f4f6; text-align: right; margin-left: auto; width: 80%; }
+
         .ai-input-area {
             padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px;
         }
         .ai-input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 20px; outline: none; }
+
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
             display: none; align-items: center; justify-content: center;
@@ -137,6 +149,7 @@
         .modal-header { font-size: 1.25rem; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
         .modal-body { margin-bottom: 24px; line-height: 1.5; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+
         .btn { padding: 10px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; border: none; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
@@ -144,6 +157,7 @@
         .btn-danger:hover { background: #dc2626; }
         .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-main); }
         .btn-outline:hover { background: #f9fafb; }
+
         .form-group { margin-bottom: 16px; }
         .form-label { display: block; margin-bottom: 6px; font-size: 0.875rem; font-weight: 500; }
         .form-input, .form-select {
@@ -152,6 +166,7 @@
         }
         .form-input:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
         .form-error { color: var(--danger); font-size: 0.8rem; margin-top: 4px; display: none; }
+
         @media(max-width: 768px) {
             .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -165,6 +180,7 @@
 </head>
 <body>
 
+    <!-- Auth Screen -->
     <div id="authScreen">
         <div class="login-card">
             <div style="width: 50px; height: 50px; background: var(--primary); border-radius: 12px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
@@ -178,6 +194,7 @@
         </div>
     </div>
 
+    <!-- Main App Layout -->
     <div id="appLayout" style="display: none; width: 100%; height: 100%;">
         <aside class="sidebar" id="sidebar">
             <div class="brand">
@@ -214,6 +231,7 @@
                 </button>
             </header>
 
+            <!-- Dashboard View -->
             <div id="view-dashboard" class="view-container active">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -237,6 +255,7 @@
                 </div>
             </div>
 
+            <!-- Pipeline View -->
             <div id="view-pipeline" class="view-container">
                 <div class="pipeline-wrapper">
                     <div class="pipeline-col">
@@ -262,6 +281,7 @@
                 </div>
             </div>
 
+            <!-- Contacts View -->
             <div id="view-contacts" class="view-container">
                 <div style="overflow-x: auto;">
                     <table class="data-table">
@@ -279,6 +299,7 @@
                 </div>
             </div>
 
+            <!-- AI FAB & Window -->
             <button class="ai-fab" onclick="toggleAIWindow()">
                 <span class="material-symbols-rounded">smart_toy</span>
             </button>
@@ -305,7 +326,7 @@
         </main>
     </div>
 
-    <!-- Deal Form Modal -->
+    <!-- Deal Modal -->
     <div class="modal-overlay" id="dealModal">
         <div class="modal">
             <div class="modal-header">
@@ -383,12 +404,12 @@
         const provider = new firebase.auth.GoogleAuthProvider();
         const remoteConfig = firebase.remoteConfig();
 
-        // State
+        // State variables
         let currentUser = null;
         let deals = [];
         let chartInstance = null;
         let XAI_API_KEY = "";
-        let dealsListener = null; // To store the listener reference for cleanup
+        let dealsListener = null;
 
         const currencyFmt = new Intl.NumberFormat('en-ZA', {
             style: 'currency',
@@ -396,18 +417,18 @@
             minimumFractionDigits: 2
         });
 
-        // ── Auth State Listener ────────────────────────────────────────────────────
+        // ── Auth State Changed ─────────────────────────────────────────────────────
         auth.onAuthStateChanged(user => {
-            // Clean up previous listener if exists
+            // Clean up old listener
             if (dealsListener) {
                 dealsListener.off();
                 dealsListener = null;
-                console.log("Previous realtime listener removed");
+                console.log("[Listener] Cleaned up previous listener");
             }
 
             if (user) {
                 currentUser = user;
-                console.log("User signed in:", user.uid, user.email);
+                console.log("[Auth] Signed in →", user.uid, user.email);
 
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('appLayout').style.display = 'flex';
@@ -421,57 +442,51 @@
             } else {
                 currentUser = null;
                 deals = [];
-                console.log("No user signed in");
-
+                console.log("[Auth] Signed out or no user");
                 document.getElementById('authScreen').style.display = 'flex';
                 document.getElementById('appLayout').style.display = 'none';
             }
         });
 
-        // ── Remote Config for XAI API Key ──────────────────────────────────────────
+        // ── Fetch Remote Config (XAI key) ──────────────────────────────────────────
         function fetchConfig() {
             remoteConfig.settings = { minimumFetchIntervalMillis: 0 };
             remoteConfig.fetchAndActivate()
                 .then(() => {
                     XAI_API_KEY = remoteConfig.getValue('xai_api_key').asString() || "";
-                    console.log("Remote config loaded. XAI key length:", XAI_API_KEY.length);
+                    console.log("[Config] XAI API key loaded (length):", XAI_API_KEY.length);
                 })
                 .catch(err => {
-                    console.error("Remote Config error:", err);
+                    console.error("[Config] Remote Config error:", err);
                 });
         }
 
-        // ── Real-time Listener (the main fix is here) ──────────────────────────────
+        // ── Initialize Real-time Listener ──────────────────────────────────────────
         function initRealtimeListener() {
-            if (!currentUser) {
-                console.warn("Cannot start listener — no current user");
+            if (!currentUser?.uid) {
+                console.warn("[Listener] Cannot start — no user UID");
                 return;
             }
 
-            const dealsRef = db.ref(`crm/${currentUser.uid}/deals`);
+            const ref = db.ref(`crm/${currentUser.uid}/deals`);
+            console.log("[Listener] Starting on path:", ref.toString());
 
-            console.log("Starting realtime listener on:", dealsRef.toString());
-
-            dealsListener = dealsRef.on('value', snapshot => {
+            dealsListener = ref.on('value', snapshot => {
                 deals = [];
                 if (snapshot.exists()) {
                     snapshot.forEach(child => {
-                        const deal = { id: child.key, ...child.val() };
-                        deals.push(deal);
+                        deals.push({ id: child.key, ...child.val() });
                     });
-                    console.log(`Loaded ${deals.length} deals from Firebase`);
-                } else {
-                    console.log("No deals found for this user");
                 }
-
-                // Update UI immediately
+                console.log("[Listener] Data received —", deals.length, "deals");
                 renderAll();
             }, error => {
-                console.error("Realtime listener error:", error.code, error.message);
-                showAlert("Database Error", "Could not load deals. Check your connection or permissions.", "error");
+                console.error("[Listener] Error:", error.code, error.message);
+                showAlert("Database Error", "Cannot load deals. Check rules or connection.", "error");
             });
         }
 
+        // ── Render All Views ───────────────────────────────────────────────────────
         function renderAll() {
             updateDashboard();
             renderPipeline();
@@ -555,14 +570,14 @@
                     stage,
                     updatedAt: firebase.database.ServerValue.TIMESTAMP
                 }).then(() => {
-                    console.log(`Deal ${id} moved to ${stage}`);
+                    console.log(`[Drag] Moved deal ${id} → ${stage}`);
                 }).catch(err => {
-                    console.error("Move failed:", err);
+                    console.error("[Drag] Move failed:", err);
                 });
             }
         }
 
-        // ── Contacts ────────────────────────────────────────────────────────────────
+        // ── Contacts Table ──────────────────────────────────────────────────────────
         function renderContacts() {
             const tbody = document.getElementById('contactsTableBody');
             tbody.innerHTML = '';
@@ -592,7 +607,7 @@
             });
         }
 
-        // ── Deal Modal & CRUD ──────────────────────────────────────────────────────
+        // ── Deal Modal ──────────────────────────────────────────────────────────────
         function openDealModal(deal = null) {
             const modal = document.getElementById('dealModal');
             const title = document.getElementById('dealModalTitle');
@@ -612,8 +627,7 @@
                 document.getElementById('inpStage').value = deal.stage || 'lead';
             } else if (typeof deal === 'string') {
                 const found = deals.find(d => d.id === deal);
-                if (found) openDealModal(found);
-                return;
+                if (found) return openDealModal(found);
             } else {
                 title.textContent = 'New Deal';
                 document.getElementById('dealId').value = '';
@@ -629,30 +643,27 @@
             document.getElementById('dealModal').style.display = 'none';
         }
 
+        // ── Save Deal (with improved debugging) ────────────────────────────────────
         async function saveDeal(e) {
             e.preventDefault();
 
-            if (!currentUser) {
-                showAlert("Error", "You must be signed in to save deals", "error");
+            const saveBtn = document.getElementById('saveDealBtn');
+
+            if (!currentUser?.uid) {
+                console.error("[SAVE] No authenticated user");
+                showAlert("Error", "Not signed in. Please sign in again.", "error");
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Deal';
                 return;
             }
 
-            const name = document.getElementById('inpName').value.trim();
+            const name  = document.getElementById('inpName').value.trim();
             const value = document.getElementById('inpValue').value.trim();
-            const errName = document.getElementById('errName');
-            const errValue = document.getElementById('errValue');
-            const saveBtn = document.getElementById('saveDealBtn');
 
-            let hasError = false;
-            errName.style.display = 'none';
-            errValue.style.display = 'none';
-
-            if (!name) { errName.style.display = 'block'; hasError = true; }
-            if (!value || isNaN(parseFloat(value)) || parseFloat(value) < 0) {
-                errValue.style.display = 'block'; hasError = true;
+            if (!name || !value || isNaN(parseFloat(value)) || parseFloat(value) < 0) {
+                showAlert("Validation Error", "Please fill all required fields correctly.", "error");
+                return;
             }
-
-            if (hasError) return;
 
             saveBtn.disabled = true;
             saveBtn.textContent = 'Saving...';
@@ -660,54 +671,64 @@
             const id = document.getElementById('dealId').value;
             const data = {
                 clientName: name,
-                company: document.getElementById('inpCompany').value.trim(),
+                company: document.getElementById('inpCompany').value.trim() || null,
                 value: parseFloat(value),
                 stage: document.getElementById('inpStage').value,
                 updatedAt: firebase.database.ServerValue.TIMESTAMP
             };
 
+            const basePath = `crm/${currentUser.uid}/deals`;
+            console.log("[SAVE] Attempt →", id ? 'UPDATE' : 'PUSH', "path:", basePath, id ? `/${id}` : '');
+
             try {
-                const basePath = `crm/${currentUser.uid}/deals`;
                 if (id) {
                     await db.ref(`${basePath}/${id}`).update(data);
+                    console.log("[SAVE] Update completed");
                     showAlert('Success', 'Deal updated successfully!', 'success');
                 } else {
-                    await db.ref(basePath).push(data);
+                    const newRef = await db.ref(basePath).push(data);
+                    console.log("[SAVE] Push completed — key:", newRef.key);
                     showAlert('Success', 'New deal added successfully!', 'success');
                 }
                 closeDealModal();
             } catch (err) {
-                console.error("Save error:", err);
-                showAlert('Error', 'Failed to save deal: ' + err.message, 'error');
+                console.error("[SAVE] FAILED:", err.code || 'unknown', err.message);
+                showAlert('Error', `Failed to save deal: ${err.message}`, 'error');
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = id ? 'Update Deal' : 'Save Deal';
             }
         }
 
+        // ── Delete Confirmation ─────────────────────────────────────────────────────
         function confirmDelete(id) {
             showConfirm(
                 'Delete Deal',
-                'Are you sure you want to delete this deal? This cannot be undone.',
+                'Are you sure you want to delete this deal? This action cannot be undone.',
                 () => {
                     if (!currentUser) return;
                     db.ref(`crm/${currentUser.uid}/deals/${id}`).remove()
-                        .then(() => showAlert('Success', 'Deal deleted successfully!', 'success'))
-                        .catch(err => showAlert('Error', 'Failed to delete: ' + err.message, 'error'));
+                        .then(() => {
+                            console.log("[DELETE] Success:", id);
+                            showAlert('Success', 'Deal deleted successfully!', 'success');
+                        })
+                        .catch(err => {
+                            console.error("[DELETE] Failed:", err);
+                            showAlert('Error', 'Failed to delete deal: ' + err.message, 'error');
+                        });
                 }
             );
         }
 
-        // ── Alert / Confirm Modals ─────────────────────────────────────────────────
+        // ── Custom Alerts & Confirms ───────────────────────────────────────────────
         function showAlert(title, message, type = 'info') {
             const modal = document.getElementById('alertModal');
             document.getElementById('alertTitle').textContent = title;
             document.getElementById('alertMessage').textContent = message;
 
             const titleEl = document.getElementById('alertTitle');
-            if (type === 'success') titleEl.style.color = 'var(--success)';
-            else if (type === 'error') titleEl.style.color = 'var(--danger)';
-            else titleEl.style.color = 'var(--text-main)';
+            titleEl.style.color = type === 'success' ? 'var(--success)' :
+                                 type === 'error'   ? 'var(--danger)'   : 'var(--text-main)';
 
             document.getElementById('alertActions').innerHTML = `
                 <button class="btn btn-primary" onclick="closeAlertModal()">OK</button>
@@ -723,7 +744,7 @@
 
             document.getElementById('alertActions').innerHTML = `
                 <button class="btn btn-outline" onclick="closeAlertModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="closeAlertModal();(${onConfirm.toString()})()">Delete</button>
+                <button class="btn btn-danger" onclick="closeAlertModal(); (${onConfirm.toString()})()">Delete</button>
             `;
             modal.style.display = 'flex';
         }
@@ -732,17 +753,19 @@
             document.getElementById('alertModal').style.display = 'none';
         }
 
-        // ── Navigation & Sidebar ───────────────────────────────────────────────────
+        // ── Navigation ──────────────────────────────────────────────────────────────
         function nav(view, el) {
             document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById(`view-${view}`).classList.add('active');
             el.classList.add('active');
+
             document.getElementById('pageTitle').textContent = {
                 dashboard: 'Dashboard',
                 pipeline: 'Sales Pipeline',
                 contacts: 'Client List'
             }[view] || 'Dashboard';
+
             if (window.innerWidth <= 768) toggleSidebar();
         }
 
@@ -750,38 +773,41 @@
             document.getElementById('sidebar').classList.toggle('open');
         }
 
+        // Close modals when clicking overlay
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', e => {
                 if (e.target === overlay) overlay.style.display = 'none';
             });
         });
 
-        // ── AI Functions (unchanged) ───────────────────────────────────────────────
+        // ── AI Functions ────────────────────────────────────────────────────────────
         async function generateContextEmail() {
-            if (!XAI_API_KEY) return showAlert('Error', 'AI key not loaded.', 'error');
+            if (!XAI_API_KEY) return showAlert('Error', 'AI configuration not loaded.', 'error');
+
             const name = document.getElementById('inpName').value.trim();
-            if (!name) return showAlert('Error', 'Client name required.', 'error');
+            if (!name) return showAlert('Error', 'Please enter client name first.', 'error');
 
             const company = document.getElementById('inpCompany').value.trim();
             const stage = document.getElementById('inpStage').value;
             const output = document.getElementById('aiOutput');
 
             output.style.display = 'block';
-            output.value = "Generating...";
+            output.value = "Generating email draft...";
 
-            let contextPrompt = stage === 'lead' ? "introductory email offering services" :
-                               stage === 'negotiation' ? "follow-up regarding proposal and pricing in Rands" :
-                               stage === 'won' ? "thank you email for closing the deal" :
-                               "polite re-engagement email";
+            let contextPrompt = "";
+            if (stage === 'lead') contextPrompt = "an introductory email offering our services";
+            else if (stage === 'negotiation') contextPrompt = "a professional follow-up email regarding our proposal and pricing in South African Rand";
+            else if (stage === 'won') contextPrompt = "a thank-you email for closing the deal";
+            else contextPrompt = "a polite re-engagement email";
 
-            const prompt = `Write ${contextPrompt} to ${name} from ${company || 'their company'}. Professional, concise, South African English. Sender: Vynix Lingua.`;
+            const prompt = `Write ${contextPrompt} to ${name} at ${company || "their company"}. Keep it professional, concise, warm, and use South African English spelling. Sender name: Vynix Lingua.`;
 
             await callAI(prompt, text => output.value = text);
         }
 
         function toggleAIWindow() {
-            const w = document.getElementById('aiWindow');
-            w.style.display = w.style.display === 'flex' ? 'none' : 'flex';
+            const win = document.getElementById('aiWindow');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
         }
 
         async function sendGlobalAI() {
@@ -794,21 +820,22 @@
             input.value = '';
             body.scrollTop = body.scrollHeight;
 
-            const id = 'loading-' + Date.now();
-            body.innerHTML += `<div id="${id}" class="ai-msg bot">Thinking...</div>`;
+            const loadingId = 'loading-' + Date.now();
+            body.innerHTML += `<div id="${loadingId}" class="ai-msg bot">Thinking...</div>`;
             body.scrollTop = body.scrollHeight;
 
-            const total = deals.reduce((s, d) => s + (parseFloat(d.value)||0), 0);
-            const context = `CRM stats: ${deals.length} deals, R${total.toLocaleString('en-ZA')}, Won: ${deals.filter(d=>d.stage==='won').length}`;
+            const totalValue = deals.reduce((sum, d) => sum + (parseFloat(d.value)||0), 0);
+            const context = `Current CRM stats: ${deals.length} total deals | Total pipeline value: R${totalValue.toLocaleString('en-ZA')} | Won deals: ${deals.filter(d=>d.stage==='won').length}`;
 
-            await callAI(`${context}\nUser: ${txt}\nAnswer concisely.`, text => {
-                document.getElementById(id).innerText = text;
+            const prompt = `${context}\n\nUser question: ${txt}\nAnswer concisely and helpfully.`;
+
+            await callAI(prompt, text => {
+                document.getElementById(loadingId).innerText = text;
                 body.scrollTop = body.scrollHeight;
             });
         }
 
         async function callAI(prompt, callback) {
-            if (!XAI_API_KEY) return callback("AI key not available.");
             try {
                 const res = await fetch("https://api.x.ai/v1/chat/completions", {
                     method: "POST",
@@ -823,12 +850,13 @@
                         max_tokens: 800
                     })
                 });
-                if (!res.ok) throw new Error("API error " + res.status);
+
+                if (!res.ok) throw new Error(`API error ${res.status}`);
                 const json = await res.json();
                 callback(json.choices[0].message.content.trim());
             } catch (err) {
-                console.error(err);
-                callback("Error connecting to AI.");
+                console.error("[AI] Error:", err);
+                callback("Sorry, couldn't connect to the AI assistant right now.");
             }
         }
     </script>
